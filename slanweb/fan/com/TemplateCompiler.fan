@@ -10,14 +10,14 @@ using web
 using compiler
 
 
-const class TempletCompiler
+const class TemplateCompiler
 {
   //shift for mutil line string
   private const Str gap := "\n   "
   private const Cache cache:=Cache()
   const Log log:=Pod.of(this).log
   
-  static const TempletCompiler instance:=TempletCompiler()
+  static const TemplateCompiler instance:=TemplateCompiler()
   
 
   private new make(){}

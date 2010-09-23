@@ -17,7 +17,7 @@ abstract class SlanWeblet:Weblet
 
   Void render(Uri fsp,|->|? lay:=null){
     file :=Config.getUri(fsp).get
-    TempletCompiler.instance.render(file,lay)
+    TemplateCompiler.instance.render(file,lay)
   }
 
   Void compileJs(Uri fwt){

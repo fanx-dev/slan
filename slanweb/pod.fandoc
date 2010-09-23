@@ -80,9 +80,9 @@ named method expected 'WebMethod' facet, except 'onService'
   
 if need rewrite url, override the MyActionMod's 'onService' method
   
-Html Templet [#htmlTemplet]
+Html Template [#htmlTemplate]
 ==============
-the templet code like this:
+the template code like this:
 
    <html>
     <head>
@@ -102,7 +102,7 @@ the templet code like this:
     </body>
   </html>
   
-fatom code start with '#'(escape '#' with '##').
+fantom code start with '#'(escape '#' with '##').
 other code will be compile to fantom string :
   out.printLine("""text""")
 so we can embedded '$ interpolation'
@@ -110,13 +110,13 @@ so we can embedded '$ interpolation'
 the 'req.stash' be used to pass params.
 
 
-templet extends by closures
+template extends by closures
 
-in the base templet:
+in the base template:
 	#lay()
-in the sub templet:
+in the sub template:
     #render(`view/main.html`)|->|{
     	...
     #}
 
-extends your controller from 'SlanWeblet' will be convenience for process templet.
+extends your controller from 'SlanWeblet' will be convenience for process template.
