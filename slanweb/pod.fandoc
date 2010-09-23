@@ -1,0 +1,122 @@
+**************************************************************************
+** title:      slanweb
+** author:     Yang Jiandong
+** created:    2010-9-23
+** copyright:  Copyright (c) 2010, Yang Jiandong
+** license:    Licensed under the Academic Free License version 3.0
+**************************************************************************
+
+Overview [#overview]
+********************
+
+only see the pod of mywebDemo
+
+Setup [#setup]
+==========
+
+  class Main
+  {
+      static Void main()
+      {
+          //hack
+          Config.instance.podName=Main#.pod.name
+          run
+      }
+    
+      static Void run(){
+        SlanService{
+            logDir=`log/`
+            port=8080
+            route=SlanRouteMod
+            {
+              routes=
+              [
+                "action":MyActionMod(`action/`),
+                "public":StaticFileMod(`public/`),
+                "pod":PodJsMod()
+              ]
+            }
+        }.run
+      }
+  }
+  
+SlanRouteMod has a errorPage ,default is 'error.html'
+
+Run Model[#runModel]
+==========
+default runing on the file model.
+file model is instant for change.
+
+using 'Config.instance.podName=Main#.pod.name' before run service,
+it will run as pod model.
+
+Authorized [#authorized]
+==========
+add authorized
+
+  const class MyActionMod:ActionMod{
+    new make(Uri dir):super(dir){}
+    
+    protected override Bool onInvoke(Type type,Method method){
+      if(method.name=="welcome")return false
+      return true
+    }
+  }
+
+Route [#route]
+============
+
+see the uri 'http://localhost:8080/action/welcome/ad/printInfo?i=123&m=bac'
+  it will route to 'action'(dir) and compile 'Welcome.fan'(class),
+  then newInstance 'Welecome' with 'ad'(params).
+  call 'printInfo'(method) with 'i=123,m=bac'(named params)
+  
+if no explicit method,then call 'onService'
+named method expected 'WebMethod' facet, except 'onService'
+  
+  default mod 'action'.
+  default class/file is 'index'.
+  default method is 'onService'.
+  
+if need rewrite url, override the MyActionMod's 'onService' method
+  
+Html Templet [#htmlTemplet]
+==============
+the templet code like this:
+
+   <html>
+    <head>
+      <title>Welcome</title>
+      ${req.stash["SlanWeblet.compileFwt"]}
+    </head>
+    <body>
+     <h1>Welcome ${req.stash["name"]} !</h1>
+     #//<h2>$req.absUri</h2>
+     #for(i:=0;i<3;i++){
+        <h3>abc\${i}line</h3>
+        <h4>abc${i}line</h4>
+        ##bacd
+     #}
+     <div id='fwt-root' style='position:relative; width:400px; height:300px;'>
+     </div>
+    </body>
+  </html>
+  
+fatom code start with '#'(escape '#' with '##').
+other code will be compile to fantom string :
+  out.printLine("""text""")
+so we can embedded '$ interpolation'
+  
+the 'req.stash' be used to pass params.
+
+
+templet extends by closures
+
+in the base templet:
+	#lay()
+in the sub templet:
+    #render(`view/main.html`)|->|{
+    	...
+    #}
+
+extends your controller from 'SlanWeblet' will be convenience for process templet.

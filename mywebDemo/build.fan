@@ -1,0 +1,23 @@
+using build
+class Build : build::BuildPod
+{
+  new make()
+  {
+    podName = "myweb"
+    summary = "it's demo for slanweb"
+    srcDirs = [`fan/`, `action/`]
+    depends = 
+    [
+        "sys 1.0",
+        "webmod 1.0",
+        "web 1.0",
+        "compiler 1.0",
+        "wisp 1.0",
+        "util 1.0",
+        "concurrent 1.0",
+        "slanweb 1.0"
+    ]
+    resDirs = [`public/`,`view/`,`fwt/`]
+
+  }
+}

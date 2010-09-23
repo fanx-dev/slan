@@ -1,0 +1,34 @@
+using gfx
+using fwt
+using dom
+
+class Hello : Window
+{
+  new make() : super(null, null)
+  {
+    textBox:=Text()
+    content = BorderPane
+    {
+      insets = Insets(24)
+      GridPane
+      {
+        vgap = 12
+        Label
+        {
+          text = "input name"
+        },
+        textBox,
+        Button
+        {
+          text = "submit"
+          onAction.add { Win.cur.alert("Hello ${textBox.text}!") }
+        },
+      },
+    }
+  }
+
+  Void main()
+  {
+    open
+  }
+}
