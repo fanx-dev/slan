@@ -25,6 +25,7 @@ class DaoTest:Test
       select
       update
       delete
+      transaction
     }
     catch (Err e)
     {
@@ -91,5 +92,14 @@ class DaoTest:Test
     
     exist:=Student{sid=1}.exist
     verifyEq(exist,false)
+  }
+  
+  Void transaction(){
+    c.trans{
+      Student{sid=2}.select.first->delete
+      verifyFalse(Student{sid=2}.exist)
+      throw Err("test transaction")
+    }
+    verify(Student{sid=2}.exist)
   }
 }

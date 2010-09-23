@@ -5,6 +5,9 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
+**
+** super class for entity
+** 
 @Serializable
 abstract class Record
 {

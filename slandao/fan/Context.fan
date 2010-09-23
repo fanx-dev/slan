@@ -6,7 +6,9 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 using sql
-
+**
+** session and manager
+** 
 const class Context
 {
   const SqlService db
@@ -120,6 +122,24 @@ const class Context
       update(obj)
     }else{
       insert(obj)
+    }
+  }
+  
+  ////////////////////////////////////////////////////////////////////////
+  //transaction
+  ////////////////////////////////////////////////////////////////////////
+  
+  Void trans(|This| f){
+    oauto:=db.autoCommit
+    try{
+      db.autoCommit=false
+      f(this)
+      db.commit
+    }catch(Err e){
+      e.trace
+      db.rollback
+    }finally{
+      db.autoCommit=oauto
     }
   }
 }
