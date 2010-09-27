@@ -41,6 +41,10 @@ const class Executor
     db.sql(sql).prepare.execute(param)
   }
   
+  ////////////////////////////////////////////////////////////////////////
+  //do where
+  ////////////////////////////////////////////////////////////////////////
+  
   Obj[] select(Table table,SqlService db,Obj obj,Str orderby){
     sql:="select * "+whereMaker.getSql(table,obj)
     if(orderby!="")sql+=" "+orderby
@@ -56,10 +60,26 @@ const class Executor
     return list
   }
   
-  Obj? findById(Table table,SqlService db,Obj id){
-    rows:=queryById(table,db,id,"select *")
-    if(rows.size==0)return null
-    return table.getInstance(rows.first)
+  Obj[] selectId(Table table,SqlService db,Obj obj,Str orderby,Int start,Int num){
+    sql:="select $table.id.name "+whereMaker.getSql(table,obj)
+    if(orderby!="")sql+=" "+orderby
+    param:=whereMaker.getParam(table,obj)
+    if(log.isDebug){
+      log.debug(sql)
+      log.debug(param.toStr)
+    }
+    Obj[] list:=[,]
+    i:=0
+    s:=db.sql(sql)
+    s.limit=num
+    s.prepare.queryEach(param)|Row r|{
+      if(i<start){
+        i++
+        return
+      }
+      list.add(r[r.cols[0]])
+    }
+    return list
   }
   
   Void delete(Table table,SqlService db,Obj obj){
@@ -72,6 +92,12 @@ const class Executor
     db.sql(sql).prepare.execute(param)
   }
   
+  Int count(Table table,SqlService db,Obj obj){
+    rows:=queryWhere(table,db,obj,"select count(*)","")
+    r:=rows[0]
+    n:=r[r.cols[0]]
+    return n
+  }
   Row[] queryWhere(Table table,SqlService db,Obj obj,Str before,Str after){
     sql:=before+" "+whereMaker.getSql(table,obj);
     if(after!="")sql+=" "+after
@@ -83,7 +109,34 @@ const class Executor
     return db.sql(sql).prepare.query(param)
   }
   
-  Row[] queryById(Table table,SqlService db,Obj id,Str before){
+  ////////////////////////////////////////////////////////////////////////
+  //by ID
+  ////////////////////////////////////////////////////////////////////////
+  
+  Void removeById(Table table,SqlService db,Obj id){
+    sql:="delete "+idWhereMaker.getSql(table)
+    param:=idWhereMaker.getParam(table,id)
+    if(log.isDebug){
+      log.debug(sql)
+      log.debug(param.toStr)
+    }
+    db.sql(sql).prepare.execute(param)
+  }
+  
+  Obj? findById(Table table,SqlService db,Obj id){
+    rows:=queryById(table,db,id,"select *")
+    if(rows.size==0)return null
+    return table.getInstance(rows.first)
+  }
+  
+  Bool existById(Table table,SqlService db,Obj id){
+    rows:=queryById(table,db,id,"select count(*)")
+    r:=rows[0]
+    n:=r[r.cols[0]]
+    return n>0
+  }
+  
+  private Row[] queryById(Table table,SqlService db,Obj id,Str before){
     sql:=before+" "+idWhereMaker.getSql(table)
     param:=idWhereMaker.getParam(table,id)
     if(log.isDebug){
@@ -93,6 +146,10 @@ const class Executor
     return db.sql(sql).prepare.query(param)
   }
   
+  ////////////////////////////////////////////////////////////////////////
+  //table op
+  ////////////////////////////////////////////////////////////////////////
+
   Void createTable(Table table,SqlService db){
     sql:=tableMaker.createTable(table)
     if(log.isDebug){

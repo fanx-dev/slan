@@ -28,7 +28,7 @@ abstract class Record
   }
   
   Obj[] select(){
-    return ct.select(this)
+    return ct.list(this)
   }
   
   Bool exist(){

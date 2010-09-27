@@ -46,26 +46,90 @@ const class Context
   Void insert(Obj obj){
     table:=getTable(obj.typeof)
     executor.insert(table,db,obj)
+    cache[table.name+getId(obj)]=obj
   }
   
   Void update(Obj obj){
     table:=getTable(obj.typeof)
     executor.update(table,db,obj)
+    cache[table.name+getId(obj)]=obj
   }
   
   Void delete(Obj obj){
     table:=getTable(obj.typeof)
     executor.delete(table,db,obj)
+    cache.remove(table.name+getId(obj))
   }
   
-  Obj[] select(Obj obj,Str orderby:=""){
+  Obj[] noCacheSelect(Obj obj,Str orderby:=""){
     table:=getTable(obj.typeof)
     return executor.select(table,db,obj,orderby)
   }
   
+  ////////////////////////////////////////////////////////////////////////
+  //select id
+  ////////////////////////////////////////////////////////////////////////
+  
+  Obj[] list(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
+    table:=getTable(obj.typeof)
+    ids:= executor.selectId(table,db,obj,orderby,start,num)
+    Obj[] list:=[,]
+    ids.each{
+      instance:=findById(obj.typeof,it)
+      list.add(instance)
+    }
+    return list
+  }
+  
+  Obj? one(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
+    table:=getTable(obj.typeof)
+    ids:= executor.selectId(table,db,obj,orderby,start,num)
+    if(ids.size==0)return null
+    return findById(obj.typeof,ids[0])
+  }
+  
+  ////////////////////////////////////////////////////////////////////////
+  //by ID
+  ////////////////////////////////////////////////////////////////////////
+  
   Obj findById(Type type,Obj id){
     table:=getTable(type)
-    return executor.findById(table,db,id)
+    obj:=cache[table.name+id]
+    if(obj==null){
+      obj= executor.findById(table,db,id)
+    }
+    return obj
+  }
+  
+  Obj? getId(Obj obj){
+    table:=getTable(obj.typeof)
+    return table.id.field.get(obj)
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  //extend method
+  ////////////////////////////////////////////////////////////////////////
+  
+  Int count(Obj obj){
+    table:=getTable(obj.typeof)
+    return executor.count(table,db,obj)
+  }
+  
+  Bool exist(Obj obj){
+    return count(obj)>0
+  }
+  
+  Void save(Obj obj){
+    if(existById(obj)){
+      update(obj)
+    }else{
+      insert(obj)
+    }
+  }
+  private Bool existById(Obj obj){
+    table:=getTable(obj.typeof)
+    id:=table.id.field.get(obj)
+    return findById(obj.typeof,id)
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -85,44 +149,6 @@ const class Context
   Bool tableExists(Type type){
     table:=getTable(type)
     return db.tableExists(table.name)
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  //extend method
-  ////////////////////////////////////////////////////////////////////////
-  
-  Int count(Obj obj){
-    table:=getTable(obj.typeof)
-    rows:=executor.queryWhere(table,db,obj,"select count(*)","")
-    r:=rows[0]
-    n:=r[r.cols[0]]
-    return n
-  }
-  
-  Bool exist(Obj obj){
-    return count(obj)>0
-  }
-  
-  private Bool existById(Obj obj){
-    table:=getTable(obj.typeof)
-    id:=table.id.field.get(obj)
-    rows:=executor.queryById(table,db,id,"select count(*)")
-    r:=rows[0]
-    n:=r[r.cols[0]]
-    return n>0
-  }
-  
-  Obj? getId(Obj obj){
-    table:=getTable(obj.typeof)
-    return table.id.field.get(obj)
-  }
-  
-  Void save(Obj obj){
-    if(existById(obj)){
-      update(obj)
-    }else{
-      insert(obj)
-    }
   }
   
   ////////////////////////////////////////////////////////////////////////
