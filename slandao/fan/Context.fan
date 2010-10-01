@@ -128,8 +128,11 @@ const class Context
     return executor.count(table,db,obj)
   }
   
+  **noCache
   Bool exist(Obj obj){
-    return count(obj)>0
+    table:=getTable(obj.typeof)
+    n:= executor.count(table,db,obj)
+    return n>0
   }
   
   Void save(Obj obj){

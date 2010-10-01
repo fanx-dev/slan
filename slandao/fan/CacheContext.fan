@@ -16,8 +16,12 @@ const class CacheContext:Context
 {
   private const Cache cache:=Cache()
   private const Log log:=Pod.of(this).log
+  private const Cache? queryCache
   
-  new make(SqlService db,Type:Table tables):super(db,tables){
+  new make(SqlService db,Type:Table tables,Bool queryCacheable:=true):super(db,tables){
+    if(queryCacheable){
+      queryCache:=Cache()
+    }
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -25,10 +29,13 @@ const class CacheContext:Context
   ////////////////////////////////////////////////////////////////////////
   
   private const static Str tcache:="slandao.CacheContext.tcache"
-  private const static Str tcacheStack:="slandao.CacheContext.tcacheStack"
   
   private Cache getCache(){
     return Actor.locals[tcache]?:cache
+  }
+  
+  private Bool usingQueryCache(){
+    return queryCache!=null && Actor.locals[tcache]==null//not in transcation
   }
   
   private Void set(Str key,Obj? value){ getCache[key]=value }
@@ -42,7 +49,12 @@ const class CacheContext:Context
   
   private Bool containsKey(Str key){ getCache.containsKey(key) }
   
-  Void clearCache(){ getCache.clearAll}
+  Void clearCache(){
+    getCache.clearAll
+    clearQueryCache
+  }
+  Void clearQueryCache(){ queryCache?.clearAll}
+  Void removeCache(Str key){ getCache.remove(key)}
   
   ////////////////////////////////////////////////////////////////////////
   //execute write
@@ -67,42 +79,6 @@ const class CacheContext:Context
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //select id
-  ////////////////////////////////////////////////////////////////////////
-  
-//  protected override Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
-//    key:=getKey(obj,orderby,start,num)
-//    if(this.containsKey(key)){
-//      return get(key)
-//    }
-//    
-//    ids:= super.getIdList(obj,orderby,start,num)
-//    set(key,ids)
-//    return ids
-//  }
-//  
-//  private Str getKey(Obj obj,Str orderby,Int start,Int num){
-//    sb:= StrBuf()
-//    sb.out.writeObj(obj)
-//    return "selectId,$sb.toStr,$orderby,$start,$num"
-//  }
-  
-  ////////////////////////////////////////////////////////////////////////
-  //select where
-  ////////////////////////////////////////////////////////////////////////
-  
-//  override Obj[] getWhereIdList(Type type,Str where,Int start:=0,Int num:=20){
-//    key:="selectWhere,$type.qname,$where,$start,$num"
-//    if(this.containsKey(key)){
-//      return get(key)
-//    }
-//    
-//    ids:= super.getWhereIdList(type,where,start,num)
-//    set(key,ids)
-//    return ids
-//  }
-  
-  ////////////////////////////////////////////////////////////////////////
   //by ID
   ////////////////////////////////////////////////////////////////////////
   
@@ -119,22 +95,55 @@ const class CacheContext:Context
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //extend method
+  //Query Cache
   ////////////////////////////////////////////////////////////////////////
   
-//  override Int count(Obj obj){
-//    sb:= StrBuf()
-//    sb.out.writeObj(obj)
-//    key:="count,$sb.toStr"
-//    
-//    if(this.containsKey(key)){
-//      return get(key)
-//    }
-//    
-//    n:= super.count(obj)
-//    set(key,n)
-//    return n
-//  }
+  protected override Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
+    if(!usingQueryCache)return super.getIdList(obj,orderby,start,num)
+    
+    key:=getKey(obj,orderby,start,num)
+    if(queryCache.containsKey(key)){
+      return queryCache.get(key)
+    }
+    
+    ids:= super.getIdList(obj,orderby,start,num)
+    queryCache.set(key,ids,1min)
+    return ids
+  }
+  private Str getKey(Obj obj,Str orderby,Int start,Int num){
+    sb:= StrBuf()
+    sb.out.writeObj(obj)
+    return "selectId,$sb.toStr,$orderby,$start,$num"
+  }
+  
+  override Obj[] getWhereIdList(Type type,Str where,Int start:=0,Int num:=20){
+    if(!usingQueryCache)return super.getWhereIdList(type,where,start,num)
+    
+    key:="selectWhere,$type.qname,$where,$start,$num"
+    if(queryCache.containsKey(key)){
+      return queryCache.get(key)
+    }
+    
+    ids:= super.getWhereIdList(type,where,start,num)
+    queryCache.set(key,ids,1min)
+    return ids
+  }
+  
+  override Int count(Obj obj){
+    if(!usingQueryCache)return super.count(obj)
+    
+    sb:= StrBuf()
+    sb.out.writeObj(obj)
+    key:="count,$sb.toStr"
+    
+    if(queryCache.containsKey(key)){
+      return queryCache.get(key)
+    }
+    
+    n:= super.count(obj)
+    queryCache.set(key,n,1min)
+    return n
+  }
   
   ////////////////////////////////////////////////////////////////////////
   //transaction
@@ -147,7 +156,6 @@ const class CacheContext:Context
       db.autoCommit=false
       if(isNull){
         Actor.locals[tcache]=Cache()
-        Actor.locals[tcacheStack]=Obj[,]
       }
       
       f(this)

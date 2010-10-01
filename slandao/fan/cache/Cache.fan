@@ -5,13 +5,13 @@ const class Cache
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}
   private const Duration houseKeepingPeriod := 1min
   const Int maxNum
-  const Duration expire
+  const Duration rest
   private const static Str cachemap:="slandao.Cache.map"
   private const Log log:=Pod.of(this).log
   
-  new make(Int maxNum:=10000,Duration expire:=1hr){
+  new make(Int maxNum:=10000,Duration rest:=10min){
     this.maxNum=maxNum
-    this.expire=expire
+    this.rest=rest
     goOnHouseKeeping
   }
   
@@ -67,8 +67,8 @@ const class Cache
     CacheObj? obj:=_get(key)
     return obj?.value
   }
-  Void set(Str key,Obj? val){
-    _set(key,CacheObj{id=key;value=val})
+  Void set(Str key,Obj? val,Duration expire_:=24hr){
+    _set(key,CacheObj{id=key;value=val;expire=expire_})
   }
   Void remove(Str key) {
     _remove(key)
@@ -117,7 +117,8 @@ const class Cache
     now := Duration.now
     old := map.findAll |CacheObj s->Bool|
     {
-      return now - s.lastAccess > expire
+      isOld:= now - s.lastAccess > rest || now - s.createTime > s.expire
+      return isOld
     }
     old.each |CacheObj s| { map.remove(s.id) }
   }
