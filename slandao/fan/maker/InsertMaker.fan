@@ -27,7 +27,7 @@ const class InsertMaker
   Str:Obj getParam(Table table,Obj obj){
     Str:Obj? param:=[:]
     table.nonAutoGenerate|Column c|{
-      param[c.name]=c.field.get(obj)
+      param[c.name]=c.getValue(obj)
     }
     return param
   }

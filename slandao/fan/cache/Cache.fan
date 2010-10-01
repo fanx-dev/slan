@@ -6,6 +6,8 @@ const class Cache
   private const Duration houseKeepingPeriod := 1min
   const Int maxNum
   const Duration expire
+  private const static Str cachemap:="slandao.Cache.map"
+  private const Log log:=Pod.of(this).log
   
   new make(Int maxNum:=10000,Duration expire:=1hr){
     this.maxNum=maxNum
@@ -16,8 +18,8 @@ const class Cache
   private Obj? receive(Obj?[] arg){
     Str op:=arg[0]
     
-    [Str:CacheObj]? map:=Actor.locals["slandao.Cache.map"]
-    if(map==null)Actor.locals["slandao.Cache.map"]=map=Str:CacheObj[:]
+    [Str:CacheObj]? map:=Actor.locals[cachemap]
+    if(map==null)Actor.locals[cachemap]=map=Str:CacheObj[:]
     
     switch(op){
       case "get":
@@ -32,6 +34,19 @@ const class Cache
       case "remove":
         return map.remove(arg[1])
       
+      case "containsKey":
+        return map.containsKey(arg[1])
+      
+      case "mergeCache":
+        _mergeCache(arg[1],map)
+        return null
+      
+      case "getmap":
+        return map
+      
+      case "clearAll":
+        return Actor.locals.remove(cachemap)
+      
       case "_houseKeeping":
         houseKeeping(map)
     }
@@ -41,18 +56,38 @@ const class Cache
   
   private CacheObj? _get(Str key) { actor.send(["get",key]).get }
   private Void _set(Str key,CacheObj val) { actor.send(["set",key,val]) }
-  private Void _remove(Str key) {actor.send(["remove",key])}
+  private Void _remove(Str key) { actor.send(["remove",key]) }
+  private Bool _containsKey(Str key) { actor.send(["containsKey",key]).get }
   
+  [Str:CacheObj] getMap(){ actor.send(["getmap"]).get }
+  
+  Void clearAll(){ actor.send(["clearAll"])}
   
   Obj? get(Str key) { 
     CacheObj? obj:=_get(key)
     return obj?.value
   }
-  Void set(Str key,Obj val){
+  Void set(Str key,Obj? val){
     _set(key,CacheObj{id=key;value=val})
   }
   Void remove(Str key) {
     _remove(key)
+  }
+  Bool containsKey(Str key) {
+    _containsKey(key)
+  }
+  Void mergeCache([Str:CacheObj] source){ 
+    actor.send(["mergeCache",source])
+  }
+  
+  
+  private Void _mergeCache([Str:CacheObj] source,[Str:CacheObj] target){
+    source.each|CacheObj value,Str key|{
+      target[key]=value
+      if(log.isDebug){
+        log.debug("commitCahe:[$key:$value]".replace("\n",""))
+      }
+    }
   }
   
   ////////////////////////////////////////////////////////////////////////

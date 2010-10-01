@@ -8,10 +8,9 @@
 **
 ** super class for entity
 ** 
-@Serializable
-abstract class Record
+mixin Record
 {
-  @Transient Context? ct
+  abstract Context ct
   
   This insert(){
     ct.insert(this)
@@ -28,7 +27,11 @@ abstract class Record
   }
   
   Obj[] select(){
-    return ct.list(this)
+    return ct.select(this)
+  }
+  
+  Obj? one(){
+    return ct.one(this)
   }
   
   Bool exist(){

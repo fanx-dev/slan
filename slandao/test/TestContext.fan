@@ -12,7 +12,7 @@ using sql
 **
 const class TestContext
 {
-  const static Context c
+  const static Context noCacheContext
   static{
     pod := Pod.find("sql");
     db:= SqlService(
@@ -20,9 +20,19 @@ const class TestContext
       pod.config("test.username"),
       pod.config("test.password"),
       Type.find(pod.config("test.dialect")).make)
-
-    c=Context(db){
-      tables=autoRegister([:],TestContext#.pod)
-    }
+    tables:=Context.createTables([:],TestContext#.pod)
+    noCacheContext=Context(db,tables)
+  }
+  
+  const static CacheContext c
+  static{
+    pod := Pod.find("sql");
+    db:= SqlService(
+      pod.config("test.connection"),
+      pod.config("test.username"),
+      pod.config("test.password"),
+      Type.find(pod.config("test.dialect")).make)
+    tables:=CacheContext.createTables([:],TestContext#.pod)
+    c=CacheContext(db,tables)
   }
 }

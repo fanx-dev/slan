@@ -15,13 +15,7 @@ const class TableMaker
       sqlType:=c.getSqlType(table.autoGenerateId==true && table.id==c )
       sql.add("$c.name $sqlType,")
     }
-    
-    if(table.id!=null){
-      sql.add("primary key ($table.id.name)")
-    }else{
-       Utils.removeLastChar(sql)
-    }
-    
+    sql.add("primary key ($table.id.name)")
     sql.add(")")
     return sql.toStr
   }

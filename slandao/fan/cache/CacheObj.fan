@@ -13,7 +13,7 @@
 class CacheObj
 {
   Duration lastAccess
-  Obj value
+  Obj? value
   const Str id
   
   new make(|This| f){

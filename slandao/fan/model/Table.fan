@@ -22,7 +22,7 @@ const class Table
     }
   }
   
-  Column? id(){
+  Column id(){
     return columns[idIndex]
   }
   
@@ -55,7 +55,7 @@ const class Table
     columns.each|Column c,Int i|{
       cl:=r.cols[i]
       value:=r[cl]
-      c.field.set(obj,value)
+      c.setValue(obj,value)
     }
     return obj
   }
@@ -64,7 +64,7 @@ const class Table
   //getMetaData
   ////////////////////////////////////////////////////////////////////////
   
-  static Table createFromType(Type type){
+  static Table createFromType(Type type,SlanDialect dialect){
     Int? id
     cs:=Column[,]
     Bool generateId:=false
@@ -73,9 +73,9 @@ const class Table
       if(!f.hasFacet(Transient#) && !f.isStatic){
         if(f.hasFacet(Colu#)){
           Colu c:=f.facet(Colu#)
-          cs.add(Column(f,c.name,c.sqlType))
+          cs.add(dialect.createColumn(f,c.name,c.sqlType))
         }else{
-          cs.add(Column(f))
+          cs.add(dialect.createColumn(f))
         }
         if(f.hasFacet(Id#)){
           id=cs.size-1

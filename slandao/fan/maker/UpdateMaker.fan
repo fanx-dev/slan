@@ -26,7 +26,7 @@ const class UpdateMaker
   Str:Obj getParam(Table table,Obj obj){
     Str:Obj param:=[:]
     table.columns.each|Column c|{
-      value:=c.field.get(obj)
+      value:=c.getValue(obj)
       if(value!=null){
         param[c.name]=value
       }

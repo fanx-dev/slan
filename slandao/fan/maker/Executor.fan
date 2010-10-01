@@ -71,8 +71,27 @@ const class Executor
     Obj[] list:=[,]
     i:=0
     s:=db.sql(sql)
-    s.limit=num
+    s.limit=start+num
     s.prepare.queryEach(param)|Row r|{
+      if(i<start){
+        i++
+        return
+      }
+      list.add(r[r.cols[0]])
+    }
+    return list
+  }
+  
+  Obj[] selectWhere(Table table,SqlService db,Str where,Int start,Int num){
+    sql:="select $table.id.name from $table.name where $where"
+    if(log.isDebug){
+      log.debug(sql)
+    }
+    Obj[] list:=[,]
+    i:=0
+    s:=db.sql(sql)
+    s.limit=start+num
+    s.queryEach(null)|Row r|{
       if(i<start){
         i++
         return

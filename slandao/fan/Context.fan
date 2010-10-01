@@ -6,19 +6,19 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 using sql
+using concurrent
 **
 ** session and manager
 ** 
 const class Context
 {
   const SqlService db
-  const Type:Table tables:=[:]
-  const Cache cache:=Cache()
+  const Type:Table tables
   const Executor executor:=Executor()
   
-  new make(SqlService db,|This| f){
+  new make(SqlService db,Type:Table tables){
     this.db=db
-    f(this)
+    this.tables=tables
   }
   
   Table getTable(Type t){
@@ -29,10 +29,11 @@ const class Context
   //tools
   ////////////////////////////////////////////////////////////////////////
   
-  static Type:Table autoRegister(Type:Table tables,Pod pod){
+  static Type:Table createTables(Type:Table tables,Pod pod,
+                              SlanDialect dialect:=SlanDialect()){
     pod.types.each|Type t|{
       if(t.fits(Record#) && t!=Record#){
-        table:=Table.createFromType(t)
+        table:=Table.createFromType(t,dialect)
         tables[t]=table
       }
     }
@@ -40,65 +41,77 @@ const class Context
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //execute sql
+  //execute write
   ////////////////////////////////////////////////////////////////////////
 
-  Void insert(Obj obj){
+  virtual Void insert(Obj obj){
     table:=getTable(obj.typeof)
     executor.insert(table,db,obj)
-    cache[table.name+getId(obj)]=obj
   }
   
-  Void update(Obj obj){
+  virtual Void update(Obj obj){
     table:=getTable(obj.typeof)
     executor.update(table,db,obj)
-    cache[table.name+getId(obj)]=obj
   }
   
-  Void delete(Obj obj){
+  virtual Void delete(Obj obj){
     table:=getTable(obj.typeof)
     executor.delete(table,db,obj)
-    cache.remove(table.name+getId(obj))
-  }
-  
-  Obj[] noCacheSelect(Obj obj,Str orderby:=""){
-    table:=getTable(obj.typeof)
-    return executor.select(table,db,obj,orderby)
   }
   
   ////////////////////////////////////////////////////////////////////////
   //select id
   ////////////////////////////////////////////////////////////////////////
   
-  Obj[] list(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
+  Obj[] select(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
+    Obj[] ids:=getIdList(obj,orderby,start,num)
+    return idToObj(obj.typeof,ids)
+  }
+  
+  Obj? one(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
+    Obj[] ids:=getIdList(obj,orderby,start,num)
+    
+    if(ids.size==0)return null
+    return findById(obj.typeof,ids[0])
+  }
+  
+  protected virtual Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
     table:=getTable(obj.typeof)
-    ids:= executor.selectId(table,db,obj,orderby,start,num)
+    return executor.selectId(table,db,obj,orderby,start,num)
+  }
+  
+  private Obj[] idToObj(Type type,Obj[] ids){
     Obj[] list:=[,]
     ids.each{
-      instance:=findById(obj.typeof,it)
-      list.add(instance)
+      instance:=findById(type,it)
+      if(instance!=null){
+        list.add(instance)
+      }
     }
     return list
   }
   
-  Obj? one(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
-    table:=getTable(obj.typeof)
-    ids:= executor.selectId(table,db,obj,orderby,start,num)
-    if(ids.size==0)return null
-    return findById(obj.typeof,ids[0])
+  ////////////////////////////////////////////////////////////////////////
+  //select where
+  ////////////////////////////////////////////////////////////////////////
+  
+  Obj[] selectWhere(Type type,Str where,Int start:=0,Int num:=20){
+    Obj[]? ids:=getWhereIdList(type,where,start,num)
+    return idToObj(type,ids)
+  }
+  
+  protected virtual Obj[] getWhereIdList(Type type,Str where,Int start,Int num){
+    table:=getTable(type)
+    return executor.selectWhere(table,db,where,start,num)
   }
   
   ////////////////////////////////////////////////////////////////////////
   //by ID
   ////////////////////////////////////////////////////////////////////////
   
-  Obj findById(Type type,Obj id){
+  virtual Obj? findById(Type type,Obj id){
     table:=getTable(type)
-    obj:=cache[table.name+id]
-    if(obj==null){
-      obj= executor.findById(table,db,id)
-    }
-    return obj
+    return executor.findById(table,db,id)
   }
   
   Obj? getId(Obj obj){
@@ -110,7 +123,7 @@ const class Context
   //extend method
   ////////////////////////////////////////////////////////////////////////
   
-  Int count(Obj obj){
+  virtual Int count(Obj obj){
     table:=getTable(obj.typeof)
     return executor.count(table,db,obj)
   }
@@ -129,7 +142,10 @@ const class Context
   private Bool existById(Obj obj){
     table:=getTable(obj.typeof)
     id:=table.id.field.get(obj)
-    return findById(obj.typeof,id)
+    if(findById(obj.typeof,id)!=null){
+      return true
+    }
+    return false
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -155,15 +171,17 @@ const class Context
   //transaction
   ////////////////////////////////////////////////////////////////////////
   
-  Void trans(|This| f){
+  virtual Void trans(|This| f){
     oauto:=db.autoCommit
     try{
       db.autoCommit=false
+      
       f(this)
       db.commit
+      
     }catch(Err e){
-      e.trace
       db.rollback
+      throw e
     }finally{
       db.autoCommit=oauto
     }
