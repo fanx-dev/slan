@@ -6,44 +6,18 @@
 //   yangjiandong 2010-9-22 - Initial Contribution
 //
 using sql
-
-class DaoTest:Test
+**
+** CRUD test
+** 
+class CrudTest:TestBase
 {
-  once Context c(){
-    TestContext.c
-  }
-  
   Void test(){
-    log:=Pod.of(this).log
-    level:=log.level
-    try
-    {
-      log.level=LogLevel.debug
-      c.db.open
-      newTable(Student#)
+    execute|->|{
       insert
       select
       update
       delete
-      transaction
     }
-    catch (Err e)
-    {
-      throw e
-    }
-    finally
-    {
-      c.db.close
-      verify(c.db.isClosed)
-      log.level=level
-    }
-  }
-  
-  Void newTable(Type type){
-    if(c.tableExists(type)){
-      c.dropTable(type)
-    }
-    c.createTable(type)
   }
   
   Void insert(){
@@ -75,6 +49,9 @@ class DaoTest:Test
     
     Student stu2:=c.findById(Student#,2)
     verifyEq(stu2.name,"yqq")
+    
+    Student[] stus:=c.selectWhere(Student#,"age>23")
+    verifyEq(stus.size,1)
   }
   
   Void update(){
@@ -92,14 +69,5 @@ class DaoTest:Test
     
     exist:=Student{sid=1}.exist
     verifyEq(exist,false)
-  }
-  
-  Void transaction(){
-    c.trans{
-      Student{sid=2}.select.first->delete
-      verifyFalse(Student{sid=2}.exist)
-      throw Err("test transaction")
-    }
-    verify(Student{sid=2}.exist)
   }
 }

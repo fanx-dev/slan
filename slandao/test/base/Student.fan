@@ -24,11 +24,13 @@ class Student:Record
   @Colu{sqlType="text"}
   Str? description
   
-  new make(){
-    this.ct=TestContext.c
-  }
+  Weekday? loveWeek
+  
+  @Transient override Context ct:=TestContext.c
 }
 **************************************************************************
+** for test
+** 
 class StudentTable
 {
   static Table getTable(){

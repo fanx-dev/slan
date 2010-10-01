@@ -8,8 +8,8 @@
 class TableTest:Test
 {
   Void testcreateFromType(){
-    t:=Table.createFromType(Student#)
+    t:=Table.createFromType(Student#,SlanDialect())
     verify(t.id.name=="sid")
-    verifyEq(t.columns.size,7)
+    verifyEq(t.columns.size,8)
   }
 }
