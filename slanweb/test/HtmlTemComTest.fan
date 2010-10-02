@@ -1,5 +1,5 @@
 
-class HtmlTemComTest:Test
+internal class HtmlTemComTest:Test
 {
   Void test(){
     TemplateCompiler c:=TemplateCompiler.instance

@@ -10,7 +10,7 @@
 **
 **
 **
-class TransactionTest:TestBase
+internal class TransactionTest:TestBase
 {
   Void test(){
     execute|->|{

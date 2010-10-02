@@ -10,7 +10,7 @@ using sql
 **
 **
 **
-const class TestContext
+internal const class TestContext
 {
   const static Context noCacheContext
   static{

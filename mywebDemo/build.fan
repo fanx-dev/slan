@@ -3,7 +3,7 @@ class Build : build::BuildPod
 {
   new make()
   {
-    podName = "myweb"
+    podName = "mywebDemo"
     summary = "it's demo for slanweb"
     srcDirs = [`fan/`, `action/`]
     depends = 
@@ -15,9 +15,8 @@ class Build : build::BuildPod
         "wisp 1.0",
         "util 1.0",
         "concurrent 1.0",
-        "slanweb 1.0"
+        "slanweb 1.0",
     ]
-    resDirs = [`public/`,`view/`,`fwt/`]
-
+    resDirs = [`public/`,`view/`]
   }
 }

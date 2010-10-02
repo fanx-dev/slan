@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-class UpdateMakerTest:Test
+internal class UpdateMakerTest:Test
 {
   UpdateMaker maker:=UpdateMaker()
   

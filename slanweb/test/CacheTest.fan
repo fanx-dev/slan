@@ -1,4 +1,4 @@
-class CacheTest:Test{
+internal class CacheTest:Test{
   
   Void testGet(){
     cache:=Cache()

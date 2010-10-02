@@ -9,7 +9,7 @@
 ** test model
 **
 @Serializable
-class Student:Record
+internal class Student:Record
 {
   @Id{autoGenerate=true} 
   Int? sid
@@ -31,7 +31,7 @@ class Student:Record
 **************************************************************************
 ** for test
 ** 
-class StudentTable
+internal class StudentTable
 {
   static Table getTable(){
     cs:=Column[,]{

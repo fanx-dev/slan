@@ -20,7 +20,7 @@ const class CacheContext:Context
   
   new make(SqlService db,Type:Table tables,Bool queryCacheable:=true):super(db,tables){
     if(queryCacheable){
-      queryCache:=Cache()
+      this.queryCache=Cache()
     }
   }
   
@@ -45,6 +45,13 @@ const class CacheContext:Context
         log.debug("using cache:[$key]".replace("\n",""))
     }
     return getCache[key]
+  }
+  
+  private Obj? queryGet(Str key){
+    if(log.isDebug){
+        log.debug("using queryCache:[$key]".replace("\n",""))
+    }
+    return queryCache[key]
   }
   
   private Bool containsKey(Str key){ getCache.containsKey(key) }
@@ -103,7 +110,7 @@ const class CacheContext:Context
     
     key:=getKey(obj,orderby,start,num)
     if(queryCache.containsKey(key)){
-      return queryCache.get(key)
+      return queryGet(key)
     }
     
     ids:= super.getIdList(obj,orderby,start,num)
@@ -121,7 +128,7 @@ const class CacheContext:Context
     
     key:="selectWhere,$type.qname,$where,$start,$num"
     if(queryCache.containsKey(key)){
-      return queryCache.get(key)
+      return queryGet(key)
     }
     
     ids:= super.getWhereIdList(type,where,start,num)
@@ -137,7 +144,7 @@ const class CacheContext:Context
     key:="count,$sb.toStr"
     
     if(queryCache.containsKey(key)){
-      return queryCache.get(key)
+      return queryGet(key)
     }
     
     n:= super.count(obj)

@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-class TableTest:Test
+internal class TableTest:Test
 {
   Void testcreateFromType(){
     t:=Table.createFromType(Student#,SlanDialect())

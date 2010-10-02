@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-class WhereMakerTest:Test
+internal class WhereMakerTest:Test
 {
   WhereMaker maker:=WhereMaker()
   

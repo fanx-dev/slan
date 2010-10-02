@@ -10,7 +10,7 @@
 **
 **
 **
-class EnumTest:TestBase
+internal class EnumTest:TestBase
 {
   Void test(){
     execute|->|{

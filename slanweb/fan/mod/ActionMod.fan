@@ -34,11 +34,7 @@ const class ActionMod : WebMod
       type =Pod.find(podName).type(typeName)
     }
 
-    try{
-      fillParamsAndCall(type,path)
-    }catch(Err e){
-      throw ArgErr("argErr",e)
-    }
+    fillParamsAndCall(type,path)
   }
 
   **
@@ -51,7 +47,7 @@ const class ActionMod : WebMod
     method:=type.method(methodName)
 
     //two check
-    if(!onInvoke(type,method)){
+    if(!onInvoke(method)){
       if(!res.isCommitted)res.sendErr(401)
       return
     }
@@ -66,7 +62,12 @@ const class ActionMod : WebMod
 
     //call
     obj:=type.make(cps)
-    method.callOn(obj,mps)
+    
+    try{
+      method.callOn(obj,mps)
+    }catch(Err e){
+      throw Err("call method error : name $method.qname,on $obj,with $mps",e)
+    }
   }
 
   private Bool checkWebMethod(Method m){
@@ -92,7 +93,7 @@ const class ActionMod : WebMod
   **
   ** trap for check
   ** 
-  protected virtual Bool onInvoke(Type type,Method method){
+  protected virtual Bool onInvoke(Method method){
     return true
   }
 }

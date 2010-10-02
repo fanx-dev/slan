@@ -10,7 +10,7 @@
 **
 **
 **
-class TestBase:Test
+internal class TestBase:Test
 {
   virtual CacheContext c:=TestContext.c
   

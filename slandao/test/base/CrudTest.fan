@@ -9,7 +9,7 @@ using sql
 **
 ** CRUD test
 ** 
-class CrudTest:TestBase
+internal class CrudTest:TestBase
 {
   Void test(){
     execute|->|{

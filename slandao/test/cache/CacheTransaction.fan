@@ -10,7 +10,7 @@
 **
 **
 **
-class CacheTransaction:TestBase
+internal class CacheTransaction:TestBase
 {
   Void insert(){
     stu:=Student{

@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-class TableMakerTest:Test
+internal class TableMakerTest:Test
 {
   TableMaker maker:=TableMaker()
   Table table:=StudentTable.getTable

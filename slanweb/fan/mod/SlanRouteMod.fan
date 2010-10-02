@@ -53,6 +53,10 @@ const class SlanRouteMod : WebMod
       doService
     }catch(Err err){
       if(req.absUri.host=="localhost" || req.uri.relToAuth==errorPage){
+        if(res.isCommitted){
+          res.out.print("ERROR: $req.uri<br/>")
+          res.out.w(err.traceToStr.replace("\n","<br/>"))
+        }
         throw err
       }else{
         err.trace

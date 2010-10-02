@@ -40,6 +40,22 @@ const class Context
     return tables
   }
   
+  Void usingConn(|This| f){
+    try
+    {
+      db.open
+      f(this)
+    }
+    catch (Err e)
+    {
+      throw e
+    }
+    finally
+    {
+      db.close
+    }
+  }
+  
   ////////////////////////////////////////////////////////////////////////
   //execute write
   ////////////////////////////////////////////////////////////////////////

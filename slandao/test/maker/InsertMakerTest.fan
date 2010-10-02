@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-class InsertMakerTest:Test
+internal class InsertMakerTest:Test
 {
   InsertMaker maker:=InsertMaker()
   

@@ -10,7 +10,7 @@
 **
 **
 **
-class CacheTest:TestBase
+internal class CacheTest:TestBase
 {
   Void test(){
     execute|->|{

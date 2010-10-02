@@ -8,7 +8,7 @@
 **
 ** MyWebUtilTest
 **
-class WebUtilTest:Test
+internal class WebUtilTest:Test
 {
   Void m4test(Int i,Str s){}
 
