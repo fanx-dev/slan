@@ -75,7 +75,6 @@ const class TemplateCompiler
          using slanweb
          class HtmlTemplet : SlanWeblet{
           Void dump(|->|? lay){
-            stash:=req.stash
             out:=res.out
             $all.toStr
           }}"
@@ -98,7 +97,7 @@ const class TemplateCompiler
           s := StrBuf()
           s.add(line)
           r:=s.remove(i).toStr
-          all.add(gap+Str<|out.printLine("""|>+r+Str<|""")|>)
+          all.add(gap+Str<|out.printLine(""" |>+r+Str<| """)|>)
           return
         }
         //it's fantom code
@@ -108,7 +107,7 @@ const class TemplateCompiler
             s.remove(i).toStr)
         return
       }else{//it's html code
-        all.add(gap+Str<|out.printLine("""|>+line+Str<|""")|>)
+        all.add(gap+Str<|out.printLine(""" |>+line+Str<| """)|>)
         return
       }
     }

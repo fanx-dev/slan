@@ -4,7 +4,7 @@
 // History:
 //   2010-6-27 yangjiandong Creation
 //
-using slanwebDemo
+using slanBlogView
 
 class startup
 {

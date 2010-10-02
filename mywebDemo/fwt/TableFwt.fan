@@ -16,7 +16,7 @@ class Cookies : Window
   new make() : super(null, null)
   {
     table = Table {
-      model = CookieModel([[,]])
+      model = ListModel([[,]])
     }
     content = InsetPane(24)
     {
@@ -25,7 +25,7 @@ class Cookies : Window
         top = InsetPane(0,0,12,0) {
           GridPane {
             Button {
-              text = "Add Cookie"
+              text = "Refrush"
               onAction.add { addCookie }
             },
           },
@@ -66,7 +66,7 @@ class Cookies : Window
            c:=res.content.in.readObj
            //Win.cur.alert(c)
            
-           table.model=CookieModel(c)
+           table.model=ListModel(c)
            table.refreshAll
          }
        }
@@ -82,7 +82,7 @@ class Cookies : Window
   Table table
 }
 
-class CookieModel : TableModel
+class ListModel : TableModel
 {
   List[] list
   

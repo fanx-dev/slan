@@ -15,7 +15,7 @@ class Build : build::BuildPod
         "wisp 1.0",
         "util 1.0",
         "concurrent 1.0",
-        "slanweb 1.0",
+        "slanweb 1.0"
     ]
     resDirs = [`public/`,`view/`]
   }

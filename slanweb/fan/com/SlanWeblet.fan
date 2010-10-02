@@ -12,6 +12,7 @@ using web
 abstract class SlanWeblet:Weblet
 {
   Void writeContentType(){
+    req.session
     res.headers["Content-Type"] = "text/html; charset=utf-8"
   }
 
@@ -31,5 +32,9 @@ abstract class SlanWeblet:Weblet
     file :=Config.getUri(fwt).get
     writeContentType
     JsCompiler.render(res.out,file,[:])
+  }
+  
+  Str:Obj? s(){
+    req.stash
   }
 }

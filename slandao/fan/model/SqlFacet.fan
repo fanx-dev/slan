@@ -7,7 +7,7 @@
 //
 facet class Id
 {
-  const Bool autoGenerate
+  const Bool autoGenerate:=false
 }
 
 facet class Colu

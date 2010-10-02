@@ -1,0 +1,10 @@
+#render(`view/main.html`)|->|{
+
+<p>user list :</p>
+	#slanBlog::User[] list:=s["userList"]
+	$list.size
+	#list.each{
+		$it.id,$it.password<br/>
+	#}
+	
+#}

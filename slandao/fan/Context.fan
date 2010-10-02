@@ -14,7 +14,7 @@ const class Context
 {
   const SqlService db
   const Type:Table tables
-  const Executor executor:=Executor()
+  private const Executor executor:=Executor()
   
   new make(SqlService db,Type:Table tables){
     this.db=db
@@ -40,7 +40,23 @@ const class Context
     return tables
   }
   
-  Void usingConn(|This| f){
+  Obj? ret(|Context->Obj?| f){
+    try
+    {
+      db.open
+      return f(this)
+    }
+    catch (Err e)
+    {
+      throw e
+    }
+    finally
+    {
+      db.close
+    }
+  }
+  
+  Void use(|This| f){
     try
     {
       db.open
@@ -184,6 +200,22 @@ const class Context
   Bool tableExists(Type type){
     table:=getTable(type)
     return db.tableExists(table.name)
+  }
+  
+  Void tryCreateAllTable(){
+    tables.vals.each|Table t|{
+      if(!db.tableExists(t.name)){
+        executor.createTable(t,db)
+      }
+    }
+  }
+  
+  Void dropAllTable(){
+    tables.vals.each|Table t|{
+      if(db.tableExists(t.name)){
+        executor.dropTable(t,db)
+      }
+    }
   }
   
   ////////////////////////////////////////////////////////////////////////

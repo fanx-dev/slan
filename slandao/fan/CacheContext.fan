@@ -14,9 +14,9 @@ using concurrent
 **
 const class CacheContext:Context
 {
-  private const Cache cache:=Cache()
+  const Cache cache:=Cache()
   private const Log log:=Pod.of(this).log
-  private const Cache? queryCache
+  const Cache? queryCache
   
   new make(SqlService db,Type:Table tables,Bool queryCacheable:=true):super(db,tables){
     if(queryCacheable){
