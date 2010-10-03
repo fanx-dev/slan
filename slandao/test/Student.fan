@@ -26,7 +26,7 @@ internal class Student:Record
   
   Weekday? loveWeek
   
-  @Transient override Context ct:=TestContext.c
+  @Transient override Context c:=TestContext.c
 }
 **************************************************************************
 ** for test

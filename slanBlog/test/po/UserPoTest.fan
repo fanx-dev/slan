@@ -10,12 +10,12 @@
 **
 **
 **
-class UserPoTest:Test
+class UserPoTest:Test,MyContext
 {
   Void test(){
-    MyContext.c.use{
-      MyContext.newTable(User#)
-      o:=User{
+    Connection.cur.clearTables
+    c.use{
+      o:=UserPo{
         id="chunquedong"
         password="123"
         name="Jed"
@@ -24,7 +24,7 @@ class UserPoTest:Test
         role=Role.normal
       }.insert
       
-      User me:=User{id="chunquedong"}.one
+      UserPo me:=UserPo{id="chunquedong"}.one
       
       verifyEq(me.name,"Jed")
     }

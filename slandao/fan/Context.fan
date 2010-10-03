@@ -32,7 +32,7 @@ const class Context
   static Type:Table createTables(Type:Table tables,Pod pod,
                               SlanDialect dialect:=SlanDialect()){
     pod.types.each|Type t|{
-      if(t.fits(Record#) && t!=Record#){
+      if(t.fits(Record#) && !t.hasFacet(Ignore#)){
         table:=Table.createFromType(t,dialect)
         tables[t]=table
       }

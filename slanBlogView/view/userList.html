@@ -1,10 +1,11 @@
+#s["title"]="userList"
 #render(`view/main.html`)|->|{
 
-<p>user list :</p>
 	#slanBlog::User[] list:=s["userList"]
-	$list.size
+	user list($list.size)<br/>
+
 	#list.each{
-		$it.id,$it.password<br/>
+		<a href='/action/UserRes/$it.id'>$it.id</a><br/>
 	#}
 	
 #}

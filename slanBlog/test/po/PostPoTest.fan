@@ -9,14 +9,14 @@
 **
 **
 **
-class PostPoTest:Test
+class PostPoTest:Test,MyContext
 {
   Void test(){
-    MyContext.c.use{
-      MyContext.newTable(Post#)
-      p:=Post{author="1";dt=DateTime.now;text="hello";point=0}.insert
+    Connection.cur.clearTables
+    c.use{
+      p:=PostPo{author="1";dt=DateTime.now;text="hello";point=0}.insert
       
-      list:=Post{author="1"}.select
+      list:=PostPo{author="1"}.select
       
       verifyEq(list.size,1)
     }

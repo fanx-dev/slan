@@ -1,3 +1,20 @@
+#s["title"]=s["curUser"]
 #render(`view/main.html`)|->|{
-*************home**************
+
+	<h1>This is ${s["curUser"]}'s home'!</h1>
+	
+	
+	#Obj[] list:=s["postList"]
+	#list.each{
+		#s["post"]=it
+		#render(`view/postTag.html`)
+	#}
+
+	#if(s["curUser"]==req.session["user"]){
+	<form name="post" method="post" action="/action/PostRes/create">
+		<textarea name="text"  rows=3 cols=50 ></textarea>
+		<br/>
+		<button type="submit">post</button>
+	</form>
+	#}
 #}

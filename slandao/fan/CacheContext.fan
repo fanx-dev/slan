@@ -24,6 +24,11 @@ const class CacheContext:Context
     }
   }
   
+  Void clearCache(){
+    getCache.clearAll
+    queryCache?.clearAll
+  }
+  
   ////////////////////////////////////////////////////////////////////////
   //cache method
   ////////////////////////////////////////////////////////////////////////
@@ -32,10 +37,6 @@ const class CacheContext:Context
   
   private Cache getCache(){
     return Actor.locals[tcache]?:cache
-  }
-  
-  private Bool usingQueryCache(){
-    return queryCache!=null && Actor.locals[tcache]==null//not in transcation
   }
   
   private Void set(Str key,Obj? value){ getCache[key]=value }
@@ -47,6 +48,18 @@ const class CacheContext:Context
     return getCache[key]
   }
   
+  private Bool containsKey(Str key){ getCache.containsKey(key) }
+  
+  Void removeCache(Str key){ getCache.remove(key)}
+  
+  ////////////////////////////////////////////////////////////////////////
+  //query cache
+  ////////////////////////////////////////////////////////////////////////
+  
+  private Bool usingQueryCache(){
+    return queryCache!=null && Actor.locals[tcache]==null//not in transcation
+  }
+  
   private Obj? queryGet(Str key){
     if(log.isDebug){
         log.debug("using queryCache:[$key]".replace("\n",""))
@@ -54,14 +67,17 @@ const class CacheContext:Context
     return queryCache[key]
   }
   
-  private Bool containsKey(Str key){ getCache.containsKey(key) }
-  
-  Void clearCache(){
-    getCache.clearAll
-    clearQueryCache
+  Void clearQueryCache(Type type){
+    if(queryCache==null)return
+    
+    name:=type.qname+","
+    queryCache.clearIf|Str key->Bool|{
+      key.startsWith(name)
+    }
+    if(log.isDebug){
+        log.debug("clear queryCache:[$name]")
+    }
   }
-  Void clearQueryCache(){ queryCache?.clearAll}
-  Void removeCache(Str key){ getCache.remove(key)}
   
   ////////////////////////////////////////////////////////////////////////
   //execute write
@@ -70,19 +86,26 @@ const class CacheContext:Context
   override Void insert(Obj obj){
     super.insert(obj)
     table:=getTable(obj.typeof)
-    set(table.name+getId(obj),obj)
+    set(objKey(obj),obj)
+    clearQueryCache(obj.typeof)
   }
   
   override Void update(Obj obj){
     super.update(obj)
     table:=getTable(obj.typeof)
-    set(table.name+getId(obj),obj)
+    set(objKey(obj),obj)
+    clearQueryCache(obj.typeof)
   }
   
   override Void delete(Obj obj){
     super.delete(obj)
     table:=getTable(obj.typeof)
-    set(table.name+getId(obj),null)
+    set(objKey(obj),null)
+    clearQueryCache(obj.typeof)
+  }
+  
+  private Str objKey(Obj obj){
+    obj.typeof.qname+","+getId(obj)
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -91,7 +114,7 @@ const class CacheContext:Context
   
   override Obj? findById(Type type,Obj id){
     table:=getTable(type)
-    key:=table.name+id
+    key:=type.qname+","+id
     if(this.containsKey(key)){
       return get(key)
     }
@@ -120,13 +143,14 @@ const class CacheContext:Context
   private Str getKey(Obj obj,Str orderby,Int start,Int num){
     sb:= StrBuf()
     sb.out.writeObj(obj)
-    return "selectId,$sb.toStr,$orderby,$start,$num"
+    type:=obj.typeof
+    return "$type.qname,selectId,$sb.toStr,$orderby,$start,$num"
   }
   
   override Obj[] getWhereIdList(Type type,Str where,Int start:=0,Int num:=20){
     if(!usingQueryCache)return super.getWhereIdList(type,where,start,num)
     
-    key:="selectWhere,$type.qname,$where,$start,$num"
+    key:="$type.qname,selectWhere,$where,$start,$num"
     if(queryCache.containsKey(key)){
       return queryGet(key)
     }
@@ -141,7 +165,8 @@ const class CacheContext:Context
     
     sb:= StrBuf()
     sb.out.writeObj(obj)
-    key:="count,$sb.toStr"
+    type:=obj.typeof
+    key:="$type.qname,count,$sb.toStr"
     
     if(queryCache.containsKey(key)){
       return queryGet(key)

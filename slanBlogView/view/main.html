@@ -1,22 +1,27 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>Welcome</title>
+    <title>${s["title"]}</title>
+    <link rel="stylesheet" type="text/css" href="/public/main.css">
   </head>
   <body>
-    <a href='/'>Home</a>
+    <a href='/'>Index</a>
     #if(req.session["user"]==null){
-    	<a href='/action/log'>log in</a>
+    	<a href='/action/Log'>Login</a>
     #}else{
-    	<a href='/action/log/logout'>log out</a>
+    	<a href='/action/UserRes/${req.session["user"]}'>${req.session["user"]}</a>
+    	<a href='/action/Log/logout'>Logout</a>
+    #}
+    <a href='/action/UserRes/i/allUsers?page=0'>UserList</a>
+    
+    #if(req.session["message"]!=null){
+    	<p class="message">${req.session["message"]} !</p>
+    	#req.session["message"]=null
     #}
     
-    #if(s["message"]!=null){
-    	<p>${s["message"]} !</p>
-    #}
     
-    <h1>Welcome ${req.session["user"]?->id} !</h1>
-    
-    #lay()
+    <p>
+    	#lay()
+    </p>
   </body>
 </html>

@@ -5,20 +5,18 @@
 // History:
 //   yangjiandong 2010-10-2 - Initial Contribution
 //
-
 using slandao
+
 **
 **
 **
 @Serializable
-class Post : Record
+class UserPo : MyRecord
 {
-  @Id{autoGenerate=true} 
-  Int? id
-  Str? author
-  DateTime? dt
-  Str? text
-  Int? point
-  
-  @Transient override Context ct:=MyContext.c
+  @Id Str? id
+  Str? password
+  Str? name
+  Str? email
+  Date? birthday
+  Role? role
 }

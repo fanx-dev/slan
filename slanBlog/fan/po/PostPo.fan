@@ -5,16 +5,18 @@
 // History:
 //   yangjiandong 2010-10-2 - Initial Contribution
 //
-using slanweb
-using slanBlog
 
+using slandao
 **
 **
 **
-class Index : SlanWeblet
+@Serializable
+class PostPo : MyRecord
 {
-  override Void onGet(){
-    writeContentType
-    render(`view/index.html`)
-  }
+  @Id{autoGenerate=true} 
+  Int? id
+  Str? author
+  DateTime? dt
+  Str? text
+  Int? point
 }

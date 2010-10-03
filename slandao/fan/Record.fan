@@ -8,42 +8,43 @@
 **
 ** super class for entity
 ** 
+@Ignore
 mixin Record
 {
-  abstract Context ct
+  abstract Context c()
   
   This insert(){
-    ct.insert(this)
+    c.insert(this)
     return this
   }
   
   This update(){
-    ct.update(this)
+    c.update(this)
     return this
   }
   
   Void delete(){
-    ct.delete(this)
+    c.delete(this)
   }
   
   Obj[] select(){
-    return ct.select(this)
+    return c.select(this)
   }
   
   Obj? one(){
-    return ct.one(this)
+    return c.one(this)
   }
   
   Bool exist(){
-    return ct.exist(this)
+    return c.exist(this)
   }
   
   Int count(){
-    return ct.count(this)
+    return c.count(this)
   }
   
   This save(){
-    ct.save(this)
+    c.save(this)
     return this
   }
 }

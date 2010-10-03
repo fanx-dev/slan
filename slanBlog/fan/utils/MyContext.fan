@@ -5,20 +5,12 @@
 // History:
 //   yangjiandong 2010-10-2 - Initial Contribution
 //
-using slandao
 
+using slandao
 **
 **
 **
-@Serializable
-class User : Record
+mixin MyContext
 {
-  @Id Str? id
-  Str? password
-  Str? name
-  Str? email
-  Date? birthday
-  Role? role
-  
-  @Transient override Context ct:=MyContext.c
+  protected static Context c(){Connection.cur.c}
 }

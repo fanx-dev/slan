@@ -39,10 +39,12 @@ const class Cache
       
       case "mergeCache":
         _mergeCache(arg[1],map)
-        return null
       
       case "getmap":
         return map
+      
+      case "clearIf":
+        _clearIf(map,arg[1])
       
       case "clearAll":
         return Actor.locals.remove(cachemap)
@@ -62,6 +64,7 @@ const class Cache
   [Str:CacheObj] getMap(){ actor.send(["getmap"]).get }
   
   Void clearAll(){ actor.send(["clearAll"])}
+  Void clearIf(|Str->Bool| f){actor.send(["clearIf",f].toImmutable)}
   
   Obj? get(Str key) { 
     CacheObj? obj:=_get(key)
@@ -88,6 +91,15 @@ const class Cache
         log.debug("commitCahe:[$key:$value]".replace("\n",""))
       }
     }
+  }
+  
+  private Void _clearIf(Str:CacheObj? map,|Str->Bool| f){
+    now := Duration.now
+    old := map.findAll |CacheObj s,Str key->Bool|
+    {
+      f(key)
+    }
+    old.each |CacheObj s| { map.remove(s.id) }
   }
   
   ////////////////////////////////////////////////////////////////////////

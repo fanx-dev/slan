@@ -83,7 +83,9 @@ const class Table
         }
       }
     }
-    
+    if(id==null){
+      throw NullErr("Record must have Id, add @Id facet for field")
+    }
     table:=Table{
       it.type=type
       columns=cs

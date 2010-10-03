@@ -15,3 +15,6 @@ facet class Colu
   const Str sqlType
   const Str? name
 }
+
+facet class Ignore{
+}
