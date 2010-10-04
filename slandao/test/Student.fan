@@ -11,7 +11,7 @@
 @Serializable
 internal class Student:Record
 {
-  @Id{autoGenerate=true} 
+  @Id{auto=true} 
   Int? sid
   
   Str? name
@@ -21,7 +21,7 @@ internal class Student:Record
   DateTime? dt
   @Transient Bool? large
   
-  @Colu{sqlType="text"}
+  @Colu{m=256}
   Str? description
   
   Weekday? loveWeek

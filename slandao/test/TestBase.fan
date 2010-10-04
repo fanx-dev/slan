@@ -42,4 +42,8 @@ internal class TestBase:Test
     c.createTable(type)
     c.clearCache
   }
+  
+  Void testConnetcion(){
+    execute|->|{echo("ok")}
+  }
 }

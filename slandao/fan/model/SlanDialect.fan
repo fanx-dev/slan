@@ -12,7 +12,7 @@
 **
 const class SlanDialect
 {
-  virtual Column createColumn(Field field,Str? name:=null,Str? sqlType:=null){
-    return Column(field,name,sqlType)
+  virtual Column createColumn(Field field,Str? name:=null,Int? m:=null,Int? d:=null){
+    return Column(field,name,m,d)
   }
 }

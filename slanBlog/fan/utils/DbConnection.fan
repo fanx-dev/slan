@@ -10,9 +10,9 @@ using slandao
 **
 **
 **
-const class Connection
+const class DbConnection
 {
-  const static Connection cur:=Connection()
+  const static DbConnection cur:=DbConnection()
   private new make(){}
   
   const CacheContext c:=get
@@ -24,7 +24,7 @@ const class Connection
       pod.config("test.username"),
       pod.config("test.password"),
       Type.find(pod.config("test.dialect")).make)
-    tables:=CacheContext.createTables([:],MyContext#.pod)
+    tables:=CacheContext.createTables([:],DbConnection#.pod)
     ct:=CacheContext(db,tables)
     
     //testConnect

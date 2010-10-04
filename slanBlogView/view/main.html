@@ -12,7 +12,7 @@
     	<a href='/action/UserRes/${req.session["user"]}'>${req.session["user"]}</a>
     	<a href='/action/Log/logout'>Logout</a>
     #}
-    <a href='/action/UserRes/i/allUsers?page=0'>UserList</a>
+    <a href='/action/User/i/allUsers?page=0'>UserList</a>
     
     #if(req.session["message"]!=null){
     	<p class="message">${req.session["message"]} !</p>

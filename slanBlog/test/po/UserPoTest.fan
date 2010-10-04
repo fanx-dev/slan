@@ -13,7 +13,7 @@
 class UserPoTest:Test,MyContext
 {
   Void test(){
-    Connection.cur.clearTables
+    DbConnection.cur.clearTables
     c.use{
       o:=UserPo{
         id="chunquedong"

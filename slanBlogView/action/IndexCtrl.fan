@@ -11,7 +11,7 @@ using slanBlog
 **
 **
 **
-class Index : SlanWeblet
+class IndexCtrl : SlanWeblet
 {
   override Void onGet(){
     writeContentType

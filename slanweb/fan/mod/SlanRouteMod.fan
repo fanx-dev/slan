@@ -33,14 +33,24 @@ const class SlanRouteMod : WebMod
   {
     // get the next name in the path
     name := req.modRel.path.first
-
-    // lookup route, if not found this is 404
-    route := routes[name ?: defaultMod]
-    if (route == null) { res.sendErr(404); return }
-
-    // dive into sub-WebMode
+    
+    // lookup route
+    WebMod? route
+    if(name!=null){
+      route=routes[name]
+      if(route!=null){
+        //all thing ok
+        req.modBase = req.modBase + `$name/`
+        req.mod = route
+        route.onService
+        return
+      }
+    }
+    
+    //try defaultMod
+    route=routes[defaultMod]
+    if (route == null){ res.sendErr(404); return }
     req.mod = route
-    if (name != null) req.modBase = req.modBase + `$name/`
     route.onService
   }
 
@@ -53,6 +63,7 @@ const class SlanRouteMod : WebMod
       doService
     }catch(Err err){
       if(req.absUri.host=="localhost" || req.uri.relToAuth==errorPage){
+        //dump errInfo
         if(res.isCommitted){
           res.out.print("ERROR: $req.uri<br/>")
           res.out.w(err.traceToStr.replace("\n","<br/>"))

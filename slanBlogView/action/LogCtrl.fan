@@ -11,8 +11,10 @@ using slanBlog
 **
 **
 **
-class Log : SlanWeblet
+class LogCtrl : SlanWeblet
 {
+  LogService logSer:=ServiceFactory.cur.logService
+  
   override Void onGet(){
     writeContentType
     render(`view/login.html`)
@@ -20,11 +22,11 @@ class Log : SlanWeblet
   
   @WebMethod{type="POST"}
   Void login(Str username,Str password){
-    u:=User.login(username,password)
+    u:=logSer.login(username,password)
     if(u!=null){
       req.session["user"]=u.id
       req.session["message"]="welcome back $u.id"
-      res.redirect(`/action/UserRes/$u.id`)
+      res.redirect(`/action/User/$u.id`)
     }else{
       req.session["message"]="password or username error"
       onGet
@@ -46,11 +48,11 @@ class Log : SlanWeblet
   
   @WebMethod{type="POST"}
   Void logup(Str username,Str password,Str email){
-    u:=User.logup(username,password,email)
+    u:=logSer.logup(username,password,email)
     if(u!=null){
       req.session["user"]=u.id
       req.session["message"]="logup successfully"
-      res.redirect(`/action/UserRes/$u.id`)
+      res.redirect(`/action/User/$u.id`)
     }else{
       req.session["message"]="userName is conflict"
       logupView

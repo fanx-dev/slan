@@ -11,8 +11,11 @@ using slanweb
 **
 **
 **
-class UserRes : SlanWeblet
+class UserCtrl : SlanWeblet
 {
+  UserService userSer:=ServiceFactory.cur.userService
+  PostService postSer:=ServiceFactory.cur.postService
+  
   Str id
   new make(Str id){
     this.id=id
@@ -20,7 +23,7 @@ class UserRes : SlanWeblet
   
   override Void onGet(){
     req.stash["curUser"]=id
-    req.stash["postList"]=User.get(id).postList
+    req.stash["postList"]=postSer.listByUser(id)
     
     writeContentType
     render(`view/home.html`)
@@ -28,7 +31,7 @@ class UserRes : SlanWeblet
   
   @WebMethod
   Void allUsers(Int page){
-    req.stash["userList"]=User.list(page)
+    req.stash["userList"]=userSer.list(page)
     
     writeContentType
     render(`view/userList.html`)

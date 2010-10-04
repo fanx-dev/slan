@@ -13,7 +13,7 @@ using slandao
 @Serializable
 class CommentPo: MyRecord
 {
-  @Id{autoGenerate=true} 
+  @Id{auto=true} 
   Int? id
   Int? owner
   Str? author

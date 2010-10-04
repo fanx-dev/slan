@@ -27,6 +27,7 @@ class Main
             [
               "action":MyActionMod(`action/`),
               "public":StaticFileMod(`public/`),
+              "favicon.ico":StaticFileMod(`public/favicon.ico`),
               "pod":PodJsMod()
             ]
           }
@@ -40,8 +41,20 @@ class Main
 const class MyActionMod:ActionMod{
   new make(Uri dir):super(dir){}
   
-  protected override Bool onInvoke(Method method){
+  protected override Bool beforeInvoke(Type type,Method method){
     if(method.name=="welcome")return false
     return true
+  }
+  
+  protected override Str[] convertPath(Str[] inPath){
+    if(inPath.size==0){
+      return ["IndexCtrl"]
+    }
+    Str[] path:=inPath.dup
+    path[0]=(path[0]+"Ctrl").capitalize
+    return path
+  }
+  
+  protected override Void afterInvoke(Type type,Method method){
   }
 }

@@ -5,34 +5,38 @@
 // History:
 //   yangjiandong 2010-10-3 - Initial Contribution
 //
-
 using slanweb
 using slanBlog
 **
 **
 **
-class PostRes:SlanWeblet
+class CommentCtrl:SlanWeblet
 {
+  CommentService commentSer:=ServiceFactory.cur.commentService
+  
   @WebMethod{type="POST"}
-  Void create(Str text){
+  Void create(Int postId,Str text){
     u:=req.session["user"]
     if(u==null){
+      req.session["message"]="please login"
       res.redirect(`/action/Log`)
       return
     }
-    User.get(u).createPost(text)
-    res.redirect(`/action/UserRes/$u`)
+    commentSer.create(postId,u,text)
+    
+    res.redirect(`/action/User/$u`)
   }
   
   @WebMethod
   Void delete(Int id){
     u:=req.session["user"]
     if(u==null){
+      req.session["message"]="please login"
       res.redirect(`/action/Log`)
       return
     }
-    Post.get(id).delete(User.get(u))
+    commentSer.delete(u,id)
     
-    res.redirect(`/action/UserRes/$u`)
+    res.redirect(`/action/User/$u`)
   }
 }

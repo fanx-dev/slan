@@ -13,7 +13,7 @@ using slandao
 @Serializable
 class PostPo : MyRecord
 {
-  @Id{autoGenerate=true} 
+  @Id{auto=true} 
   Int? id
   Str? author
   DateTime? dt

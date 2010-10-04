@@ -9,12 +9,16 @@ const class Column
 {
   const Field field
   const Str name
-  private const Str? sqlType
   
-  new make(Field field,Str? name:=null,Str? sqlType:=null){
+  //ext parameter
+  const Int? m
+  const Int? d
+  
+  new make(Field field,Str? name:=null,Int? m:=null,Int? d:=null){
     this.field=field
     this.name=name?:field.name
-    this.sqlType=sqlType
+    this.m=m
+    this.d=d
   }
   
 //  virtual Str getFieldStr(Obj obj){
@@ -29,19 +33,33 @@ const class Column
 //  }
   
   virtual Str getSqlType(Bool autoGenerate:=false){
-    if(sqlType!=null)return sqlType
     
     qname:=field.type.qname
     Str type:=""
     if(qname==Int#.qname)         type= "int"
-    else if(qname==Str#.qname)    type= "varchar(255)"
+    
+    else if(qname==Str#.qname){
+      if(m==null){
+        type= "varchar(255)"
+      }else{
+        if(m<=255){
+          type= "varchar($m)"
+        }else{
+          type= "text"
+        }
+      }
+    }
+    
     else if(qname==Float#.qname)  type= "double"
     else if(qname==Bool#.qname)   type= "bit"
     else if(qname==DateTime#.qname) type= "datetime"
     else if(qname==Date#.qname)   type= "date"
     else if(qname==Time#.qname)   type= "time"
     else if(field.type.isEnum )   type= "int"
-    else                          type= field.type.name
+    else{
+      throw UnknownTypeErr("unknown sql type $qname,
+                            please using @Transient for Ignore")
+    }
     
     if(autoGenerate){
       type+=" auto_increment"
@@ -59,7 +77,6 @@ const class Column
   virtual Void setValue(Obj obj,Obj? value){
     if(field.type.isEnum && value!=null){
       Enum[] vals:=field.type.field("vals").get
-      echo("$vals")
       enu:=vals[value]
       field.set(obj,enu)
     }else{

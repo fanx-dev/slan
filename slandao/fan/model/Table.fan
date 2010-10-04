@@ -73,13 +73,14 @@ const class Table
       if(!f.hasFacet(Transient#) && !f.isStatic){
         if(f.hasFacet(Colu#)){
           Colu c:=f.facet(Colu#)
-          cs.add(dialect.createColumn(f,c.name,c.sqlType))
+          cs.add(dialect.createColumn(f,c.name,c.m,c.d))
         }else{
           cs.add(dialect.createColumn(f))
         }
         if(f.hasFacet(Id#)){
           id=cs.size-1
-          generateId=f.facet(Id#)->autoGenerate
+          Id idFacet:=f.facet(Id#)
+          generateId=idFacet.auto
         }
       }
     }

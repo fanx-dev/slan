@@ -12,5 +12,5 @@ using slandao
 **
 mixin MyContext
 {
-  protected static Context c(){Connection.cur.c}
+  protected static Context c(){DbConnection.cur.c}
 }

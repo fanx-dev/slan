@@ -12,7 +12,7 @@
 class PostPoTest:Test,MyContext
 {
   Void test(){
-    Connection.cur.clearTables
+    DbConnection.cur.clearTables
     c.use{
       p:=PostPo{author="1";dt=DateTime.now;text="hello";point=0}.insert
       

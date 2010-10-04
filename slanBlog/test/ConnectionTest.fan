@@ -10,8 +10,9 @@
 **
 **
 **
-class UserTest:Test
+class ConnectionTest:Test
 {
   Void test(){
+    DbConnection.cur.c.use{}
   }
 }

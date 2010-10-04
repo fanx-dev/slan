@@ -5,16 +5,27 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
+
+**
+** prime key 
+** 
 facet class Id
 {
-  const Bool autoGenerate:=false
+  const Bool auto:=false
 }
 
+**
+** extend parameter
+** 
 facet class Colu
 {
-  const Str sqlType
+  const Int? m
+  const Int? d
   const Str? name
 }
 
+**
+** Ignore the type in Context#createTables
+** 
 facet class Ignore{
 }
