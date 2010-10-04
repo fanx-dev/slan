@@ -14,9 +14,9 @@ class PostPoTest:Test,MyContext
   Void test(){
     DbConnection.cur.clearTables
     c.use{
-      p:=PostPo{author="1";dt=DateTime.now;text="hello";point=0}.insert
+      p:=Post{author="chunquedong";dt=DateTime.now;text="hello";point=0}.insert
       
-      list:=PostPo{author="1"}.select
+      list:=Post{author="chunquedong"}.select
       
       verifyEq(list.size,1)
     }

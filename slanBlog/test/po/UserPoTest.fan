@@ -15,16 +15,16 @@ class UserPoTest:Test,MyContext
   Void test(){
     DbConnection.cur.clearTables
     c.use{
-      o:=UserPo{
+      o:=User{
         id="chunquedong"
         password="123"
         name="Jed"
         email="chunquedong@163.com"
         birthday=Date.fromStr("1987-10-21")
-        role=Role.normal
+        role=Role.superAdmin
       }.insert
       
-      UserPo me:=UserPo{id="chunquedong"}.one
+      User me:=User{id="chunquedong"}.one
       
       verifyEq(me.name,"Jed")
     }

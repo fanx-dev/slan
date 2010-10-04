@@ -12,7 +12,7 @@ using slanBlog
 **
 class CommentCtrl:SlanWeblet
 {
-  CommentService commentSer:=ServiceFactory.cur.commentService
+  CommentService commentSer:=ServiceFactory.commentService
   
   @WebMethod{type="POST"}
   Void create(Int postId,Str text){

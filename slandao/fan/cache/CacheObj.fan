@@ -7,7 +7,7 @@
 //
 
 **
-**
+** wrapper the object for cache
 **
 @Serializable
 class CacheObj

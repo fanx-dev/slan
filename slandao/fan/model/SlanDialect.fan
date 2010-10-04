@@ -8,7 +8,7 @@
 
 
 **
-**
+** decide whice type column to create.
 **
 const class SlanDialect
 {

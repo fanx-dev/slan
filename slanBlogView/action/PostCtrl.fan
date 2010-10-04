@@ -13,7 +13,7 @@ using slanBlog
 **
 class PostCtrl:SlanWeblet
 {
-  PostService postSer:=ServiceFactory.cur.postService
+  PostService postSer:=ServiceFactory.postService
   
   @WebMethod{type="POST"}
   Void create(Str text){

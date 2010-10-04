@@ -12,36 +12,28 @@
 **
 mixin UserDao : MyContext
 {
-  static User? fromPo(UserPo? p){
-    if(p==null)return null
-    return User{id=p.id;role=p.role}
-  }
-  
   static User? login(Str id,Str password){
-    up:= UserPo{it.id=id;it.password=password}.one
-    return fromPo(up)
+    User{it.id=id;it.password=password}.one
   }
   
   static User? logup(Str id,Str password,Str email){
-    UserPo? p
-    if(!UserPo{it.id=id}.exist){
-      p=UserPo{
+    if(!User{it.id=id}.exist){
+      p:=User{
         it.id=id
         it.password=password
         it.email=email
         it.role=Role.normal
       }.insert
+      return p
     }
-    return fromPo(p)
+    return null
   }
   
   static User[] list(Int page){
-    UserPo[] ps:= UserPo{}.select
-    return ps.map{fromPo(it)}
+    User{}.select
   }
   
   static User get(Str id){
-    p:= c.findById(UserPo#,id)
-    return fromPo(p)
+    c.findById(User#,id)
   }
 }

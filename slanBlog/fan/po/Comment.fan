@@ -11,7 +11,7 @@ using slandao
 **
 **
 @Serializable
-class CommentPo: MyRecord
+class Comment: MyRecord,CommentDao
 {
   @Id{auto=true} 
   Int? id

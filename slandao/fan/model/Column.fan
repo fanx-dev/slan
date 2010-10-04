@@ -5,6 +5,11 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
+**
+** as a database column.
+** override getSqlType for dialect,
+** this is just for mysql
+** 
 const class Column
 {
   const Field field
@@ -38,6 +43,7 @@ const class Column
     Str type:=""
     if(qname==Int#.qname)         type= "int"
     
+    //string type
     else if(qname==Str#.qname){
       if(m==null){
         type= "varchar(255)"

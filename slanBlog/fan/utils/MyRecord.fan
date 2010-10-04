@@ -13,5 +13,5 @@ using slandao
 @Ignore
 mixin MyRecord:Record
 {
-  override Context c(){DbConnection.cur.c}
+  override Context ct(){DbConnection.cur.c}
 }

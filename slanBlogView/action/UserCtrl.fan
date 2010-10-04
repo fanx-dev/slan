@@ -13,8 +13,8 @@ using slanweb
 **
 class UserCtrl : SlanWeblet
 {
-  UserService userSer:=ServiceFactory.cur.userService
-  PostService postSer:=ServiceFactory.cur.postService
+  UserService userSer:=ServiceFactory.userService
+  PostService postSer:=ServiceFactory.postService
   
   Str id
   new make(Str id){

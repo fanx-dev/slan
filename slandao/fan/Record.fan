@@ -11,40 +11,40 @@
 @Ignore
 mixin Record
 {
-  abstract Context c()
+  abstract Context ct()
   
   This insert(){
-    c.insert(this)
+    ct.insert(this)
     return this
   }
   
   This update(){
-    c.update(this)
+    ct.update(this)
     return this
   }
   
   Void delete(){
-    c.delete(this)
+    ct.delete(this)
   }
   
   Obj[] select(){
-    return c.select(this)
+    ct.select(this)
   }
   
   Obj? one(){
-    return c.one(this)
+    ct.one(this)
   }
   
   Bool exist(){
-    return c.exist(this)
+    ct.exist(this)
   }
   
   Int count(){
-    return c.count(this)
+    ct.count(this)
   }
   
   This save(){
-    c.save(this)
+    ct.save(this)
     return this
   }
 }

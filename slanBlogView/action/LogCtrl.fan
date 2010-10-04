@@ -13,7 +13,7 @@ using slanBlog
 **
 class LogCtrl : SlanWeblet
 {
-  LogService logSer:=ServiceFactory.cur.logService
+  LogService logSer:=ServiceFactory.logService
   
   override Void onGet(){
     writeContentType

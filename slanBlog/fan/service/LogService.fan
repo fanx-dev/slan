@@ -14,13 +14,13 @@ const class LogService : MyContext
 {
   User? login(Str id,Str password){
     c.ret{
-    User.login(id,password)
+      User.login(id,password)
     }
   }
   
   User? logup(Str id,Str password,Str email){
     c.ret{
-    User.logup(id,password,email)
+      User.logup(id,password,email)
     }
   }
 }

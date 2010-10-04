@@ -54,7 +54,4 @@ const class MyActionMod:ActionMod{
     path[0]=(path[0]+"Ctrl").capitalize
     return path
   }
-  
-  protected override Void afterInvoke(Type type,Method method){
-  }
 }

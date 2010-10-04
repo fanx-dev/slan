@@ -12,27 +12,15 @@
 **
 mixin CommentDao : MyContext
 {
-  static Comment? fromPo(CommentPo? p){
-    if(p==null)return null
-    return Comment{id=p.id;text=p.text;owner=p.owner;author=p.author}
-  }
-  
   static Comment create(Int postId,Str author,Str text){
-    p:=CommentPo{it.owner=postId;it.author=author;it.text=text;dt=DateTime.now}.insert
-    return fromPo(p)
+    Comment{it.owner=postId;it.author=author;it.text=text;dt=DateTime.now}.insert
   }
   
   static Comment[] list(Int postId){
-    CommentPo[] ps:= CommentPo{it.owner=postId}.select
-    return ps.map{fromPo(it)}
+    Comment{it.owner=postId}.select
   }
   
   static Comment get(Int id){
-    p:= c.findById(CommentPo#,id)
-    return fromPo(p)
-  }
-  
-  static Void delete(Int id){
-    CommentPo{it.id=id}.delete
+    c.findById(Comment#,id)
   }
 }

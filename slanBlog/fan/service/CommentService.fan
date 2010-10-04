@@ -14,19 +14,19 @@ const class CommentService : MyContext
 {
   Comment create(Int postId,Str author,Str text){
     c.ret{
-    Comment.create(postId,author,text)
+      Comment.create(postId,author,text)
     }
   }
   
   Comment[] list(Int postId){
     c.ret{
-    Comment.list(postId)
+      Comment.list(postId)
     }
   }
   
   Void delete(Str userId,Int id){
     c.ret{
-    User.get(userId).deleteComment(id)
+      User.get(userId).deleteComment(id)
     }
   }
 }

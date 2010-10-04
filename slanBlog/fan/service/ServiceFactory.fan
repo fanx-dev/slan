@@ -12,11 +12,8 @@
 **
 const class ServiceFactory
 {
-  static const ServiceFactory cur:=ServiceFactory()
-  private new make(){}
-  
-  const PostService postService:=PostService()
-  const LogService logService:=LogService()
-  const UserService userService:=UserService()
-  const CommentService commentService:=CommentService()
+  const static PostService postService:=PostService()
+  const static LogService logService:=LogService()
+  const static UserService userService:=UserService()
+  const static CommentService commentService:=CommentService()
 }

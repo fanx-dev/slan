@@ -11,7 +11,7 @@ using slandao
 **
 **
 @Serializable
-class PostPo : MyRecord
+class Post : MyRecord,PostDao
 {
   @Id{auto=true} 
   Int? id
@@ -19,4 +19,13 @@ class PostPo : MyRecord
   DateTime? dt
   Str? text
   Int? point
+  
+  Comment[] commentList(){
+    CommentDao.list(id)
+  }
+  
+  Void deleteMe(){
+    delete()
+    commentList.each{it.delete}
+  }
 }

@@ -1,5 +1,7 @@
 using concurrent
-
+**
+** cache object and intime clearup
+** 
 const class Cache
 {
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}

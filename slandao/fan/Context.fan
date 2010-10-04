@@ -28,7 +28,9 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   //tools
   ////////////////////////////////////////////////////////////////////////
-  
+  **
+  ** find the persistence object,@Ignore facet will ignore the type
+  ** 
   static Type:Table createTables(Type:Table tables,Pod pod,
                               SlanDialect dialect:=SlanDialect()){
     pod.types.each|Type t|{
@@ -39,7 +41,9 @@ const class Context
     }
     return tables
   }
-  
+  **
+  ** using add get result
+  ** 
   Obj? ret(|Context->Obj?| f){
     try
     {
@@ -55,7 +59,9 @@ const class Context
       db.close
     }
   }
-  
+  **
+  ** using connection finally will close
+  ** 
   Void use(|This| f){
     try
     {
@@ -78,17 +84,23 @@ const class Context
 
   virtual Void insert(Obj obj){
     table:=getTable(obj.typeof)
-    executor.insert(table,db,obj)
+    use{
+    this.executor.insert(table,this.db,obj)
+    }
   }
   
   virtual Void update(Obj obj){
     table:=getTable(obj.typeof)
-    executor.update(table,db,obj)
+    use{
+    this.executor.update(table,this.db,obj)
+    }
   }
   
   virtual Void delete(Obj obj){
     table:=getTable(obj.typeof)
-    executor.delete(table,db,obj)
+    use{
+    this.executor.delete(table,this.db,obj)
+    }
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -109,7 +121,9 @@ const class Context
   
   protected virtual Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
     table:=getTable(obj.typeof)
-    return executor.selectId(table,db,obj,orderby,start,num)
+    return ret{
+      this.executor.selectId(table,this.db,obj,orderby,start,num)
+    }
   }
   
   private Obj[] idToObj(Type type,Obj[] ids){
@@ -134,7 +148,9 @@ const class Context
   
   protected virtual Obj[] getWhereIdList(Type type,Str where,Int start,Int num){
     table:=getTable(type)
-    return executor.selectWhere(table,db,where,start,num)
+    return ret{
+      this.executor.selectWhere(table,this.db,where,start,num)
+    }
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -143,7 +159,9 @@ const class Context
   
   virtual Obj? findById(Type type,Obj id){
     table:=getTable(type)
-    return executor.findById(table,db,id)
+    return ret{
+      this.executor.findById(table,this.db,id)
+    }
   }
   
   Obj? getId(Obj obj){
@@ -157,13 +175,15 @@ const class Context
   
   virtual Int count(Obj obj){
     table:=getTable(obj.typeof)
-    return executor.count(table,db,obj)
+    return ret{
+      this.executor.count(table,this.db,obj)
+    }
   }
   
   **noCache
   Bool exist(Obj obj){
     table:=getTable(obj.typeof)
-    n:= executor.count(table,db,obj)
+    n:= ret{this.executor.count(table,this.db,obj)}
     return n>0
   }
   
@@ -189,31 +209,41 @@ const class Context
   
   Void createTable(Type type){
     table:=getTable(type)
-    executor.createTable(table,db)
+    use{
+      this.executor.createTable(table,this.db)
+    }
   }
   
   Void dropTable(Type type){
     table:=getTable(type)
-    executor.dropTable(table,db)
+    use{
+      this.executor.dropTable(table,this.db)
+    }
   }
   
   Bool tableExists(Type type){
     table:=getTable(type)
-    return db.tableExists(table.name)
+    return ret{
+      this.db.tableExists(table.name)
+    }
   }
   
   Void tryCreateAllTable(){
-    tables.vals.each|Table t|{
-      if(!db.tableExists(t.name)){
-        executor.createTable(t,db)
+    use{
+      this.tables.vals.each|Table t|{
+        if(!this.db.tableExists(t.name)){
+          this.executor.createTable(t,this.db)
+        }
       }
     }
   }
   
   Void dropAllTable(){
-    tables.vals.each|Table t|{
-      if(db.tableExists(t.name)){
-        executor.dropTable(t,db)
+    use{
+      this.tables.vals.each|Table t|{
+        if(this.db.tableExists(t.name)){
+          this.executor.dropTable(t,this.db)
+        }
       }
     }
   }
@@ -223,18 +253,20 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   
   virtual Void trans(|This| f){
-    oauto:=db.autoCommit
-    try{
-      db.autoCommit=false
-      
-      f(this)
-      db.commit
-      
-    }catch(Err e){
-      db.rollback
-      throw e
-    }finally{
-      db.autoCommit=oauto
+    use{
+      oauto:=this.db.autoCommit
+      try{
+        this.db.autoCommit=false
+        
+        f(this)
+        this.db.commit
+        
+      }catch(Err e){
+        this.db.rollback
+        throw e
+      }finally{
+        this.db.autoCommit=oauto
+      }
     }
   }
 }

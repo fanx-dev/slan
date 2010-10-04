@@ -5,36 +5,40 @@
 // History:
 //   yangjiandong 2010-10-2 - Initial Contribution
 //
-
 using slandao
+
 **
 **
 **
-class User : UserDao
+@Serializable
+class User : MyRecord,UserDao
 {
-  Str id
-  Role role
-  new make(|This| f){ f(this) }
+  @Id Str? id
+  Str? password
+  Str? name
+  Str? email
+  Date? birthday
+  Role? role
   
   Bool deleteComment(Int commentId){
-    c:= Comment.get(commentId)
+    c:= CommentDao.get(commentId)
     
     //I'm admin
     if(role==Role.admin){
-      c.deleteMe()
+      c.delete()
       return true
     }
     
     //I'm author
     if(c.author==id){
-      c.deleteMe()
+      c.delete()
       return true
     }
     
     //my post
-    p:=Post.get(c.owner)
+    p:=PostDao.get(c.owner)
     if(p.author==id){
-      c.deleteMe()
+      c.delete()
       return true
     }
     

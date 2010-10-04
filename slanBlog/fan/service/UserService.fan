@@ -12,11 +12,9 @@
 **
 const class UserService : MyContext
 {
-  static const UserService cur:=UserService()
-  
   User[] list(Int page){
     c.ret{
-    User.list(page)
+      User.list(page)
     }
   }
 }

@@ -6,7 +6,9 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 using sql
-
+**
+** model for database table
+** 
 const class Table
 {
   const Type type
