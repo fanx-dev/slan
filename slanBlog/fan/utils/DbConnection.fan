@@ -15,26 +15,20 @@ const class DbConnection
   const static DbConnection cur:=DbConnection()
   private new make(){}
   
-  const CacheContext c:=get
+  const CacheableContext c:=get
   
-  private CacheContext get(){
+  private CacheableContext get(){
     pod := Pod.find("sql");
     db:= SqlService(
       pod.config("test.connection"),
       pod.config("test.username"),
       pod.config("test.password"),
       Type.find(pod.config("test.dialect")).make)
-    tables:=CacheContext.createTables([:],DbConnection#.pod)
-    ct:=CacheContext(db,tables)
     
-    //testConnect
-    ct.use{}
+    tables:=CacheableContext.mappingTables([:],DbConnection#.pod)
+    ct:=CacheableContext(db,tables)
     
+    ct.tryCreateAllTable
     return ct
-  }
-  
-  **only for test
-  Void clearTables(){
-    c.use{c.dropAllTable;c.tryCreateAllTable}
   }
 }

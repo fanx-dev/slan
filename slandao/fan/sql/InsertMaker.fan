@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-const class InsertMaker
+internal const class InsertMaker
 {
   Str getSql(Table table){
     sql:=StrBuf()

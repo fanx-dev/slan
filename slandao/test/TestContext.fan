@@ -20,11 +20,11 @@ internal const class TestContext
       pod.config("test.username"),
       pod.config("test.password"),
       Type.find(pod.config("test.dialect")).make)
-    tables:=Context.createTables([:],TestContext#.pod)
+    tables:=Context.mappingTables([:],TestContext#.pod)
     noCacheContext=Context(db,tables)
   }
   
-  const static CacheContext c
+  const static CacheableContext c
   static{
     pod := Pod.find("sql");
     db:= SqlService(
@@ -32,7 +32,7 @@ internal const class TestContext
       pod.config("test.username"),
       pod.config("test.password"),
       Type.find(pod.config("test.dialect")).make)
-    tables:=CacheContext.createTables([:],TestContext#.pod)
-    c=CacheContext(db,tables)
+    tables:=CacheableContext.mappingTables([:],TestContext#.pod)
+    c=CacheableContext(db,tables)
   }
 }

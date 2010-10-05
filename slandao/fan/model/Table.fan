@@ -7,20 +7,23 @@
 //
 using sql
 **
-** model for database table
+** mapping model for database table.
+** must has a prime key.
 ** 
 const class Table
 {
   const Type type
   const Column[] columns
-  const Str? name
+  const Str name
   const Int idIndex
   const Bool autoGenerateId
+  private const Log log:=Pod.of(this).log
   
   new make(|This| f){
     f(this)
-    if(name==null){
-      name=type.name
+    if(!type.hasFacet(Serializable#)){
+        throw MappingErr("class $type.name must be Serializable.
+                          please using @Ignore for Ignore")
     }
   }
   
@@ -49,9 +52,11 @@ const class Table
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //fetch data
+  // method
   ////////////////////////////////////////////////////////////////////////
-  
+  **
+  ** fetch data
+  ** 
   Obj getInstance(Row r){
     obj:=type.make
     columns.each|Column c,Int i|{
@@ -62,11 +67,38 @@ const class Table
     return obj
   }
   
+  **
+  ** check model is match the database
+  ** 
+  Bool checkMatchDb(Col[] tcols){
+    if(columns.size>tcols.size){
+      log.warn("model have $columns.size field,but database $tcols.size")
+      return false
+    }
+    
+    errCount:=0
+    columns.each|Column c,Int i|{
+      pass:=c.checkMatchDb(tcols[i])
+      if(!pass){
+        log.warn("table $name field ${columns[i].name}not match the database")
+        errCount++
+      }
+    }
+    if(errCount>0){
+      return false
+    }
+    return true
+  }
+  
   ////////////////////////////////////////////////////////////////////////
-  //getMetaData
+  // tools
   ////////////////////////////////////////////////////////////////////////
   
-  static Table createFromType(Type type,SlanDialect dialect){
+  **
+  ** auto mapping form type.
+  ** table name default is podName+typeName.
+  ** 
+  static Table mappingFromType(Type type,SlanDialect dialect){
     Int? id
     cs:=Column[,]
     Bool generateId:=false
@@ -87,10 +119,11 @@ const class Table
       }
     }
     if(id==null){
-      throw NullErr("Record must have Id, add @Id facet for field")
+      throw MappingErr("Record must have Id, add @Id facet for field")
     }
     table:=Table{
       it.type=type
+      name=type.pod.name+type.name
       columns=cs
       it.idIndex=id
       if(generateId){

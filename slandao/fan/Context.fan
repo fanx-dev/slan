@@ -12,15 +12,20 @@ using concurrent
 ** 
 const class Context
 {
+  ** current sqlService
   const SqlService db
+  ** mapping table model
   const Type:Table tables
+  ** power of sql
   private const Executor executor:=Executor()
+  private const Log log:=Pod.of(this).log
   
   new make(SqlService db,Type:Table tables){
     this.db=db
     this.tables=tables
   }
   
+  ** get type's mapping table
   Table getTable(Type t){
     return tables[t]
   }
@@ -31,18 +36,19 @@ const class Context
   **
   ** find the persistence object,@Ignore facet will ignore the type
   ** 
-  static Type:Table createTables(Type:Table tables,Pod pod,
+  static Type:Table mappingTables(Type:Table tables,Pod pod,
                               SlanDialect dialect:=SlanDialect()){
     pod.types.each|Type t|{
       if(t.fits(Record#) && !t.hasFacet(Ignore#)){
-        table:=Table.createFromType(t,dialect)
+        table:=Table.mappingFromType(t,dialect)
         tables[t]=table
       }
     }
     return tables
   }
   **
-  ** using add get result
+  ** using connection finally will close.
+  ** return a result than #use
   ** 
   Obj? ret(|Context->Obj?| f){
     try
@@ -63,19 +69,7 @@ const class Context
   ** using connection finally will close
   ** 
   Void use(|This| f){
-    try
-    {
-      db.open
-      f(this)
-    }
-    catch (Err e)
-    {
-      throw e
-    }
-    finally
-    {
-      db.close
-    }
+    ret(f)
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -141,6 +135,7 @@ const class Context
   //select where
   ////////////////////////////////////////////////////////////////////////
   
+  ** query by condition
   Obj[] selectWhere(Type type,Str where,Int start:=0,Int num:=20){
     Obj[]? ids:=getWhereIdList(type,where,start,num)
     return idToObj(type,ids)
@@ -180,13 +175,13 @@ const class Context
     }
   }
   
-  **noCache
+  ** noCache
   Bool exist(Obj obj){
     table:=getTable(obj.typeof)
     n:= ret{this.executor.count(table,this.db,obj)}
     return n>0
   }
-  
+  ** update or insert
   Void save(Obj obj){
     if(existById(obj)){
       update(obj)
@@ -228,16 +223,30 @@ const class Context
     }
   }
   
+  ** check the object table is fit to database table
+  Bool checkTable(Table table){
+    trow:=this.db.tableRow(table.name)
+    return table.checkMatchDb(trow.cols)
+  }
+  
+  **
+  ** try create the table,if noMatchDatabase throw a MappingErr
+  ** 
   Void tryCreateAllTable(){
     use{
       this.tables.vals.each|Table t|{
-        if(!this.db.tableExists(t.name)){
+        if(this.db.tableExists(t.name)){
+          if(!checkTable(t)){
+            throw MappingErr("table $t.name not match the database")
+          }
+        }else{
           this.executor.createTable(t,this.db)
         }
       }
     }
   }
   
+  **drop all table with in appliction
   Void dropAllTable(){
     use{
       this.tables.vals.each|Table t|{
@@ -248,10 +257,18 @@ const class Context
     }
   }
   
+  **drop all tables in the database
+  Void clearDatabase(){
+    use{
+      this.executor.clearDatabase(this.db)
+    }
+  }
+  
   ////////////////////////////////////////////////////////////////////////
   //transaction
   ////////////////////////////////////////////////////////////////////////
   
+  ** transaction
   virtual Void trans(|This| f){
     use{
       oauto:=this.db.autoCommit

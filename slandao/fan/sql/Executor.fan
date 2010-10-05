@@ -9,7 +9,7 @@ using sql
 **
 ** important class for execute sql.
 ** 
-const class Executor
+internal const class Executor
 {
   const static InsertMaker inserMaker:=InsertMaker()
   const static TableMaker tableMaker:=TableMaker()
@@ -183,5 +183,30 @@ const class Executor
       log.debug(sql)
     }
     db.sql(sql).execute()
+  }
+  
+  Void clearDatabase(SqlService db){
+    Str[] tables := db.tables.dup
+    while (tables.size != 0)
+    {
+      Int dropped := 0
+      tables.each |Str tableName|
+      {
+        try
+        {
+          sql:="drop table $tableName"
+          log.debug(sql)
+          db.sql(sql).execute
+          tables.remove(tableName)
+          dropped++
+        }
+        catch (Err e)
+        {
+        }
+      }
+
+      if (dropped == 0)
+        throw SqlErr("All tables could not be dropped.")
+    }
   }
 }

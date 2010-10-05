@@ -5,7 +5,7 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-const class TableMaker
+internal const class TableMaker
 {
   Str createTable(Table table){
     sql:=StrBuf()

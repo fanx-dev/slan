@@ -8,9 +8,9 @@
 
 
 **
+** by ID
 **
-**
-const class IdWhereMaker
+internal const class IdWhereMaker
 {
   Str getSql(Table table){
     return "from $table.name where $table.id.name=@$table.id.name"

@@ -9,13 +9,11 @@
 **
 **
 **
-class PostPoTest:Test,MyContext
+class PostPoTest:MyTest
 {
   Void test(){
-    DbConnection.cur.clearTables
     c.use{
       p:=Post{author="chunquedong";dt=DateTime.now;text="hello";point=0}.insert
-      
       list:=Post{author="chunquedong"}.select
       
       verifyEq(list.size,1)

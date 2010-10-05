@@ -12,7 +12,7 @@
 **
 internal class TestBase:Test
 {
-  virtual CacheContext c:=TestContext.c
+  virtual CacheableContext c:=TestContext.c
   
   Void execute(|->| f){
     log:=Pod.of(this).log
@@ -36,9 +36,7 @@ internal class TestBase:Test
   }
   
   Void newTable(Type type){
-    if(c.tableExists(type)){
-      c.dropTable(type)
-    }
+    c.clearDatabase
     c.createTable(type)
     c.clearCache
   }

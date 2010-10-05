@@ -1,0 +1,66 @@
+[20:01:29 05-Oct-10] [info] [web] WispService started on port 8080
+[20:01:46 05-Oct-10] [err] [web] Internal error processing: /action/User/i/allUsers?page=0
+sys::Err: call method error : name UserCtrl_2::UserCtrl.allUsers,
+ on [i],with [0]
+  slanweb::ActionMod.fillParamsAndCall (ActionMod.fan:68)
+  slanweb::ActionMod.onActionFile (ActionMod.fan:37)
+  slanweb::ActionMod.onService (ActionMod.fan:24)
+  slanweb::SlanRouteMod.doService (SlanRouteMod.fan:45)
+  slanweb::SlanRouteMod.onService (SlanRouteMod.fan:63)
+  webmod::PipelineMod.onService (PipelineMod.fan:71)
+  fan.sys.List.each (List.java:528)
+  webmod::PipelineMod.onService (PipelineMod.fan:71)
+  wisp::WispActor.doService (WispActor.fan:194)
+  wisp::WispActor.process (WispActor.fan:78)
+  wisp::WispActor.receive (WispActor.fan:48)
+  concurrent::Actor._dispatch (Actor.java:225)
+  concurrent::Actor._work (Actor.java:196)
+  concurrent::ThreadPool$Worker.run (ThreadPool.java:255)
+Cause:
+  sql::SqlErr: Table 'fantest.slanbloguser' doesn't exist
+    sql::ConnectionPeer.err (ConnectionPeer.java:293)
+    sql::StatementPeer.queryEach (StatementPeer.java:192)
+    sql::Statement.queryEach (Statement.fan)
+    slandao::Executor.selectId (Executor.fan:75)
+    slandao::Context.getIdList (Context.fan:114)
+    slandao::Context.ret (Context.fan:52)
+    slandao::Context.getIdList (Context.fan:113)
+    slandao::CacheContext.getIdList (CacheContext.fan:151)
+    slandao::Context.select (Context.fan:100)
+    slandao::Context.select (Context.fan)
+    slandao::Record$.select (Unknown:31)
+    slanBlog::User.select (User.fan)
+    slanBlog::UserDao$.list (Unknown:33)
+    slanBlog::UserService.list (UserService.fan:17)
+    slandao::Context.ret (Context.fan:52)
+    slanBlog::UserService.list (UserService.fan:16)
+    UserCtrl_2::UserCtrl.allUsers (/D:/Hg/slan/slanBlogView/action/UserCtrl.fan:34)
+    java.lang.reflect.Method.invoke (Unknown)
+    fan.sys.Method.invoke (Method.java:536)
+    fan.sys.Method$MethodFunc.callOn (Method.java:214)
+    16 More...
+  Cause:
+    sys::Err: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'fantest.slanbloguser' doesn't exist
+      java.lang.reflect.Constructor.newInstance (Unknown)
+      com.mysql.jdbc.Util.handleNewInstance (Util.java:409)
+      com.mysql.jdbc.Util.getInstance (Util.java:384)
+      com.mysql.jdbc.SQLError.createSQLException (SQLError.java:1054)
+      com.mysql.jdbc.MysqlIO.checkErrorPacket (MysqlIO.java:3566)
+      com.mysql.jdbc.MysqlIO.checkErrorPacket (MysqlIO.java:3498)
+      com.mysql.jdbc.MysqlIO.sendCommand (MysqlIO.java:1959)
+      com.mysql.jdbc.MysqlIO.sqlQueryDirect (MysqlIO.java:2113)
+      com.mysql.jdbc.ConnectionImpl.execSQL (ConnectionImpl.java:2568)
+      com.mysql.jdbc.PreparedStatement.executeInternal (PreparedStatement.java:2113)
+      com.mysql.jdbc.PreparedStatement.executeQuery (PreparedStatement.java:2266)
+      sql::StatementPeer.queryEach (StatementPeer.java:180)
+      sql::Statement.queryEach (Statement.fan)
+      slandao::Executor.selectId (Executor.fan:75)
+      slandao::Context.getIdList (Context.fan:114)
+      slandao::Context.ret (Context.fan:52)
+      slandao::Context.getIdList (Context.fan:113)
+      slandao::CacheContext.getIdList (CacheContext.fan:151)
+      slandao::Context.select (Context.fan:100)
+      slandao::Context.select (Context.fan)
+      32 More...
+[20:04:35 05-Oct-10] [info] [web] WispService started on port 8080
+[23:47:42 05-Oct-10] [info] [web] WispService started on port 8080

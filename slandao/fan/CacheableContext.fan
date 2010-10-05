@@ -12,52 +12,79 @@ using concurrent
 **
 ** context with cache
 **
-const class CacheContext:Context
+const class CacheableContext:Context
 {
-  const Cache cache:=Cache()
   private const Log log:=Pod.of(this).log
-  const Cache? queryCache
+  ** 
+  ** cache for object
+  ** 
+  const Cache objCache:=Cache()
+  ** 
+  ** cache for query .
+  ** the key is serialization string,value is id list.
+  ** 
+  const Cache queryCache:=Cache()
   
-  new make(SqlService db,Type:Table tables,Bool queryCacheable:=true):super(db,tables){
-    if(queryCacheable){
-      this.queryCache=Cache()
-    }
+  new make(SqlService db,Type:Table tables):super(db,tables){
   }
   
+  ////////////////////////////////////////////////////////////////////////
+  //tools
+  ////////////////////////////////////////////////////////////////////////
+  
+  **
+  ** clearDatabase,tryCreateAllTable,clearCache
+  ** 
+  Void refreshDatabase(){
+    clearDatabase
+    tryCreateAllTable
+    clearCache
+  }
+  
+  ** clear both objCache and queryCahe.
   Void clearCache(){
-    getCache.clearAll
-    queryCache?.clearAll
+    currentObjCache.clearAll
+    queryCache.clearAll
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //cache method
+  //object cache method
   ////////////////////////////////////////////////////////////////////////
-  
+  **
+  ** Transaction will using a temporary cache.
+  ** It is named 'tcache' in Actor.locals
+  ** 
   private const static Str tcache:="slandao.CacheContext.tcache"
   
-  private Cache getCache(){
-    return Actor.locals[tcache]?:cache
+  ** 
+  ** if in the Transaction will return transaction temporary cache,
+  ** or return objCache
+  ** 
+  private Cache currentObjCache(){
+    return Actor.locals[tcache]?:objCache
   }
   
-  private Void set(Str key,Obj? value){ getCache[key]=value }
+  private Void set(Str key,Obj? value){ currentObjCache[key]=value }
   
   private Obj? get(Str key){
     if(log.isDebug){
-        log.debug("using cache:[$key]".replace("\n",""))
+        log.debug("using objCache:[$key]".replace("\n",""))
     }
-    return getCache[key]
+    return currentObjCache[key]
   }
   
-  private Bool containsKey(Str key){ getCache.containsKey(key) }
+  private Bool containsKey(Str key){ currentObjCache.containsKey(key) }
   
-  Void removeCache(Str key){ getCache.remove(key)}
+  Void removeCache(Str key){ currentObjCache.remove(key)}
   
   ////////////////////////////////////////////////////////////////////////
   //query cache
   ////////////////////////////////////////////////////////////////////////
-  
+  **
+  ** current will using query cache,
+  ** 
   private Bool usingQueryCache(){
-    return queryCache!=null && Actor.locals[tcache]==null//not in transcation
+    return Actor.locals[tcache]==null//not in transcation
   }
   
   private Obj? queryGet(Str key){
@@ -67,9 +94,13 @@ const class CacheContext:Context
     return queryCache[key]
   }
   
+  private Void querySet(Str key,Obj? obj){
+    queryCache.set(key,obj,1min)
+  }
+  **
+  ** clear the query cache which key satrts with typename + ','
+  ** 
   Void clearQueryCache(Type type){
-    if(queryCache==null)return
-    
     name:=type.qname+","
     queryCache.clearIf|Str key->Bool|{
       key.startsWith(name)
@@ -137,7 +168,7 @@ const class CacheContext:Context
     }
     
     ids:= super.getIdList(obj,orderby,start,num)
-    queryCache.set(key,ids,1min)
+    querySet(key,ids)
     return ids
   }
   private Str getKey(Obj obj,Str orderby,Int start,Int num){
@@ -156,7 +187,7 @@ const class CacheContext:Context
     }
     
     ids:= super.getWhereIdList(type,where,start,num)
-    queryCache.set(key,ids,1min)
+    querySet(key,ids)
     return ids
   }
   
@@ -173,7 +204,7 @@ const class CacheContext:Context
     }
     
     n:= super.count(obj)
-    queryCache.set(key,n,1min)
+    querySet(key,n)
     return n
   }
   
@@ -181,6 +212,7 @@ const class CacheContext:Context
   //transaction
   ////////////////////////////////////////////////////////////////////////
   
+  ** transaction
   override Void trans(|This| f){
     oauto:=db.autoCommit
     isNull:=Actor.locals[tcache]==null
@@ -205,8 +237,12 @@ const class CacheContext:Context
       }
     }
   }
-  
+  ** 
+  ** when transaction finish, to update the objectCache.
+  ** the query already update instant
+  ** 
   private Void commitCaheTrans(){
-    cache.mergeCache(getCache.getMap)
+    Cache transactionCache:=Actor.locals[tcache]
+    objCache.mergeCache(transactionCache.getMap)
   }
 }

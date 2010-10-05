@@ -22,9 +22,10 @@ internal class Student:Record
   @Transient Bool? large
   
   @Colu{m=256}
-  Str? description
+  Str? description//text
   
-  Weekday? loveWeek
+  Weekday? loveWeek//enum
+  Uri? uri//obj
   
   @Transient override Context ct:=TestContext.c
 }
@@ -35,15 +36,16 @@ internal class StudentTable
 {
   static Table getTable(){
     cs:=Column[,]{
-      Column(Student#sid),
-      Column(Student#name),
-      Column(Student#married),
-      Column(Student#age),
-      Column(Student#weight),
-      Column(Student#dt)
+      Column(Student#sid,"sid"),
+      Column(Student#name,"name"),
+      Column(Student#married,"married"),
+      Column(Student#age,"age"),
+      Column(Student#weight,"weight"),
+      Column(Student#dt,"dt")
     }
     t:=Table{
       type=Student#
+      name="Student"
       columns=cs
       it.idIndex=0
     }

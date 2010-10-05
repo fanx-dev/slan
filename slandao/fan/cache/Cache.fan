@@ -63,9 +63,11 @@ const class Cache
   private Void _remove(Str key) { actor.send(["remove",key]) }
   private Bool _containsKey(Str key) { actor.send(["containsKey",key]).get }
   
+  ** get current cache map
   [Str:CacheObj] getMap(){ actor.send(["getmap"]).get }
   
   Void clearAll(){ actor.send(["clearAll"])}
+  ** clear by condition
   Void clearIf(|Str->Bool| f){actor.send(["clearIf",f].toImmutable)}
   
   Obj? get(Str key) { 
@@ -81,10 +83,11 @@ const class Cache
   Bool containsKey(Str key) {
     _containsKey(key)
   }
+  
+  ** merge and update the cache map
   Void mergeCache([Str:CacheObj] source){ 
     actor.send(["mergeCache",source])
   }
-  
   
   private Void _mergeCache([Str:CacheObj] source,[Str:CacheObj] target){
     source.each|CacheObj value,Str key|{
@@ -116,6 +119,7 @@ const class Cache
     goOnHouseKeeping
   }
   
+  ** clear some object ,because max number.
   private Void clear(Str:CacheObj? map){
     old:=CacheObj[,]
     i:=0
@@ -127,6 +131,7 @@ const class Cache
     old.each |CacheObj s| { map.remove(s.id) }
   }
   
+  ** dispose the out expire object
   private Void dispose(Str:CacheObj? map){
     now := Duration.now
     old := map.findAll |CacheObj s->Bool|
@@ -137,6 +142,7 @@ const class Cache
     old.each |CacheObj s| { map.remove(s.id) }
   }
   
+  ** go on
   private Void goOnHouseKeeping(){
     actor.sendLater(houseKeepingPeriod, "_houseKeeping")
   }

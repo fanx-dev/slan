@@ -13,11 +13,11 @@ using slandao
 @Serializable
 class Post : MyRecord,PostDao
 {
-  @Id{auto=true} 
-  Int? id
+  @Id{auto=true} Int? id
   Str? author
   DateTime? dt
-  Str? text
+  
+  @Colu{m=1000} Str? text
   Int? point
   
   Comment[] commentList(){

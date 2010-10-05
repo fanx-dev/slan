@@ -43,8 +43,8 @@ internal class CacheTest:TestBase
   }
   
   Void selectWhere(){
-    stu:=c.selectWhere(Student#,"age>20")
-    stu2:=c.selectWhere(Student#,"age>20")
+    stu:=c.selectWhere(Student#,"StudentAge>20")
+    stu2:=c.selectWhere(Student#,"StudentAge>20")
   }
   
   Void count(){

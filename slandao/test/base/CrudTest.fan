@@ -50,7 +50,7 @@ internal class CrudTest:TestBase
     Student stu2:=c.findById(Student#,2)
     verifyEq(stu2.name,"yqq")
     
-    Student[] stus:=c.selectWhere(Student#,"age>23")
+    Student[] stus:=c.selectWhere(Student#,"StudentAge>23")
     verifyEq(stus.size,1)
   }
   

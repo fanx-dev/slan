@@ -5,25 +5,27 @@
 // History:
 //   2010-9-22  Yang Jiandong  Creation
 //
-const class WhereMaker
+internal const class UpdateMaker
 {
   Str getSql(Table table,Obj obj){
     sql:=StrBuf()
-    sql.add("from $table.name where")
+    sql.add("update $table.name set ")
     
-    table.columns.each{
+    table.nonIdColumn{
       if(it.field.get(obj)!=null){
-        sql.add(" $it.name=@$it.name and")
+        sql.add("$it.name=@$it.name,")
       }
     }
     
-    sql.removeRange(Range.makeInclusive(sql.size-4,-1))
+    Utils.removeLastChar(sql).add(" where ")
+    sql.add("$table.id.name=@$table.id.name")
+    
     return sql.toStr
   }
   
   Str:Obj getParam(Table table,Obj obj){
     Str:Obj param:=[:]
-    table.columns.each |Column c|{
+    table.columns.each|Column c|{
       value:=c.getValue(obj)
       if(value!=null){
         param[c.name]=value

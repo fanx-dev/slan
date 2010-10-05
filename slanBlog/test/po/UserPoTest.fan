@@ -10,10 +10,9 @@
 **
 **
 **
-class UserPoTest:Test,MyContext
+class UserPoTest:MyTest
 {
   Void test(){
-    DbConnection.cur.clearTables
     c.use{
       o:=User{
         id="chunquedong"
