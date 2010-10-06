@@ -10,6 +10,7 @@ using slandao
 **
 **
 **
+@Persistent
 @Serializable
 class Post : MyRecord,PostDao
 {

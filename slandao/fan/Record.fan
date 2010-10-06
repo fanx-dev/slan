@@ -6,9 +6,8 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 **
-** super class for entity
+** super class for entity,convenient but not necessary
 ** 
-@Ignore
 mixin Record
 {
   abstract Context ct()

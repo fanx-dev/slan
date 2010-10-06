@@ -1,0 +1,87 @@
+**************************************************************************
+** title:      slanweb
+** author:     Yang Jiandong
+** created:    2010-10-6
+** copyright:  Copyright (c) 2010, Yang Jiandong
+** license:    Licensed under the Academic Free License version 3.0
+**************************************************************************
+
+Overview [#overview]
+********************
+
+  restrict,limit,related,check... all thing maintain by application.
+  database is only for persistent data no business logic.
+
+Mapping [#mapping]
+================
+
+    @Persistent
+    @Serializable
+    internal class Student:Record
+    {
+      @Id{auto=true} 
+      Int? sid
+      
+      Str? name
+      Bool? married
+      Int? age
+      Float? weight
+      DateTime? dt
+      @Transient Bool? large
+      
+      @Colu{m=256}
+      Str? description//text
+      
+      Weekday? loveWeek//enum
+      Uri? uri//obj
+      
+      @Transient override Context ct:=TestContext.c
+    }
+    
+rule:
+- must @Persistent and @Serializable
+- must has and only has a @Id
+- using @Transient to ignore field
+- convenient but not necessary subclass from Record
+- using @Colu{m=256} to add extra parameter
+- enum will store as smallInt
+- object will store serialization string
+
+Use [#use]
+============
+query by Context's API.
+the CacheableContext will auto cache.
+Record is convenient for query
+
+insert:
+  stu:=Student{
+      name="yjd"
+      age=23
+      married=false
+      weight=55f
+      dt=DateTime.now
+  }.insert
+
+query:
+  Student stu2:=c.findById(Student#,2)
+  Student[] stus:=c.selectWhere(Student#,"StudentAge>23")
+  n:=Student{weight=55f}.select.size
+  Student stu:=Student{sid=1}.select.first
+  
+  c.findById(Student#,2) is high performance than Student{sid=1}.select.first
+  
+update:
+    Student stu:=Student{sid=1}.select.first
+    stu.married=true
+    stu.update
+    
+delete:
+    Student stu:=Student{sid=1}.select.first
+    stu.delete
+
+transaction:
+    c.trans{
+        Student{sid=1}.select.first->delete
+        verifyFalse(Student{sid=1}.exist)
+        throw Err("test transaction")//it will aotu rollback
+    }

@@ -10,6 +10,7 @@ using slandao
 **
 **
 **
+@Persistent
 @Serializable
 class Comment: MyRecord,CommentDao
 {

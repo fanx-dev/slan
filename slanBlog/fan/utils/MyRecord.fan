@@ -10,7 +10,6 @@ using slandao
 **
 **
 **
-@Ignore
 mixin MyRecord:Record
 {
   override Context ct(){DbConnection.cur.c}

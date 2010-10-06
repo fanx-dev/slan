@@ -37,9 +37,12 @@ const class Context
   ** find the persistence object,@Ignore facet will ignore the type
   ** 
   static Type:Table mappingTables(Type:Table tables,Pod pod,
-                              SlanDialect dialect:=SlanDialect()){
+                              SlanDialect dialect:=MysqlDialect()){
     pod.types.each|Type t|{
-      if(t.fits(Record#) && !t.hasFacet(Ignore#)){
+      if(t.hasFacet(Persistent#)){
+        if(!t.hasFacet(Serializable#)){
+          throw MappingErr("entity $t.name must be @Serializable")
+        }
         table:=Table.mappingFromType(t,dialect)
         tables[t]=table
       }
@@ -75,21 +78,22 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   //execute write
   ////////////////////////////////////////////////////////////////////////
-
+  
+  ** insert this a obj to database
   virtual Void insert(Obj obj){
     table:=getTable(obj.typeof)
     use{
     this.executor.insert(table,this.db,obj)
     }
   }
-  
+  ** update by id
   virtual Void update(Obj obj){
     table:=getTable(obj.typeof)
     use{
     this.executor.update(table,this.db,obj)
     }
   }
-  
+  ** delete by example
   virtual Void delete(Obj obj){
     table:=getTable(obj.typeof)
     use{
@@ -100,12 +104,12 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   //select id
   ////////////////////////////////////////////////////////////////////////
-  
+  ** select by example
   Obj[] select(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
     Obj[] ids:=getIdList(obj,orderby,start,num)
     return idToObj(obj.typeof,ids)
   }
-  
+  ** select by example and get the first one
   Obj? one(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
     Obj[] ids:=getIdList(obj,orderby,start,num)
     
@@ -119,7 +123,7 @@ const class Context
       this.executor.selectId(table,this.db,obj,orderby,start,num)
     }
   }
-  
+  ** convert id list to object list
   private Obj[] idToObj(Type type,Obj[] ids){
     Obj[] list:=[,]
     ids.each{
@@ -140,7 +144,7 @@ const class Context
     Obj[]? ids:=getWhereIdList(type,where,start,num)
     return idToObj(type,ids)
   }
-  
+  ** query id list by condition
   protected virtual Obj[] getWhereIdList(Type type,Str where,Int start,Int num){
     table:=getTable(type)
     return ret{
@@ -158,7 +162,7 @@ const class Context
       this.executor.findById(table,this.db,id)
     }
   }
-  
+  ** get object id value by mapping table
   Obj? getId(Obj obj){
     table:=getTable(obj.typeof)
     return table.id.field.get(obj)
@@ -167,7 +171,7 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   //extend method
   ////////////////////////////////////////////////////////////////////////
-  
+  ** count by example
   virtual Int count(Obj obj){
     table:=getTable(obj.typeof)
     return ret{
@@ -175,12 +179,13 @@ const class Context
     }
   }
   
-  ** noCache
+  ** exist by example,this op noCache
   Bool exist(Obj obj){
     table:=getTable(obj.typeof)
     n:= ret{this.executor.count(table,this.db,obj)}
     return n>0
   }
+  
   ** update or insert
   Void save(Obj obj){
     if(existById(obj)){
@@ -268,7 +273,7 @@ const class Context
   //transaction
   ////////////////////////////////////////////////////////////////////////
   
-  ** transaction
+  ** transaction , if error will auto roolback
   virtual Void trans(|This| f){
     use{
       oauto:=this.db.autoCommit

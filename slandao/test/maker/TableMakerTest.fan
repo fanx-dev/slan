@@ -12,7 +12,7 @@ internal class TableMakerTest:Test
   
   Void testCreateTable(){
     sql:=maker.createTable(table)
-    verifyEq(sql,"create table Student(sid int,name varchar(255),married bit,age int,weight double,dt datetime,primary key (sid))")
+    verifyEq(sql,"create table Student(sid bigint,name varchar(255),married bit,age bigint,weight double,dt datetime,primary key (sid))")
   }
   
   Void testDropTable(){

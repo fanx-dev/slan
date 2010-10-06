@@ -9,10 +9,9 @@
 
 **
 ** decide whice type column to create.
+** It's column factory
 **
-const class SlanDialect
+const abstract class SlanDialect
 {
-  virtual Column createColumn(Field field,Str? name:=null,Int? m:=null,Int? d:=null){
-    return Column(field,name,m,d)
-  }
+  abstract Column createColumn(Field field,Str? name:=null,Int? m:=null,Int? d:=null)
 }

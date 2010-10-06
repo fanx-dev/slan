@@ -13,7 +13,7 @@ using sql
 ** 
 ** column name default is parent type name +  field name
 ** 
-const class Column
+const abstract class Column
 {
   const Field field
   const Str name
@@ -49,51 +49,17 @@ const class Column
     if(isPrimitive){
       return fanToSqlType(field.type,autoGenerate)
     }
-    if(field.type.isEnum) return "int"
+    if(field.type.isEnum) return smallInteger
     
     //it will be a serialization string type
-    return "text"
+    return getStringType(1024)
   }
   
   ** convert from fantom type to sql type
-  protected virtual Str fanToSqlType(Type type,Bool autoGenerate){
-    Str t:=""
-    switch(type.toNonNullable){
-      case Int#:
-        t= "int"
-      case Str#:
-        t= getStringType(m)
-      case Float#:
-        t= "double"
-      case Bool#:
-        t= "bit"
-      case DateTime#:
-        t= "datetime"
-      case Date#:
-        t= "date"
-      case Time#:
-        t= "time"
-      case Decimal#:
-        t= "decimal"
-      default:
-        throw MappingErr("unknown sql type $type,
-                          please using @Transient for Ignore")
-    }
-    if(autoGenerate)t+=" auto_increment"
-    return t
-  }
+  protected abstract Str fanToSqlType(Type type,Bool autoGenerate)
+  protected abstract Str getStringType(Int? m)
+  protected abstract Str smallInteger()
   
-  protected Str getStringType(Int? m){
-    if(m==null){
-      return "varchar(255)"
-    }else{
-      if(m<=255){
-        return "varchar($m)"
-      }else{
-        return "text"
-      }
-    }
-  }
   
   private Bool isPrimitiveType(Type type){
     switch(type.toNonNullable){

@@ -8,7 +8,7 @@
 internal class TableTest:Test
 {
   Void testcreateFromType(){
-    t:=Table.mappingFromType(Student#,SlanDialect())
+    t:=Table.mappingFromType(Student#,MysqlDialect())
     verify(t.id.name=="StudentSid")
     verifyEq(t.columns.size,9)
   }

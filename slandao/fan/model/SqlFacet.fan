@@ -15,7 +15,7 @@ facet class Id
 }
 
 **
-** extend parameter
+** extend extra parameter
 ** 
 facet class Colu
 {
@@ -25,7 +25,7 @@ facet class Colu
 }
 
 **
-** Ignore the type in Context#createTables
+** will mapping to table
 ** 
-facet class Ignore{
+facet class Persistent{
 }

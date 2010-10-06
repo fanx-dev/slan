@@ -58,3 +58,37 @@
 2010-10-05 15:47:57 0:0:0:0:0:0:0:1 GET / - 200 401 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
 2010-10-05 15:47:57 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 364 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
 2010-10-05 15:47:58 0:0:0:0:0:0:0:1 GET /action/Log - 200 807 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+#Remark ==========================================================================
+#Remark 6-Oct-2010 Wed 20:10:22 CST
+#Version 1.0
+#Software webmod::LogMod 1.0.55
+#Start-Date 2010-10-06 12:10:22
+#Fields date time c-ip cs-method cs-uri-stem cs-uri-query sc-status time-taken cs(User-Agent) cs(Referer)
+2010-10-06 12:10:22 0:0:0:0:0:0:0:1 GET / - 200 255 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" -
+2010-10-06 12:10:22 0:0:0:0:0:0:0:1 GET /public/main.css - 304 21 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
+2010-10-06 12:10:23 0:0:0:0:0:0:0:1 GET / - 200 1344 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
+2010-10-06 12:10:26 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 2248 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
+2010-10-06 12:10:27 0:0:0:0:0:0:0:1 GET /action/Log - 200 1192 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:10:28 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 818 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log"
+2010-10-06 12:10:28 0:0:0:0:0:0:0:1 GET / - 200 660 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:10:29 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 534 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
+2010-10-06 12:10:29 0:0:0:0:0:0:0:1 GET /action/Log - 200 370 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:10:38 0:0:0:0:0:0:0:1 POST /action/Log/login - 200 8480 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log"
+2010-10-06 12:10:39 0:0:0:0:0:0:0:1 GET /action/Log/logupView - 200 1715 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log/login"
+2010-10-06 12:10:43 0:0:0:0:0:0:0:1 POST /action/Log/logup - 303 3874 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log/logupView"
+2010-10-06 12:10:43 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 57 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log/logupView"
+2010-10-06 12:10:43 0:0:0:0:0:0:0:1 GET /public/main.css - 304 50 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:45 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 2008 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:47 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 1064 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:10:51 0:0:0:0:0:0:0:1 POST /action/Post/create - 303 4161 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:51 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 58 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:51 0:0:0:0:0:0:0:1 GET /public/main.css - 304 13 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:59 0:0:0:0:0:0:0:1 POST /action/Comment/create - 303 7849 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:59 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 23 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:10:59 0:0:0:0:0:0:0:1 GET /public/main.css - 304 8 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:11:01 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 2185 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:11:02 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 848 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:11:04 0:0:0:0:0:0:0:1 GET /action/Log/logout - 200 2071 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"
+2010-10-06 12:11:05 0:0:0:0:0:0:0:1 GET /action/User/i/allUsers page=0 200 926 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/Log/logout"
+2010-10-06 12:11:05 0:0:0:0:0:0:0:1 GET /action/User/qwe - 200 770 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/i/allUsers?page=0"
+2010-10-06 12:11:08 0:0:0:0:0:0:0:1 GET / - 200 2309 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/action/User/qwe"

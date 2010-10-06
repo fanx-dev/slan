@@ -42,6 +42,6 @@ internal class TestBase:Test
   }
   
   Void testConnetcion(){
-    execute|->|{echo("ok")}
+    execute|->|{echo("connectcion ok")}
   }
 }

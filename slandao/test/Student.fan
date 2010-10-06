@@ -8,6 +8,7 @@
 **
 ** test model
 **
+@Persistent
 @Serializable
 internal class Student:Record
 {
@@ -36,12 +37,12 @@ internal class StudentTable
 {
   static Table getTable(){
     cs:=Column[,]{
-      Column(Student#sid,"sid"),
-      Column(Student#name,"name"),
-      Column(Student#married,"married"),
-      Column(Student#age,"age"),
-      Column(Student#weight,"weight"),
-      Column(Student#dt,"dt")
+      MysqlCol(Student#sid,"sid"),
+      MysqlCol(Student#name,"name"),
+      MysqlCol(Student#married,"married"),
+      MysqlCol(Student#age,"age"),
+      MysqlCol(Student#weight,"weight"),
+      MysqlCol(Student#dt,"dt")
     }
     t:=Table{
       type=Student#
