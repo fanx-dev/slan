@@ -14,7 +14,7 @@ class Build : BuildPod
   new make()
   {
     podName = "slanweb"
-    summary = "slanweb"
+    summary = "slan web"
     depends =
     [
         "sys 1.0",

@@ -1,5 +1,5 @@
 **************************************************************************
-** title:      slanweb
+** title:      slandao
 ** author:     Yang Jiandong
 ** created:    2010-10-6
 ** copyright:  Copyright (c) 2010, Yang Jiandong
@@ -9,8 +9,8 @@
 Overview [#overview]
 ********************
 
-  restrict,limit,related,check... all thing maintain by application.
-  database is only for persistent data no business logic.
+restrict,limit,related,check... all thing maintain by application.
+database is only for persistent data no business logic.
 
 Mapping [#mapping]
 ================
@@ -65,13 +65,13 @@ insert:
 query:
   Student stu2:=c.findById(Student#,2)
   Student[] stus:=c.selectWhere(Student#,"StudentAge>23")
-  n:=Student{weight=55f}.select.size
-  Student stu:=Student{sid=1}.select.first
+  n:=Student{weight=55f}.count
+  Student stu:=Student{sid=1}.one
   
-  c.findById(Student#,2) is high performance than Student{sid=1}.select.first
+  c.findById(Student#,2) is high performance than Student{sid=1}.one
   
 update:
-    Student stu:=Student{sid=1}.select.first
+    Student stu:=Student{sid=1}.one
     stu.married=true
     stu.update
     
@@ -81,7 +81,7 @@ delete:
 
 transaction:
     c.trans{
-        Student{sid=1}.select.first->delete
+        Student{sid=1}.one->delete
         verifyFalse(Student{sid=1}.exist)
         throw Err("test transaction")//it will aotu rollback
     }
