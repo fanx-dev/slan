@@ -66,3 +66,30 @@ Cause:
 [23:47:42 05-Oct-10] [info] [web] WispService started on port 8080
 [20:10:13 06-Oct-10] [info] [web] WispService started on port 8080
 [12:56:15 07-Oct-10] [info] [web] WispService started on port 8080
+[15:39:54 07-Oct-10] [info] [web] WispService started on port 8080
+[17:35:11 07-Oct-10] [info] [web] WispService started on port 8080
+[17:37:42 07-Oct-10] [err] [web] Internal error processing: /action/Welcome/ad
+sys::IOErr: java.io.FileNotFoundException: D:\Hg\slan\slanBlogView\action\WelcomeCtrl.fan (系统找不到指定的文件。)
+  java.io.FileInputStream.open (Unknown)
+  java.io.FileInputStream.<init> (Unknown)
+  fan.sys.LocalFile.in (LocalFile.java:359)
+  fan.sys.File.readAllStr (File.java:355)
+  fan.sys.File.readAllStr (File.java:352)
+  compiler::Main.compileScript (Main.fan:32)
+  java.lang.reflect.Method.invoke (Unknown)
+  fan.sys.Method.invoke (Method.java:536)
+  fan.sys.Method$MethodFunc.call (Method.java:281)
+  fan.sys.Method.call (Method.java:152)
+  fanx.util.EnvScripts.compile (EnvScripts.java:87)
+  fanx.util.EnvScripts.compile (EnvScripts.java:45)
+  fan.sys.Env.compileScript (Env.java:132)
+  fan.sys.Env.compileScript (Env.java:129)
+  slanweb::ActionMod.onActionFile (ActionMod.fan:42)
+  slanweb::ActionMod.onService (ActionMod.fan:34)
+  slanweb::SlanRouteMod.doService (SlanRouteMod.fan:45)
+  slanweb::SlanRouteMod.onService (SlanRouteMod.fan:63)
+  webmod::PipelineMod.onService (PipelineMod.fan:71)
+  fan.sys.List.each (List.java:528)
+  8 More...
+[18:20:47 07-Oct-10] [info] [web] WispService started on port 8080
+[18:21:43 07-Oct-10] [info] [web] WispService started on port 8080

@@ -10,7 +10,7 @@ Overview [#overview]
 ********************
 
 restrict,limit,related,check... all thing maintain by application.
-database is only for persistent data no business logic.
+database is only for persistent no business logic.
 
 Mapping [#mapping]
 ================
@@ -34,8 +34,6 @@ Mapping [#mapping]
       
       Weekday? loveWeek//enum
       Uri? uri//obj
-      
-      @Transient override Context ct:=TestContext.c
     }
     
 rule:
@@ -46,8 +44,9 @@ rule:
 - using @Colu{m=256} to add extra parameter
 - enum will store as smallInt
 - object will store serialization string
+- nullable field for template query
 
-Use [#use]
+Usage [#usage]
 ============
 query by Context's API.
 the CacheableContext will auto cache.

@@ -11,6 +11,7 @@
 **
 class Config
 {
+  ** do not change this once init
   static const Unsafe unsafe:=Unsafe(Config())
   static Config instance(){
     return unsafe.val

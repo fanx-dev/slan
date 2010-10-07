@@ -11,35 +11,63 @@
 **
 class SlanUtil
 {
-  static Obj[] getParams(Str[] path,Param[] params,Int start){
-    Obj[] list:=[,]
+  ** get constructorParams
+  static Obj?[] getParams(Str[] path,Param[] params,Int start){
+    Obj?[] list:=[,]
     for (i:=0; i<params.size; ++i)
     {
-      list.add(typeConvert(path[i+start],params[i].type))
+      p:=params[i]
+      if(i+start < path.size){
+        value:=typeConvert(path[i+start],p.type)
+        list.add(value)
+        continue
+      }
+      
+      if(p.hasDefault){
+        break
+      }else if(p.type.isNullable){
+        list.add(null)
+        break
+      }else{
+        throw ArgErr("too less parameter")
+      }
     }
     return list
   }
 
-  private static Obj? typeConvert(Str? s,Type type){
-    if(s==null)return null
-
+  ** convert string to object,by 'fromStr' method
+  private static Obj typeConvert(Str s,Type type){
     if(type.qname==Str#.qname){
       return s
     }else{
       return type.method("fromStr").call(s)
     }
   }
-
+  
+  ** methodParams
   static Obj?[] getParamsByName(Str:Str query,Param[] params,[Str:Str]? other){
     Obj?[] list:=[,]
     for (i:=0; i<params.size; ++i)
     {
-      p:=params[i]
-      s:=query[p.name]
-      if(s==null && other!=null){
-        s=other[p.name]
+      Param p:=params[i]
+      value:=query[p.name]
+      if(value==null && other!=null){
+        value=other[p.name]
       }
-      list.add(typeConvert(s,p.type))
+      
+      if(value!=null){
+        list.add(typeConvert(value,p.type))
+        continue
+      }
+      
+      if(p.hasDefault){
+        break
+      }else if(p.type.isNullable){
+        list.add(null)
+      }else{
+        throw ArgErr("parameter $p.name is not found")
+      }
+      
     }
     return list
   }

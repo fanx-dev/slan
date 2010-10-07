@@ -11,16 +11,19 @@ using web
 **
 mixin SlanWeblet:Weblet
 {
+  ** text/html; charset=utf-8
   Void writeContentType(){
     req.session
     res.headers["Content-Type"] = "text/html; charset=utf-8"
   }
 
+  ** render the template
   Void render(Uri fsp,|->|? lay:=null){
     file :=Config.getUri(fsp).get
     TemplateCompiler.instance.render(file,lay)
   }
 
+  ** compile js file ,and set to req.stash["SlanWeblet.compileJs"]
   Void compileJs(Uri fwt){
     file :=Config.getUri(fwt).get
     strBuf:=StrBuf()
@@ -28,12 +31,14 @@ mixin SlanWeblet:Weblet
     req.stash["SlanWeblet.compileJs"]=strBuf.toStr
   }
   
+  ** render fwt
   Void renderFwt(Uri fwt){
     file :=Config.getUri(fwt).get
     writeContentType
     JsCompiler.render(res.out,file,[:])
   }
   
+  ** convenience for req.stash
   Str:Obj? s(){
     req.stash
   }

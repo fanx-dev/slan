@@ -57,7 +57,7 @@ add authorized
   const class MyActionMod:ActionMod{
     new make(Uri dir):super(dir){}
     
-    protected override Bool onInvoke(Type type,Method method){
+    protected override Bool beforeInvoke(Type type,Method method){
       if(method.name=="welcome")return false
       return true
     }
@@ -75,10 +75,10 @@ if no explicit method,then call 'onService'
 named method expected 'WebMethod' facet, except 'onService'
   
   default mod 'action'.
-  default class/file is 'index'.
+  default class/file is 'Index'.
   default method is 'onService'.
   
-if need rewrite url, override the MyActionMod's 'convertPath' method
+if need rewrite url, override the ActionMod's 'convertPath' method
   
 Html Template [#htmlTemplate]
 ==============
@@ -104,19 +104,18 @@ the template code like this:
   
 fantom code start with '#'(escape '#' with '##').
 other code will be compile to fantom string :
-  out.printLine("""text""")
+   out.printLine("""text""")
 so we can embedded '$ interpolation'
   
 the 'req.stash' be used to pass params.
 
 
-template extends by closures
-
-in the base template:
+template extends by closures:
+  in the base template:
 	#lay()
-in the sub template:
+  in the sub template:
     #render(`view/main.html`)|->|{
     	...
     #}
 
-extends your controller from 'SlanWeblet' will be convenience for process template.
+subclass your controller from 'SlanWeblet' will be convenience.

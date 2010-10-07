@@ -55,7 +55,8 @@ const class ActionMod : WebMod
   ** 
   private Void fillParamsAndCall(Type type,Str[] path){
     params:=type.method("make").params
-    noMethod:=(params.size==path.size-1)
+    //find method
+    noMethod:=(params.size>=path.size-1)
     methodName:=noMethod?"onService":path[1+params.size]
     method:=type.method(methodName)
 

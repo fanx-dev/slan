@@ -40,7 +40,8 @@ class Main
 const class MyActionMod:ActionMod{
   new make(Uri dir):super(dir){}
   
-  protected override Bool onInvoke(Method method){
+  protected override Bool beforeInvoke(Type type,Method method){
+    //rejection 'welcome' method
     if(method.name=="welcome")return false
     return true
   }

@@ -18,7 +18,7 @@ class TableView : SlanWeblet
   }
   
   @WebMethod
-  Void welcome(){
+  Void data(){
     writeContentType
     
     s:="""
