@@ -7,8 +7,15 @@
 //
 using web
 **
-** ActionCompiler
-**
+** ActionCompiler.
+** see the uri 'http://localhost:8080/action/welcome/ad/printInfo?i=123&m=bac'
+**  it will route to 'action'(dir) and compile 'Welcome.fan'(class),
+**  then newInstance 'Welecome' with 'ad'(params).
+**  call 'printInfo'(method) with 'i=123,m=bac'(named params)
+**  
+** if no explicit method,then call 'onService'
+** named method expected 'WebMethod' facet, except 'onService'
+**  
 const class ActionMod : WebMod
 {
   const Uri dir;
@@ -21,16 +28,22 @@ const class ActionMod : WebMod
   override Void onService()
   {
     path:=convertPath(req.modRel.path)
+    if(path.size==0){
+      throw Err("path is empty.Maybe some errors on convertPath")
+    }
     onActionFile(path)
   }
 
   private Void onActionFile(Str[] path){
     Type? type
-    if(podName==null){
+    if(podName==null){//find in file
+      
       file:=Uri(dir+path[0]+".fan").toFile
       type = Env.cur.compileScript(file)
-    }else{
-      typeName:=path[0].capitalize
+    }
+    else{//find in pod
+      
+      typeName:=path[0]
       type =Pod.find(podName).type(typeName)
     }
 
@@ -71,6 +84,7 @@ const class ActionMod : WebMod
     }
   }
 
+  //check for @WebMethod facet
   private Bool checkWebMethod(Method m){
     WebMethod? webM:=m.facet(WebMethod#,false)
     if(webM==null || req.method!=webM.type){
@@ -91,19 +105,20 @@ const class ActionMod : WebMod
     }
     return inPath
   }
+  
   **
-  ** trap for check
+  ** return false will cancel
   ** 
   protected virtual Bool beforeInvoke(Type type,Method method){
     return true
   }
-  
+  ** execute
   protected virtual Void onInvoke(Type type,Method method,
                                   Obj[] constructorParams,Obj[] methodParams){
     obj:=type.make(constructorParams)
     method.callOn(obj,methodParams)
   }
-  
+  ** guaranty invoke after onInvoke
   protected virtual Void afterInvoke(Type type,Method method){
   }
 }

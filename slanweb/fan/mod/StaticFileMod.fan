@@ -7,7 +7,10 @@
 //
 using webmod
 using web
-
+**
+** static file service.
+** The all directory and subdirectory is public
+** 
 const class StaticFileMod:WebMod
 {
   const Uri dir

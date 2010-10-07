@@ -42,6 +42,7 @@ const class MyActionMod:ActionMod{
   new make(Uri dir):super(dir){}
   
   protected override Bool beforeInvoke(Type type,Method method){
+    //rejection 'welcome' method
     if(method.name=="welcome")return false
     return true
   }
@@ -50,6 +51,8 @@ const class MyActionMod:ActionMod{
     if(inPath.size==0){
       return ["IndexCtrl"]
     }
+    
+    //suffix Ctrl
     Str[] path:=inPath.dup
     path[0]=(path[0]+"Ctrl").capitalize
     return path

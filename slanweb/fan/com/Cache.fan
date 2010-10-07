@@ -6,7 +6,7 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 using concurrent
-
+** cache for compiler
 const class Cache
 {
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}

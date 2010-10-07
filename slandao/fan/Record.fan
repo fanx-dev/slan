@@ -26,12 +26,12 @@ mixin Record
     ct.delete(this)
   }
   
-  Obj[] select(){
-    ct.select(this)
+  Obj[] select(Str orderby:="",Int offset:=0,Int limit:=20){
+    ct.select(this,orderby,offset,limit)
   }
   
-  Obj? one(){
-    ct.one(this)
+  Obj? one(Str orderby:="",Int offset:=0){
+    ct.one(this,orderby,offset)
   }
   
   Bool exist(){

@@ -8,7 +8,7 @@
 using webmod
 using web
 **
-** only for js file
+** only for pod's javascript file
 **
 const class PodJsMod:WebMod
 {

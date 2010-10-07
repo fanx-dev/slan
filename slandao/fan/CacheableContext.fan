@@ -54,7 +54,7 @@ const class CacheableContext:Context
   ** Transaction will using a temporary cache.
   ** It is named 'tcache' in Actor.locals
   ** 
-  private const static Str tcache:="slandao.CacheContext.tcache"
+  private const static Str tcache:="slandao.CacheableContext.tcache"
   
   ** 
   ** if in the Transaction will return transaction temporary cache,
@@ -159,34 +159,34 @@ const class CacheableContext:Context
   //Query Cache
   ////////////////////////////////////////////////////////////////////////
   
-  protected override Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
-    if(!usingQueryCache)return super.getIdList(obj,orderby,start,num)
+  protected override Obj[] getIdList(Obj obj,Str orderby,Int offset,Int limit){
+    if(!usingQueryCache)return super.getIdList(obj,orderby,offset,limit)
     
-    key:=getKey(obj,orderby,start,num)
+    key:=getKey(obj,orderby,offset,limit)
     if(queryCache.containsKey(key)){
       return queryGet(key)
     }
     
-    ids:= super.getIdList(obj,orderby,start,num)
+    ids:= super.getIdList(obj,orderby,offset,limit)
     querySet(key,ids)
     return ids
   }
-  private Str getKey(Obj obj,Str orderby,Int start,Int num){
+  private Str getKey(Obj obj,Str orderby,Int offset,Int limit){
     sb:= StrBuf()
     sb.out.writeObj(obj)
     type:=obj.typeof
-    return "$type.qname,selectId,$sb.toStr,$orderby,$start,$num"
+    return "$type.qname,selectId,$sb.toStr,$orderby,$offset,$limit"
   }
   
-  override Obj[] getWhereIdList(Type type,Str where,Int start:=0,Int num:=20){
-    if(!usingQueryCache)return super.getWhereIdList(type,where,start,num)
+  override Obj[] getWhereIdList(Type type,Str where,Int offset:=0,Int limit:=20){
+    if(!usingQueryCache)return super.getWhereIdList(type,where,offset,limit)
     
-    key:="$type.qname,selectWhere,$where,$start,$num"
+    key:="$type.qname,selectWhere,$where,$offset,$limit"
     if(queryCache.containsKey(key)){
       return queryGet(key)
     }
     
-    ids:= super.getWhereIdList(type,where,start,num)
+    ids:= super.getWhereIdList(type,where,offset,limit)
     querySet(key,ids)
     return ids
   }
@@ -214,26 +214,28 @@ const class CacheableContext:Context
   
   ** transaction
   override Void trans(|This| f){
-    oauto:=db.autoCommit
-    isNull:=Actor.locals[tcache]==null
-    try{
-      db.autoCommit=false
-      if(isNull){
-        Actor.locals[tcache]=Cache()
-      }
-      
-      f(this)
-      
-      db.commit
-      commitCaheTrans
-      
-    }catch(Err e){
-      db.rollback
-      throw e
-    }finally{
-      db.autoCommit=oauto
-      if(isNull){
-        Actor.locals[tcache]=null
+    use{
+      oauto:=this.db.autoCommit
+      isNull:=Actor.locals[tcache]==null
+      try{
+        this.db.autoCommit=false
+        if(isNull){
+          Actor.locals[tcache]=Cache()
+        }
+        
+        f(this)
+        
+        this.db.commit
+        this.commitCaheTrans
+        
+      }catch(Err e){
+        this.db.rollback
+        throw e
+      }finally{
+        this.db.autoCommit=oauto
+        if(isNull){
+          Actor.locals[tcache]=null
+        }
       }
     }
   }

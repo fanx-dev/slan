@@ -7,9 +7,9 @@
 //
 using web
 **
-** MyWebLet
+** enhanced Weblet.convenience for rendering template.
 **
-abstract class SlanWeblet:Weblet
+mixin SlanWeblet:Weblet
 {
   Void writeContentType(){
     req.session

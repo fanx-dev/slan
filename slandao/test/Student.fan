@@ -28,7 +28,7 @@ internal class Student:Record
   Weekday? loveWeek//enum
   Uri? uri//obj
   
-  @Transient override Context ct:=TestContext.c
+  @Transient override Context ct:=TestConnection.c
 }
 **************************************************************************
 ** for test

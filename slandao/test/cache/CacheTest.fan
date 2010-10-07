@@ -10,14 +10,19 @@
 **
 **
 **
-internal class CacheTest:TestBase
+internal class CacheTest:NewTestBase
 {
+  override Void setup(){
+    log.level=LogLevel.debug
+    c.refreshDatabase
+  }
+  
   Void test(){
-    execute|->|{
-      insert
-      select
-      selectWhere
-      count
+    c.use{
+      this.insert
+      this.select
+      this.selectWhere
+      this.count
     }
   }
   
@@ -58,12 +63,10 @@ internal class CacheTest:TestBase
   ////////////////////////////////////////////////////////////////////////
   
   Void testDelete(){
-    execute|->|{
-      insert
-      stu:=Student{sid=1}.one as Student
-      stu.delete
-      stu2:=Student{sid=1}.one
-      verify(stu2==null)
-    }
+    insert
+    stu:=Student{sid=1}.one as Student
+    stu.delete
+    stu2:=Student{sid=1}.one
+    verify(stu2==null)
   }
 }

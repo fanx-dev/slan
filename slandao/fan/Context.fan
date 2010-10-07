@@ -105,22 +105,22 @@ const class Context
   //select id
   ////////////////////////////////////////////////////////////////////////
   ** select by example
-  Obj[] select(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
-    Obj[] ids:=getIdList(obj,orderby,start,num)
+  Obj[] select(Obj obj,Str orderby:="",Int offset:=0,Int limit:=20){
+    Obj[] ids:=getIdList(obj,orderby,offset,limit)
     return idToObj(obj.typeof,ids)
   }
   ** select by example and get the first one
-  Obj? one(Obj obj,Str orderby:="",Int start:=0,Int num:=20){
-    Obj[] ids:=getIdList(obj,orderby,start,num)
+  Obj? one(Obj obj,Str orderby:="",Int offset:=0){
+    Obj[] ids:=getIdList(obj,orderby,offset,1)
     
     if(ids.size==0)return null
     return findById(obj.typeof,ids[0])
   }
   
-  protected virtual Obj[] getIdList(Obj obj,Str orderby,Int start,Int num){
+  protected virtual Obj[] getIdList(Obj obj,Str orderby,Int offset,Int limit){
     table:=getTable(obj.typeof)
     return ret{
-      this.executor.selectId(table,this.db,obj,orderby,start,num)
+      this.executor.selectId(table,this.db,obj,orderby,offset,limit)
     }
   }
   ** convert id list to object list
@@ -140,15 +140,15 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   
   ** query by condition
-  Obj[] selectWhere(Type type,Str where,Int start:=0,Int num:=20){
-    Obj[]? ids:=getWhereIdList(type,where,start,num)
+  Obj[] selectWhere(Type type,Str where,Int offset:=0,Int limit:=20){
+    Obj[]? ids:=getWhereIdList(type,where,offset,limit)
     return idToObj(type,ids)
   }
   ** query id list by condition
-  protected virtual Obj[] getWhereIdList(Type type,Str where,Int start,Int num){
+  protected virtual Obj[] getWhereIdList(Type type,Str where,Int offset,Int limit){
     table:=getTable(type)
     return ret{
-      this.executor.selectWhere(table,this.db,where,start,num)
+      this.executor.selectWhere(table,this.db,where,offset,limit)
     }
   }
   
@@ -230,8 +230,10 @@ const class Context
   
   ** check the object table is fit to database table
   Bool checkTable(Table table){
-    trow:=this.db.tableRow(table.name)
-    return table.checkMatchDb(trow.cols)
+    return ret|c->Obj?|{
+      trow:=this.db.tableRow(table.name)
+      return table.checkMatchDb(trow.cols)
+    }
   }
   
   **

@@ -10,31 +10,9 @@
 **
 **
 **
-internal class CacheTransaction:TestBase
+internal class CacheTransaction:NewTestBase
 {
-  Void insert(){
-    stu:=Student{
-      name="yjd"
-      age=23
-      married=false
-      weight=55f
-      dt=DateTime.now
-    }.insert
-    verifyEq(stu.sid,1)
-  }
-  
-  ////////////////////////////////////////////////////////////////////////
-  //testErrorTrans
-  ////////////////////////////////////////////////////////////////////////
-  
-  Void testErrorTrans(){
-    execute|->|{
-      insert
-      errorTransaction
-    }
-  }
-  
-  Void errorTransaction(){
+  Void testErrorTransaction(){
     try{
       c.trans{
         Student{sid=1}.select.first->delete
@@ -45,18 +23,7 @@ internal class CacheTransaction:TestBase
     verify(Student{sid=1}.exist)
   }
   
-  ////////////////////////////////////////////////////////////////////////
-  //testSuccessTrans
-  ////////////////////////////////////////////////////////////////////////
-  
-  Void testSuccessTrans(){
-    execute|->|{
-      insert
-      successTransaction
-    }
-  }
-  
-  Void successTransaction(){
+  Void testSuccessTransaction(){
     c.trans{
       Student{sid=1}.select.first->delete
       verifyFalse(Student{sid=1}.exist)

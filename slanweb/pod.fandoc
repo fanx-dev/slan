@@ -78,7 +78,7 @@ named method expected 'WebMethod' facet, except 'onService'
   default class/file is 'index'.
   default method is 'onService'.
   
-if need rewrite url, override the MyActionMod's 'onService' method
+if need rewrite url, override the MyActionMod's 'convertPath' method
   
 Html Template [#htmlTemplate]
 ==============

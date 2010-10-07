@@ -10,12 +10,10 @@
 **
 **
 **
-internal class ContextTest : TestBase
+internal class ContextTest : NewTestBase
 {
   Void testCheck(){
-    execute|->|{
-      pass:=c.checkTable(c.getTable(Student#))
-      verify(pass)
-    }
+    pass:=c.checkTable(c.getTable(Student#))
+    verify(pass)
   }
 }

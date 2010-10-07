@@ -17,7 +17,7 @@ class LogCtrl : SlanWeblet
   
   override Void onGet(){
     writeContentType
-    render(`view/login.html`)
+    render(`view/log/login.html`)
   }
   
   @WebMethod{type="POST"}
@@ -43,7 +43,7 @@ class LogCtrl : SlanWeblet
   @WebMethod
   Void logupView(){
     writeContentType
-    render(`view/logup.html`)
+    render(`view/log/logup.html`)
   }
   
   @WebMethod{type="POST"}

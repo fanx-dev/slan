@@ -10,30 +10,12 @@
 **
 **
 **
-internal class TransactionTest:TestBase
+internal class TransactionTest:NewTestBase
 {
-  Void test(){
-    execute|->|{
-      insert
-      transaction
-    }
-  }
-  
-  Void insert(){
-    stu:=Student{
-      name="yjd"
-      age=23
-      married=false
-      weight=55f
-      dt=DateTime.now
-    }.insert
-    verifyEq(stu.sid,1)
-  }
-  
-  Void transaction(){
+  Void testTransaction(){
     try{
       c.trans{
-        Student{sid=1}.select.first->delete
+        Student{sid=1}.one->delete
         verifyFalse(Student{sid=1}.exist)
         throw Err("test transaction")
       }

@@ -25,10 +25,8 @@ const class PostService : MyContext
   }
   
   Void delete(Str userId,Int postId){
-    c.use{
-      c.trans{
-        Post.get(postId).deleteMe
-      }
+    c.trans{
+      Post.get(postId).deleteMe
     }
   }
 }

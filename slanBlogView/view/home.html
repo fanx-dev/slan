@@ -7,7 +7,7 @@
 	#Obj[] list:=s["postList"]
 	#list.each{
 		#s["post"]=it
-		#render(`view/postTag.html`)
+		#render(`view/tag/postTag.html`)
 	#}
 
 	#if(s["curUser"]==req.session["user"]){
