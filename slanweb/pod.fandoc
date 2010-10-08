@@ -44,11 +44,11 @@ SlanRouteMod has a errorPage ,default is 'error.html'
 
 Run Model[#runModel]
 ==========
-default runing on the file model.
-file model is instant for change.
+default runing on the script mode.
+script modeis instant for change.
 
 using 'Config.instance.podName=Main#.pod.name' before run service,
-it will run as pod model.
+it will run as pod mode.
 
 Authorized [#authorized]
 ==========
