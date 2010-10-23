@@ -14,17 +14,23 @@ using web
 **  call 'printInfo'(method) with 'i=123,m=bac'(named params)
 **  
 ** if no explicit method,then call 'onService'
-** named method expected 'WebMethod' facet, except 'onService'
-**  
-const class ActionMod : WebMod
+**
+const class ActionMod : WebMod,SlanWeblet
 {
-  const Uri dir;
-  const Str? podName;
+  const Uri dir//action directory
+  const Str? podName//current pod name
+  const Str viewDir//view directory
   
-  new make(Uri dir){
+  **
+  ** idr:action directory
+  ** viewDir:view directory
+  ** 
+  new make(Uri dir,Str viewDir:="view"){
     this.dir=dir
+    this.viewDir=viewDir
     this.podName=Config.instance.podName
   }
+  
   override Void onService()
   {
     path:=convertPath(req.modRel.path)
@@ -78,18 +84,34 @@ const class ActionMod : WebMod
     try{
       onInvoke(type,method,constructorParams,methodParams)
     }catch(Err e){
-      throw Err("call method error : name $method.qname,
+      throw Err("call method error : name $type.name#$method.name,
                   on $constructorParams,with $methodParams",e)
     }finally{
       afterInvoke(type,method)
     }
   }
   
-  ** execute
+  ** 
+  ** call method.
+  ** 
+  ** if not committed:
+  ** - on GET render view at view/typename/method.html.
+  ** - on POST(or others) just back
+  ** 
   private Void onInvoke(Type type,Method method,
-                                  Obj[] constructorParams,Obj[] methodParams){
+                        Obj[] constructorParams,Obj[] methodParams){
     obj:=type.make(constructorParams)
     method.callOn(obj,methodParams)
+                          
+    //if not committed
+    if(!res.isCommitted){
+      if(req.method=="GET"){
+        writeContentType
+        this.render("$viewDir/$type.name/${getMethodName(method)}.html".toUri)
+      }else{
+        back
+      }
+    }
   }
 
   //check for WebMethod facet
@@ -99,6 +121,11 @@ const class ActionMod : WebMod
     if (req.method=="GET") return m.hasFacet(WebGet#)
     if (req.method=="POST") return m.hasFacet(WebPost#)
     return true
+  }
+  
+  private Str getMethodName(Method method){
+    if(method.name!="onService")return method.name
+    return "on"+req.method.lower.capitalize
   }
   
   ////////////////////////////////////////////////////////////////////////

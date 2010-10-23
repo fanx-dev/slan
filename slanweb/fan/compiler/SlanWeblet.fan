@@ -42,4 +42,27 @@ mixin SlanWeblet:Weblet
   Str:Obj? s(){
     req.stash
   }
+  
+  ** go back to referer uri
+  Void back(){
+    Str uri:=req.headers["Referer"]
+    res.redirect(uri.toUri)
+  }
+  
+  ** convert method to uri
+  Uri toUri(Type type,Str? id:=null,Method? method:=null){
+    uri:="action/$type.name"
+    if(id!=null){
+      uri+="/$id"
+    }
+    if(method!=null){
+      uri+="/$method.name"
+    }
+    return uri.toUri
+  }
+  
+  ** #toUri and res.redirect
+  Void redirect(Type type,Str? id:=null,Method? method:=null){
+    res.redirect(toUri(type,id,method))
+  }
 }
