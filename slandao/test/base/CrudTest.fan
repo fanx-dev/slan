@@ -12,8 +12,8 @@ using sql
 internal class CrudTest:NewTestBase
 {
   override Void setup(){
-    log.level=LogLevel.debug
     c.refreshDatabase
+    log.level=LogLevel.debug
   }
   
   Void test(){
@@ -46,7 +46,7 @@ internal class CrudTest:NewTestBase
   }
   
   Void select(){
-    n:=Student{weight=55f}.select.size
+    n:=Student{weight=55f}.list.size
     verifyEq(n,2)
     
     Student stu:=Student{sid=1}.one
@@ -55,7 +55,7 @@ internal class CrudTest:NewTestBase
     Student stu2:=c.findById(Student#,2)
     verifyEq(stu2.name,"yqq")
     
-    Student[] stus:=c.selectWhere(Student#,"StudentAge>23")
+    Student[] stus:=c.select(Student#,"where StudentAge>23")
     verifyEq(stus.size,1)
   }
   
@@ -64,13 +64,13 @@ internal class CrudTest:NewTestBase
     stu.married=true
     stu.update
     
-    Student stu2:=Student{sid=1}.select.first
+    Student stu2:=Student{sid=1}.list.first
     verifyEq(stu2.married,true)
   }
   
   Void delete(){
     Student stu:=Student{sid=1}.one
-    stu.delete
+    stu.deleteByExample
     
     exist:=Student{sid=1}.exist
     verifyEq(exist,false)

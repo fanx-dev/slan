@@ -116,27 +116,35 @@ const class CacheableContext:Context
 
   override Void insert(Obj obj){
     super.insert(obj)
-    table:=getTable(obj.typeof)
-    set(objKey(obj),obj)
+    set(objIdKey(obj),obj)
     clearQueryCache(obj.typeof)
   }
-  
+  ** update by id
   override Void update(Obj obj){
     super.update(obj)
-    table:=getTable(obj.typeof)
-    set(objKey(obj),obj)
+    set(objIdKey(obj),obj)
+    clearQueryCache(obj.typeof)
+  }
+  ** delete by example
+  override Void deleteByExample(Obj obj){
+    super.deleteByExample(obj)
+    set(objIdKey(obj),null)
     clearQueryCache(obj.typeof)
   }
   
-  override Void delete(Obj obj){
-    super.delete(obj)
-    table:=getTable(obj.typeof)
-    set(objKey(obj),null)
-    clearQueryCache(obj.typeof)
+  override Void deleteById(Type type,Obj id){
+    super.deleteById(type,id)
+    set(idToKey(type,id),null)
+    clearQueryCache(type)
   }
   
-  private Str objKey(Obj obj){
+  ** get object id as key
+  private Str objIdKey(Obj obj){
     obj.typeof.qname+","+getId(obj)
+  }
+  
+  private Str idToKey(Type type,Obj id){
+    return type.qname+","+id
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -145,7 +153,7 @@ const class CacheableContext:Context
   
   override Obj? findById(Type type,Obj id){
     table:=getTable(type)
-    key:=type.qname+","+id
+    key:=idToKey(type,id)
     if(this.containsKey(key)){
       return get(key)
     }
@@ -162,7 +170,10 @@ const class CacheableContext:Context
   protected override Obj[] getIdList(Obj obj,Str orderby,Int offset,Int limit){
     if(!usingQueryCache)return super.getIdList(obj,orderby,offset,limit)
     
-    key:=getKey(obj,orderby,offset,limit)
+    table:=getTable(obj.typeof)
+    sb:=table.makeKey(obj)
+    key:="${obj.typeof.qname},selectId,$sb,$orderby,$offset,$limit"
+    
     if(queryCache.containsKey(key)){
       return queryGet(key)
     }
@@ -171,33 +182,27 @@ const class CacheableContext:Context
     querySet(key,ids)
     return ids
   }
-  private Str getKey(Obj obj,Str orderby,Int offset,Int limit){
-    sb:= StrBuf()
-    sb.out.writeObj(obj)
-    type:=obj.typeof
-    return "$type.qname,selectId,$sb.toStr,$orderby,$offset,$limit"
-  }
   
-  override Obj[] getWhereIdList(Type type,Str where,Int offset:=0,Int limit:=20){
-    if(!usingQueryCache)return super.getWhereIdList(type,where,offset,limit)
+  override Obj[] getWhereIdList(Type type,Str condition,Int offset:=0,Int limit:=20){
+    if(!usingQueryCache)return super.getWhereIdList(type,condition,offset,limit)
     
-    key:="$type.qname,selectWhere,$where,$offset,$limit"
+    key:="$type.qname,selectWhere,$condition,$offset,$limit"
     if(queryCache.containsKey(key)){
       return queryGet(key)
     }
     
-    ids:= super.getWhereIdList(type,where,offset,limit)
+    ids:= super.getWhereIdList(type,condition,offset,limit)
     querySet(key,ids)
     return ids
   }
-  
+  ** count by example
   override Int count(Obj obj){
     if(!usingQueryCache)return super.count(obj)
     
-    sb:= StrBuf()
-    sb.out.writeObj(obj)
     type:=obj.typeof
-    key:="$type.qname,count,$sb.toStr"
+    table:=getTable(type)
+    sb:=table.makeKey(obj)
+    key:="$type.qname,count,$sb"
     
     if(queryCache.containsKey(key)){
       return queryGet(key)

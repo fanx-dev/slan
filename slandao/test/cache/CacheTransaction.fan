@@ -15,7 +15,7 @@ internal class CacheTransaction:NewTestBase
   Void testErrorTransaction(){
     try{
       c.trans{
-        Student{sid=1}.select.first->delete
+        Student{sid=1}.list.first->delete
         verifyFalse(Student{sid=1}.exist)
         throw Err("test transaction")
       }
@@ -25,7 +25,7 @@ internal class CacheTransaction:NewTestBase
   
   Void testSuccessTransaction(){
     c.trans{
-      Student{sid=1}.select.first->delete
+      Student{sid=1}.list.first->deleteByExample
       verifyFalse(Student{sid=1}.exist)
     }
     verifyFalse(Student{sid=1}.exist)

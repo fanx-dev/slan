@@ -13,12 +13,12 @@
 class LimitQueryTest : NewTestBase
 {
   Void testLimit(){
-    ps:=Student{}.select("",0,3)
+    ps:=Student{}.list("",0,3)
     verifyEq(ps.size,3)
   }
   
   Void testLimitAndOffset(){
-    ps:=Student{}.select("",2,10)
+    ps:=Student{}.list("",2,10)
     verifyEq(ps.size,2)
   }
   

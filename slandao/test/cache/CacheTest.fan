@@ -13,8 +13,8 @@
 internal class CacheTest:NewTestBase
 {
   override Void setup(){
-    log.level=LogLevel.debug
     c.refreshDatabase
+    log.level=LogLevel.debug
   }
   
   Void test(){
@@ -42,14 +42,14 @@ internal class CacheTest:NewTestBase
   ////////////////////////////////////////////////////////////////////////
   
   Void select(){
-    stu:=Student{sid=1}.select.first
-    stu2:=Student{sid=1}.select.first
+    stu:=Student{sid=1}.list.first
+    stu2:=Student{sid=1}.list.first
     stu3:=Student{sid=1}.one
   }
   
   Void selectWhere(){
-    stu:=c.selectWhere(Student#,"StudentAge>20")
-    stu2:=c.selectWhere(Student#,"StudentAge>20")
+    stu:=c.select(Student#,"where StudentAge>20")
+    stu2:=c.select(Student#,"where StudentAge>20")
   }
   
   Void count(){
@@ -65,7 +65,7 @@ internal class CacheTest:NewTestBase
   Void testDelete(){
     insert
     stu:=Student{sid=1}.one as Student
-    stu.delete
+    stu.deleteByExample
     stu2:=Student{sid=1}.one
     verify(stu2==null)
   }

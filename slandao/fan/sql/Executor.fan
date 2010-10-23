@@ -45,6 +45,7 @@ internal const class Executor
   //do where
   ////////////////////////////////////////////////////////////////////////
   
+  ** select data list
   Obj[] select(Table table,SqlService db,Obj obj,Str orderby){
     sql:="select * "+whereMaker.getSql(table,obj)
     if(orderby!="")sql+=" "+orderby
@@ -60,6 +61,7 @@ internal const class Executor
     return list
   }
   
+  ** select id list
   Obj[] selectId(Table table,SqlService db,Obj obj,Str orderby,Int start,Int num){
     sql:="select $table.id.name "+whereMaker.getSql(table,obj)
     if(orderby!="")sql+=" "+orderby
@@ -82,8 +84,11 @@ internal const class Executor
     return list
   }
   
-  Obj[] selectWhere(Table table,SqlService db,Str where,Int start,Int num){
-    sql:="select $table.id.name from $table.name where $where"
+  ** select by condition and get id list
+  Obj[] selectWhere(Table table,SqlService db,Str condition,Int start,Int num){
+    sql:="select $table.id.name from $table.name"
+    if(condition!="")sql+=" "+condition
+    
     if(log.isDebug){
       log.debug(sql)
     }
@@ -117,6 +122,7 @@ internal const class Executor
     n:=r[r.cols[0]]
     return n
   }
+  ** query by example condition
   Row[] queryWhere(Table table,SqlService db,Obj obj,Str before,Str after){
     sql:=before+" "+whereMaker.getSql(table,obj);
     if(after!="")sql+=" "+after
@@ -185,6 +191,7 @@ internal const class Executor
     db.sql(sql).execute()
   }
   
+  ** drop all table in database
   Void clearDatabase(SqlService db){
     Str[] tables := db.tables.dup
     while (tables.size != 0)

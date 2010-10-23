@@ -12,17 +12,20 @@
 internal const class WhereMaker
 {
   Str getSql(Table table,Obj obj){
-    sql:=StrBuf()
-    sql.add("from $table.name where")
-    
+    from:="from $table.name"
+    condition:=StrBuf()
     table.columns.each{
       if(it.field.get(obj)!=null){
-        sql.add(" $it.name=@$it.name and")
+        condition.add("$it.name=@$it.name and ")
       }
     }
     
-    sql.removeRange(Range.makeInclusive(sql.size-4,-1))
-    return sql.toStr
+    if(condition.size==0){
+      return from
+    }
+    
+    condition.removeRange(Range.makeInclusive(condition.size-5,-1))
+    return "$from where $condition"
   }
   
   Str:Obj getParam(Table table,Obj obj){

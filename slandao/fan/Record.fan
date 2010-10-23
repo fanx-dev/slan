@@ -22,18 +22,24 @@ mixin Record
     return this
   }
   
-  Void delete(){
-    ct.delete(this)
+  Void deleteByExample(){
+    ct.deleteByExample(this)
   }
   
-  Obj[] select(Str orderby:="",Int offset:=0,Int limit:=20){
-    ct.select(this,orderby,offset,limit)
+  ** delete by id
+  Void delete(){
+    ct.deleteById(this.typeof,ct.getId(this))
+  }
+  
+  Obj[] list(Str orderby:="",Int offset:=0,Int limit:=20){
+    ct.list(this,orderby,offset,limit)
   }
   
   Obj? one(Str orderby:="",Int offset:=0){
     ct.one(this,orderby,offset)
   }
   
+  ** no cache
   Bool exist(){
     ct.exist(this)
   }
@@ -42,6 +48,7 @@ mixin Record
     ct.count(this)
   }
   
+  ** insert or update
   This save(){
     ct.save(this)
     return this

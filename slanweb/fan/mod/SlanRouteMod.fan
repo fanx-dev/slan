@@ -62,13 +62,18 @@ const class SlanRouteMod : WebMod
     try{
       doService
     }catch(Err err){
-      if(req.absUri.host=="localhost" || req.uri.relToAuth==errorPage){
+      if(req.absUri.host=="localhost"){
         //dump errInfo
         if(res.isCommitted){
           res.out.print("ERROR: $req.uri<br/>")
           res.out.w(err.traceToStr.replace("\n","<br/>"))
         }
         throw err
+      }else if(req.uri.relToAuth==errorPage){
+        if(!res.isCommitted){
+          res.headers["Content-Type"] = "text/html; charset=utf-8"
+        }
+        res.out.w("sorry! don't find error page $errorPage .by slanweb")
       }else{
         err.trace
         this.res.redirect(errorPage)

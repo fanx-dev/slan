@@ -24,11 +24,11 @@ mixin SlanWeblet:Weblet
   }
 
   ** compile js file ,and set to req.stash["SlanWeblet.compileJs"]
-  Void compileJs(Uri fwt){
+  Void compileJs(Uri fwt,Str name:="SlanWeblet.compileJs"){
     file :=Config.getUri(fwt).get
     strBuf:=StrBuf()
     JsCompiler.render(WebOutStream(strBuf.out),file)
-    req.stash["SlanWeblet.compileJs"]=strBuf.toStr
+    req.stash[name]=strBuf.toStr
   }
   
   ** render fwt

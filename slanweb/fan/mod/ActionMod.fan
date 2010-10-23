@@ -84,13 +84,20 @@ const class ActionMod : WebMod
       afterInvoke(type,method)
     }
   }
+  
+  ** execute
+  private Void onInvoke(Type type,Method method,
+                                  Obj[] constructorParams,Obj[] methodParams){
+    obj:=type.make(constructorParams)
+    method.callOn(obj,methodParams)
+  }
 
-  //check for @WebMethod facet
+  //check for WebMethod facet
   private Bool checkWebMethod(Method m){
-    WebMethod? webM:=m.facet(WebMethod#,false)
-    if(webM==null || req.method!=webM.type){
-      return false
-    }
+    if (!m.isPublic) return false
+    if (m.facets.size==0) return true
+    if (req.method=="GET") return m.hasFacet(WebGet#)
+    if (req.method=="POST") return m.hasFacet(WebPost#)
     return true
   }
   
@@ -113,12 +120,7 @@ const class ActionMod : WebMod
   protected virtual Bool beforeInvoke(Type type,Method method){
     return true
   }
-  ** execute
-  protected virtual Void onInvoke(Type type,Method method,
-                                  Obj[] constructorParams,Obj[] methodParams){
-    obj:=type.make(constructorParams)
-    method.callOn(obj,methodParams)
-  }
+  
   ** guaranty invoke after onInvoke
   protected virtual Void afterInvoke(Type type,Method method){
   }
@@ -128,6 +130,9 @@ const class ActionMod : WebMod
 ** facet
 **************************************************************************
 
-facet class WebMethod {
-  const Str type:="GET"
+** http request method 'GET'
+facet class WebGet {
+}
+** http request method 'POST'
+facet class WebPost {
 }

@@ -67,6 +67,21 @@ const class Table
     return obj
   }
   
+  ** 
+  ** make string from object for cache key
+  ** 
+  Str makeKey(Obj obj){
+    condition:=StrBuf()
+    columns.each |Column c|{
+      value:=c.getValue(obj)
+      if(value!=null){
+        condition.add("$c.name=$value&")
+      }
+    }
+    
+    return condition.toStr
+  }
+  
   **
   ** check model is match the database
   ** 

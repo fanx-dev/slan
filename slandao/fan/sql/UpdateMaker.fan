@@ -12,9 +12,9 @@ internal const class UpdateMaker
     sql.add("update $table.name set ")
     
     table.nonIdColumn{
-      if(it.field.get(obj)!=null){
+      //if(it.field.get(obj)!=null){
         sql.add("$it.name=@$it.name,")
-      }
+      //}
     }
     
     Utils.removeLastChar(sql).add(" where ")
@@ -24,12 +24,12 @@ internal const class UpdateMaker
   }
   
   Str:Obj getParam(Table table,Obj obj){
-    Str:Obj param:=[:]
+    Str:Obj? param:=[:]
     table.columns.each|Column c|{
       value:=c.getValue(obj)
-      if(value!=null){
+      //if(value!=null){
         param[c.name]=value
-      }
+      //}
     }
     return param
   }

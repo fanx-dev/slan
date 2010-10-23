@@ -1,1 +1,0 @@
-fan startup.fan

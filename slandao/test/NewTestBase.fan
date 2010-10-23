@@ -16,9 +16,9 @@ class NewTestBase : Test,TestConnection
   LogLevel defaultLevel:=log.level
   
   override Void setup(){
-    log.level=LogLevel.debug
     c.refreshDatabase
     DataFixture.init
+    log.level=LogLevel.debug
   }
   
   override Void teardown(){

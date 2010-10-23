@@ -17,7 +17,6 @@ class TableView : SlanWeblet
     renderFwt(`fwt/TableFwt.fan`)
   }
   
-  @WebMethod
   Void data(){
     writeContentType
     

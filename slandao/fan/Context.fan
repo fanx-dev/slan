@@ -79,13 +79,14 @@ const class Context
   //execute write
   ////////////////////////////////////////////////////////////////////////
   
-  ** insert this a obj to database
+  ** insert this obj to database
   virtual Void insert(Obj obj){
     table:=getTable(obj.typeof)
     use{
     this.executor.insert(table,this.db,obj)
     }
   }
+  
   ** update by id
   virtual Void update(Obj obj){
     table:=getTable(obj.typeof)
@@ -93,19 +94,29 @@ const class Context
     this.executor.update(table,this.db,obj)
     }
   }
+  
   ** delete by example
-  virtual Void delete(Obj obj){
+  virtual Void deleteByExample(Obj obj){
     table:=getTable(obj.typeof)
     use{
     this.executor.delete(table,this.db,obj)
     }
   }
   
+  ** delete by id
+  virtual Void deleteById(Type type,Obj id){
+    table:=getTable(type)
+    use{
+    this.executor.removeById(table,this.db,id)
+    }
+  }
+  
   ////////////////////////////////////////////////////////////////////////
   //select id
   ////////////////////////////////////////////////////////////////////////
+  
   ** select by example
-  Obj[] select(Obj obj,Str orderby:="",Int offset:=0,Int limit:=20){
+  Obj[] list(Obj obj,Str orderby:="",Int offset:=0,Int limit:=20){
     Obj[] ids:=getIdList(obj,orderby,offset,limit)
     return idToObj(obj.typeof,ids)
   }
@@ -140,15 +151,15 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
   
   ** query by condition
-  Obj[] selectWhere(Type type,Str where,Int offset:=0,Int limit:=20){
-    Obj[]? ids:=getWhereIdList(type,where,offset,limit)
+  Obj[] select(Type type,Str condition,Int offset:=0,Int limit:=20){
+    Obj[]? ids:=getWhereIdList(type,condition,offset,limit)
     return idToObj(type,ids)
   }
   ** query id list by condition
-  protected virtual Obj[] getWhereIdList(Type type,Str where,Int offset,Int limit){
+  protected virtual Obj[] getWhereIdList(Type type,Str condition,Int offset,Int limit){
     table:=getTable(type)
     return ret{
-      this.executor.selectWhere(table,this.db,where,offset,limit)
+      this.executor.selectWhere(table,this.db,condition,offset,limit)
     }
   }
   
@@ -179,7 +190,7 @@ const class Context
     }
   }
   
-  ** exist by example,this op noCache
+  ** exist by example,this operate noCache
   Bool exist(Obj obj){
     table:=getTable(obj.typeof)
     n:= ret{this.executor.count(table,this.db,obj)}

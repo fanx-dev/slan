@@ -23,27 +23,24 @@ class Welcome : SlanWeblet
     render(`view/body.html`)
   }
 
-  **hide by MyActionMod
-  @WebMethod
+  @WebGet
   Void welcome(){
     writeContentType
     req.stash["name"]=id
     render(`view/welcome.html`)
   }
   
-  @WebMethod
   Void fwt(){
     writeContentType
     renderFwt(`fwt/hello.fwt`)
   }
 
-  @WebMethod
   Void printInfo(Int i,Str? m){
     writeContentType
     res.out.w("$id,$i,$m")
   }
 
-  @WebMethod{type="POST"}
+  @WebPost
   Void printInfo3(Int i,Str m){
     writeContentType
     res.out.w("$id,$i,$m")
