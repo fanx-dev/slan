@@ -12,7 +12,7 @@
 @Serializable
 internal class Student:Record
 {
-  @Id{auto=true} 
+  @Id
   Int? sid
   
   Str? name
@@ -26,9 +26,9 @@ internal class Student:Record
   Str? description//text
   
   Weekday? loveWeek//enum
-  Uri? uri//obj
+  Uri[]? uri//obj
   
-  @Transient override Context ct:=TestConnection.c
+  @Transient override Context context:=TestConnection.c
 }
 **************************************************************************
 ** for test

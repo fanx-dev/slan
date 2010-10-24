@@ -26,6 +26,8 @@ const abstract class Column
   ** field type is primitive ,like Int,Float,Str,DateTime...
   const Bool isPrimitive
   
+  private static const Log log:=Column#.typeof.pod.log
+  
   new make(Field field,Str? name:=null,Int? m:=null,Int? d:=null){
     this.field=field
     this.name=name?:field.parent.name+field.name.capitalize
@@ -36,7 +38,7 @@ const abstract class Column
     isPrimitive=isPrimitiveType(field.type)
     if(!isPrimitive){
       if(!field.type.hasFacet(Serializable#)){
-        throw MappingErr("field $field.name must be primitiveType or Serializable.
+        log.warn("field $field.name must be primitiveType or Serializable.
                           please using @Transient for Ignore")
       }
     }

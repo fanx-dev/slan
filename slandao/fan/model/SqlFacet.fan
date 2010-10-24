@@ -11,9 +11,14 @@
 ** 
 facet class Id
 {
-  const Bool auto:=false
+  const Bool? generate:=null
 }
 
+**
+** long string
+** 
+facet class Text{
+}
 **
 ** extend extra parameter
 ** 

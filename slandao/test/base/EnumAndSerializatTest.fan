@@ -39,11 +39,11 @@ internal class EnumAndSerializatTest:NewTestBase
       married=false
       weight=55f
       dt=DateTime.now
-      uri=`http://slandao`
+      uri=[`http://slandao`]
     }.insert.sid
   
     c.clearCache
     Student stu2:=Student{sid=id}.one
-    verifyEq(stu2.uri,`http://slandao`)
+    verifyEq(stu2.uri,[`http://slandao`])
   }
 }

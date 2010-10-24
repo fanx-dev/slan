@@ -10,47 +10,64 @@
 ** 
 mixin Record
 {
-  abstract Context ct()
+  abstract Context context()
   
   This insert(){
-    ct.insert(this)
+    context.insert(this)
     return this
   }
   
   This update(){
-    ct.update(this)
+    context.update(this)
     return this
   }
   
   Void deleteByExample(){
-    ct.deleteByExample(this)
+    context.deleteByExample(this)
   }
   
   ** delete by id
   Void delete(){
-    ct.deleteById(this.typeof,ct.getId(this))
+    context.deleteById(this.typeof,context.getId(this))
   }
   
   Obj[] list(Str orderby:="",Int offset:=0,Int limit:=20){
-    ct.list(this,orderby,offset,limit)
+    context.list(this,orderby,offset,limit)
   }
   
   Obj? one(Str orderby:="",Int offset:=0){
-    ct.one(this,orderby,offset)
+    context.one(this,orderby,offset)
   }
   
   ** no cache
   Bool exist(){
-    ct.exist(this)
+    context.exist(this)
   }
   
   Int count(){
-    ct.count(this)
+    context.count(this)
   }
   
   ** insert or update
   This save(){
-    ct.save(this)
+    context.save(this)
     return this
+  }
+  
+  ////////////////////////////////////////////////////////////////////////
+  // static method
+  ////////////////////////////////////////////////////////////////////////
+
+  ** static
+  Obj[] select(Str where,Int offset:=0,Int limit:=20){
+    context.select(this.typeof,where,offset)
+  }
+  ** static
+  Obj? findById(Obj id){
+    context.findById(this.typeof,id)
+  }
+  ** static
+  Void deleteById(Obj id){
+    context.deleteById(this.typeof,id)
   }
 }

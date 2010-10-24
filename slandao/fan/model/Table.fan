@@ -17,6 +17,7 @@ const class Table
   const Str name
   const Int idIndex
   const Bool autoGenerateId
+  
   private const Log log:=Pod.of(this).log
   
   new make(|This| f){
@@ -119,17 +120,28 @@ const class Table
     Bool generateId:=false
     
     type.fields.each|Field f|{
-      if(!f.hasFacet(Transient#) && !f.isStatic){
+      //once method hide field that end with '$Store'
+      if(!f.hasFacet(Transient#) && !f.isStatic && !f.name.endsWith("\$Store")){
         if(f.hasFacet(Colu#)){
           Colu c:=f.facet(Colu#)
           cs.add(dialect.createColumn(f,c.name,c.m,c.d))
+        }else if(f.hasFacet(Text#)){
+          cs.add(dialect.createColumn(f,null,1024))
         }else{
           cs.add(dialect.createColumn(f))
         }
         if(f.hasFacet(Id#)){
           id=cs.size-1
           Id idFacet:=f.facet(Id#)
-          generateId=idFacet.auto
+          
+          //get autoGenerate strategy
+          if(idFacet.generate!=null){
+            generateId=idFacet.generate
+          }else{
+            if(f.type.toNonNullable==Int#){
+              generateId=true
+            }
+          }
         }
       }
     }

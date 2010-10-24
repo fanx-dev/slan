@@ -18,7 +18,7 @@ const class Context
   const Type:Table tables
   ** power of sql
   private const Executor executor:=Executor()
-  private const Log log:=Pod.of(this).log
+  private static const Log log:=Context#.typeof.pod.log
   
   new make(SqlService db,Type:Table tables){
     this.db=db
@@ -53,10 +53,18 @@ const class Context
   ** using connection finally will close.
   ** return a result than #use
   ** 
-  Obj? ret(|Context->Obj?| f){
+  Obj? ret(Bool transaction,|Context->Obj?| f){
     try
     {
       db.open
+      
+      Obj? result
+      if(transaction){
+        this.trans{
+          result=f(this)
+        }
+        return result
+      }
       return f(this)
     }
     catch (Err e)
@@ -69,10 +77,10 @@ const class Context
     }
   }
   **
-  ** using connection finally will close
+  ** using connection finally will close,no transaction
   ** 
   Void use(|This| f){
-    ret(f)
+    ret(false,f)
   }
   
   ////////////////////////////////////////////////////////////////////////
@@ -130,7 +138,7 @@ const class Context
   
   protected virtual Obj[] getIdList(Obj obj,Str orderby,Int offset,Int limit){
     table:=getTable(obj.typeof)
-    return ret{
+    return ret(false){
       this.executor.selectId(table,this.db,obj,orderby,offset,limit)
     }
   }
@@ -158,7 +166,7 @@ const class Context
   ** query id list by condition
   protected virtual Obj[] getWhereIdList(Type type,Str condition,Int offset,Int limit){
     table:=getTable(type)
-    return ret{
+    return ret(false){
       this.executor.selectWhere(table,this.db,condition,offset,limit)
     }
   }
@@ -169,7 +177,7 @@ const class Context
   
   virtual Obj? findById(Type type,Obj id){
     table:=getTable(type)
-    return ret{
+    return ret(false){
       this.executor.findById(table,this.db,id)
     }
   }
@@ -185,7 +193,7 @@ const class Context
   ** count by example
   virtual Int count(Obj obj){
     table:=getTable(obj.typeof)
-    return ret{
+    return ret(false){
       this.executor.count(table,this.db,obj)
     }
   }
@@ -193,7 +201,7 @@ const class Context
   ** exist by example,this operate noCache
   Bool exist(Obj obj){
     table:=getTable(obj.typeof)
-    n:= ret{this.executor.count(table,this.db,obj)}
+    n:= ret(false){this.executor.count(table,this.db,obj)}
     return n>0
   }
   
@@ -234,14 +242,14 @@ const class Context
   
   Bool tableExists(Type type){
     table:=getTable(type)
-    return ret{
+    return ret(false){
       this.db.tableExists(table.name)
     }
   }
   
   ** check the object table is fit to database table
   Bool checkTable(Table table){
-    return ret|c->Obj?|{
+    return ret(false)|c->Obj?|{
       trow:=this.db.tableRow(table.name)
       return table.checkMatchDb(trow.cols)
     }
