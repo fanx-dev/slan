@@ -6,17 +6,44 @@
 //   2010-9-22  Yang Jiandong  Creation
 //
 using web
+using concurrent
 **
 ** enhanced Weblet.convenience for rendering template.
 **
-mixin SlanWeblet:Weblet
+mixin SlanWeblet
 {
-  ** text/html; charset=utf-8
-  Void writeContentType(){
-    req.session
-    res.headers["Content-Type"] = "text/html; charset=utf-8"
+//////////////////////////////////////////////////////////////////////////
+// Request/Response
+//////////////////////////////////////////////////////////////////////////
+  
+  **
+  ** The WebReq instance for this current web request.  Raise an exception
+  ** if the current actor thread is not serving a web request.
+  **
+  WebReq req()
+  {
+    try
+      return Actor.locals["web.req"]
+    catch (NullErr e)
+      throw Err("No web request active in thread")
   }
 
+  **
+  ** The WebRes instance for this current web request.  Raise an exception
+  ** if the current actor thread is not serving a web request.
+  **
+  WebRes res()
+  {
+    try
+      return Actor.locals["web.res"]
+    catch (NullErr e)
+      throw Err("No web request active in thread")
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// template method
+//////////////////////////////////////////////////////////////////////////
+  
   ** render the template
   Void render(Uri fsp,|->|? lay:=null){
     file :=Config.getUri(fsp).get
@@ -37,6 +64,16 @@ mixin SlanWeblet:Weblet
     writeContentType
     JsCompiler.render(res.out,file,[:])
   }
+
+//////////////////////////////////////////////////////////////////////////
+// template method
+//////////////////////////////////////////////////////////////////////////
+  
+  ** text/html; charset=utf-8
+  Void writeContentType(){
+    req.session
+    res.headers["Content-Type"] = "text/html; charset=utf-8"
+  }
   
   ** convenience for req.stash
   Str:Obj? s(){
@@ -51,7 +88,7 @@ mixin SlanWeblet:Weblet
   
   ** convert method to uri
   Uri toUri(Type type,Str? id:=null,Method? method:=null){
-    uri:="action/$type.name"
+    uri:="/action/$type.name"
     if(id!=null){
       uri+="/$id"
     }

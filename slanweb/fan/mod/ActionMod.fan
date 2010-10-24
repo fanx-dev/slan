@@ -15,11 +15,11 @@ using web
 **  
 ** if no explicit method,then call 'onService'
 **
-const class ActionMod : WebMod,SlanWeblet
+const class ActionMod : WebMod
 {
   const Uri dir//action directory
   const Str? podName//current pod name
-  const Str viewDir//view directory
+  const DefaultWeblet defaultWeblet
   
   **
   ** idr:action directory
@@ -27,7 +27,7 @@ const class ActionMod : WebMod,SlanWeblet
   ** 
   new make(Uri dir,Str viewDir:="view"){
     this.dir=dir
-    this.viewDir=viewDir
+    defaultWeblet=DefaultWeblet(viewDir)
     this.podName=Config.instance.podName
   }
   
@@ -63,7 +63,7 @@ const class ActionMod : WebMod,SlanWeblet
     params:=type.method("make").params
     //find method
     noMethod:=(params.size>=path.size-1)
-    methodName:=noMethod?"onService":path[1+params.size]
+    methodName:=noMethod?getMethodName:path[1+params.size]
     method:=type.method(methodName)
 
     //two check
@@ -71,7 +71,7 @@ const class ActionMod : WebMod,SlanWeblet
       if(!res.isCommitted)res.sendErr(401)
       return
     }
-    if(!noMethod && !checkWebMethod(method)){
+    if(!checkWebMethod(method)){
       res.sendErr(405)
       return
     }
@@ -90,30 +90,20 @@ const class ActionMod : WebMod,SlanWeblet
       afterInvoke(type,method)
     }
   }
-  
   ** 
   ** call method.
   ** 
-  ** if not committed:
-  ** - on GET render view at view/typename/method.html.
-  ** - on POST(or others) just back
-  ** 
-  private Void onInvoke(Type type,Method method,
+  Void onInvoke(Type type,Method method,
                         Obj[] constructorParams,Obj[] methodParams){
     obj:=type.make(constructorParams)
     method.callOn(obj,methodParams)
-                          
-    //if not committed
+    
+    //if not committed execute defaultWeblet
     if(!res.isCommitted){
-      if(req.method=="GET"){
-        writeContentType
-        this.render("$viewDir/$type.name/${getMethodName(method)}.html".toUri)
-      }else{
-        back
-      }
+      defaultWeblet.onInvoke(type,method,constructorParams,methodParams)
     }
   }
-
+  
   //check for WebMethod facet
   private Bool checkWebMethod(Method m){
     if (!m.isPublic) return false
@@ -123,13 +113,13 @@ const class ActionMod : WebMod,SlanWeblet
     return true
   }
   
-  private Str getMethodName(Method method){
-    if(method.name!="onService")return method.name
+  //get method by http request method name
+  private Str getMethodName(){
     return "on"+req.method.lower.capitalize
   }
   
   ////////////////////////////////////////////////////////////////////////
-  //virtual method
+  // virtual method
   ////////////////////////////////////////////////////////////////////////
   **
   ** trap for url rewrite
