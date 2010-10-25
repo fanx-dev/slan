@@ -75,11 +75,6 @@ mixin SlanWeblet
     res.headers["Content-Type"] = "text/html; charset=utf-8"
   }
   
-  ** convenience for req.stash
-  Str:Obj? s(){
-    req.stash
-  }
-  
   ** go back to referer uri
   Void back(){
     Str uri:=req.headers["Referer"]
@@ -102,4 +97,7 @@ mixin SlanWeblet
   Void redirect(Type type,Str? id:=null,Method? method:=null){
     res.redirect(toUri(type,id,method))
   }
+  
+  ** req.stash
+  const static ReqStash m:=ReqStash()
 }

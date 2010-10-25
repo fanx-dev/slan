@@ -24,7 +24,9 @@ const class TemplateCompiler
 
   Void render(File file,|->|? lay:=null)
   {
-    getType(file).make->dump(lay)
+    type:=getType(file)
+    obj:=type.make
+    type.method("dump").call(obj,lay)
   }
   
   ** from cache or compile
@@ -73,7 +75,7 @@ const class TemplateCompiler
 
     s:= "using web
          using slanweb
-         class HtmlTemplet : SlanWeblet{
+         const class HtmlTemplet : SlanWeblet{
           Void dump(|->|? lay){
             out:=res.out
             $all.toStr

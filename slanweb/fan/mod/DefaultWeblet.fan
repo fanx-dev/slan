@@ -20,7 +20,7 @@ const class DefaultWeblet:SlanWeblet
   }
   
   Void onInvoke(Type type,Method method,
-                        Obj[] constructorParams,Obj[] methodParams){
+                Obj[] constructorParams,Obj[] methodParams){
     if(req.method=="GET"){
       writeContentType
       this.render("$viewDir/$type.name/${method.name}.html".toUri)

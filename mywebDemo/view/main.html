@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Welcome</title>
-    ${s["SlanWeblet.compileJs"]}
+    ${req.stash["SlanWeblet.compileJs"]}
   </head>
   <body>
     <h1>Welcome ${req.stash["name"]} !</h1>
