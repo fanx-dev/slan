@@ -8,31 +8,31 @@
 using web
 **
 ** ActionCompiler.
-** see the uri 'http://localhost:8080/action/welcome/ad/printInfo?i=123&m=bac'
+** 
+** see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
 **  it will route to 'action'(dir) and compile 'Welcome.fan'(class),
 **  then newInstance 'Welecome' with 'ad'(params).
 **  call 'printInfo'(method) with 'i=123,m=bac'(named params)
-**  
-** if no explicit method,then call 'onService'
+**  dan set req.stash["id"]=115
 **
 const class ActionMod : WebMod
 {
-  const Uri dir//action directory
-  const Str? podName//current pod name
-  const DefaultWeblet defaultWeblet
+  private const Uri dir//action directory
+  private const Str? podName//current pod name
+  private const DefaultWeblet defaultWeblet
   
   **
-  ** idr:action directory
-  ** viewDir:view directory
+  ** dir:action directory
   ** 
-  new make(Uri dir,Str viewDir:="view"){
+  new make(Uri dir){
     this.dir=dir
-    defaultWeblet=DefaultWeblet(viewDir)
+    defaultWeblet=DefaultWeblet()
     this.podName=Config.instance.podName
   }
   
   override Void onService()
   {
+    //rewrite uri
     path:=convertPath(req.modRel.path)
     if(path.size==0){
       throw Err("path is empty.Maybe some errors on convertPath")
@@ -40,116 +40,31 @@ const class ActionMod : WebMod
     onActionFile(path)
   }
 
+  ** find and call
   private Void onActionFile(Str[] path){
-    Type? type
-    if(podName==null){//find in file
-      
-      file:=Uri(dir+path[0]+".fan").toFile
-      type = Env.cur.compileScript(file)
-    }
-    else{//find in pod
-      
-      typeName:=path[0]
-      type =Pod.find(podName).type(typeName)
-    }
-
-    fillParamsAndCall(type,path)
+    loc:=ActionLocation(podName,dir).execute(path)
+    defaultWeblet.execute(
+      loc.type,loc.method,loc.constructorParams,loc.methodParams)
   }
 
-  **
-  ** route as `type/constructorParams/method?methodParams`
-  ** 
-  private Void fillParamsAndCall(Type type,Str[] path){
-    params:=type.method("make").params
-    //find method
-    noMethod:=(params.size>=path.size-1)
-    methodName:=noMethod?getMethodName:path[1+params.size]
-    method:=type.method(methodName)
-
-    //two check
-    if(!beforeInvoke(type,method)){
-      if(!res.isCommitted)res.sendErr(401)
-      return
-    }
-    if(!checkWebMethod(method)){
-      res.sendErr(405)
-      return
-    }
-
-    //getParams
-    constructorParams:=SlanUtil.getParams(path,params,1)
-    methodParams:=SlanUtil.getParamsByName(req.uri.query,method.params,req.form)
-
-    //call
-    try{
-      onInvoke(type,method,constructorParams,methodParams)
-    }catch(Err e){
-      throw Err("call method error : name $type.name#$method.name,
-                  on $constructorParams,with $methodParams",e)
-    }finally{
-      afterInvoke(type,method)
-    }
-  }
-  ** 
-  ** call method.
-  ** 
-  Void onInvoke(Type type,Method method,
-                        Obj[] constructorParams,Obj[] methodParams){
-    obj:=type.make(constructorParams)
-    method.callOn(obj,methodParams)
-    
-    //if not committed execute defaultWeblet
-    if(!res.isCommitted){
-      defaultWeblet.onInvoke(type,method,constructorParams,methodParams)
-    }
-  }
-  
-  //check for WebMethod facet
-  private Bool checkWebMethod(Method m){
-    if (!m.isPublic) return false
-    if (m.facets.size==0) return true
-    if (req.method=="GET") return m.hasFacet(WebGet#)
-    if (req.method=="POST") return m.hasFacet(WebPost#)
-    return true
-  }
-  
-  //get method by http request method name
-  private Str getMethodName(){
-    return "on"+req.method.lower.capitalize
-  }
-  
-  ////////////////////////////////////////////////////////////////////////
-  // virtual method
-  ////////////////////////////////////////////////////////////////////////
   **
   ** trap for url rewrite
   ** 
   protected virtual Str[] convertPath(Str[] inPath){
     if(inPath.size==0){
-      return ["Index"]
+      return ["IndexCtrl"]
     }
-    return inPath
+    
+    Str[] path:=inPath.dup
+    
+    Str typeName:=path[0]
+    if(typeName.endsWith("Ctrl")){
+      path[0]=typeName.capitalize
+    }else{
+      //suffix Ctrl
+      path[0]=(typeName+"Ctrl").capitalize
+    }
+    return path
   }
   
-  **
-  ** return false will cancel
-  ** 
-  protected virtual Bool beforeInvoke(Type type,Method method){
-    return true
-  }
-  
-  ** guaranty invoke after onInvoke
-  protected virtual Void afterInvoke(Type type,Method method){
-  }
-}
-
-**************************************************************************
-** facet
-**************************************************************************
-
-** http request method 'GET'
-facet class WebGet {
-}
-** http request method 'POST'
-facet class WebPost {
 }

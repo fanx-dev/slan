@@ -17,6 +17,6 @@ class Build : build::BuildPod
         "concurrent 1.0",
         "slanweb 1.0"
     ]
-    resDirs = [`public/`,`view/`]
+    resDirs = [`public/`,`view/`,`view/WelcomeCtrl/`,`fwt/`]
   }
 }

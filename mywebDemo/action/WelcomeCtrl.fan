@@ -9,40 +9,31 @@ using slanweb
 **
 ** welcome
 **
-class Welcome : SlanWeblet
+class WelcomeCtrl : SlanWeblet
 {
-  Str id
-  new make(Str id){
-    this.id=id
-  }
-  override Void onGet()
+  Void get()
   {
-    writeContentType
-    req.stash["name"]=id
-    compileJs(`fwt/hello.fwt`)
-    render(`view/body.html`)
+    req.stash["name"]=m->id
+    compileJs(`hello.fwt`)
   }
 
   @WebGet
   Void welcome(){
-    writeContentType
-    req.stash["name"]=id
-    render(`view/welcome.html`)
+    req.stash["name"]=m->id
   }
   
   Void fwt(){
-    writeContentType
-    renderFwt(`fwt/hello.fwt`)
+    renderFwt(`hello.fwt`)
   }
 
   Void printInfo(Int i,Str? m){
     writeContentType
-    res.out.w("$id,$i,$m")
+    res.out.w("$i,$m")
   }
 
   @WebPost
   Void printInfo3(Int i,Str m){
     writeContentType
-    res.out.w("$id,$i,$m")
+    res.out.w("$i,$m")
   }
 }

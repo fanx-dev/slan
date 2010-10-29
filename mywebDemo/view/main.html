@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>Welcome</title>
-    ${req.stash["SlanWeblet.compileJs"]}
+    ${m->compileJs}
   </head>
   <body>
-    <h1>Welcome ${req.stash["name"]} !</h1>
+    <h1>Welcome ${m->name} !</h1>
     #lay()
   </body>
 </html>

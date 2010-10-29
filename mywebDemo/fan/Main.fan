@@ -21,15 +21,6 @@ class Main
       SlanService{
           logDir=`log/`
           port=8080
-          route=SlanRouteMod
-          {
-            routes=
-            [
-              "action":ActionMod(`action/`),
-              "public":StaticFileMod(`public/`),
-              "pod":PodJsMod()
-            ]
-          }
       }.run
     }
 }

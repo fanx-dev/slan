@@ -45,14 +45,14 @@ mixin SlanWeblet
 //////////////////////////////////////////////////////////////////////////
   
   ** render the template
-  Void render(Uri fsp,|->|? lay:=null){
-    file :=Config.getUri(fsp).get
+  Void render(Uri html,|->|? lay:=null){
+    file :=Config.getUri(`view/`+html).get
     TemplateCompiler.instance.render(file,lay)
   }
 
-  ** compile js file ,and set to req.stash["SlanWeblet.compileJs"]
-  Void compileJs(Uri fwt,Str name:="SlanWeblet.compileJs"){
-    file :=Config.getUri(fwt).get
+  ** compile js file ,default set to req.stash["compileJs"]
+  Void compileJs(Uri fwt,Str name:="compileJs"){
+    file :=Config.getUri(`fwt/`+fwt).get
     strBuf:=StrBuf()
     JsCompiler.render(WebOutStream(strBuf.out),file)
     req.stash[name]=strBuf.toStr
@@ -60,13 +60,13 @@ mixin SlanWeblet
   
   ** render fwt
   Void renderFwt(Uri fwt){
-    file :=Config.getUri(fwt).get
+    file :=Config.getUri(`fwt/`+fwt).get
     writeContentType
     JsCompiler.render(res.out,file,[:])
   }
 
 //////////////////////////////////////////////////////////////////////////
-// template method
+// tools
 //////////////////////////////////////////////////////////////////////////
   
   ** text/html; charset=utf-8
@@ -82,20 +82,20 @@ mixin SlanWeblet
   }
   
   ** convert method to uri
-  Uri toUri(Type type,Str? id:=null,Method? method:=null){
+  Uri toUri(Type type,Method? method:=null,Str? id:=null){
     uri:="/action/$type.name"
-    if(id!=null){
-      uri+="/$id"
-    }
     if(method!=null){
       uri+="/$method.name"
+    }
+    if(id!=null){
+      uri+="/$id"
     }
     return uri.toUri
   }
   
   ** #toUri and res.redirect
-  Void redirect(Type type,Str? id:=null,Method? method:=null){
-    res.redirect(toUri(type,id,method))
+  Void redirect(Type type,Method? method:=null,Str? id:=null){
+    res.redirect(toUri(type,method,id))
   }
   
   ** req.stash

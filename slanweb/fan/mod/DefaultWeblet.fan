@@ -14,17 +14,44 @@
 ** 
 const class DefaultWeblet:SlanWeblet
 {
-  const Str viewDir//view directory
-  new make(Str viewDir){
-    this.viewDir=viewDir
+  ** 
+  ** call method.
+  ** 
+  Void execute(Type type,Method method,
+             Obj[] constructorParams,Obj[] methodParams){
+    //if GET will find the Ctrl#ation.html
+    if(req.method=="GET"){
+      m->defaultView=`$type.name/${method.name}.html`
+    }
+    //call
+    try{
+      onInvoke(type,method,constructorParams,methodParams)
+    }catch(Err e){
+      throw Err("call method error : name $type.name#$method.name,
+                  on $constructorParams,with $methodParams",e)
+    }
+  }
+  ** 
+  ** call method.
+  ** 
+  private Void onInvoke(Type type,Method method,
+                 Obj[] constructorParams,Obj[] methodParams){
+                   
+    obj:=type.make(constructorParams)
+    method.callOn(obj,methodParams)
+    
+    //if not committed to default
+    if(!res.isCommitted){
+      toDefaultView()
+    }
   }
   
-  Void onInvoke(Type type,Method method,
-                Obj[] constructorParams,Obj[] methodParams){
-    if(req.method=="GET"){
+  private Void toDefaultView(){
+    if(m->defaultView!=null){
       writeContentType
-      this.render("$viewDir/$type.name/${method.name}.html".toUri)
+      this.render(m->defaultView as Uri)
     }else{
+      //to back pre view
       back
     }
   }

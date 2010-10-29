@@ -96,7 +96,7 @@ const class Table
     columns.each|Column c,Int i|{
       pass:=c.checkMatchDb(tcols[i])
       if(!pass){
-        log.warn("table $name field ${columns[i].name}not match the database")
+        log.warn("table $name field ${columns[i].name} miss the database")
         errCount++
       }
     }

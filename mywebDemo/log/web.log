@@ -1603,3 +1603,96 @@
 2010-10-22 12:05:05 0:0:0:0:0:0:0:1 GET /action/Welcome/ad/printInfo m=bac&i=123 200 5 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
 2010-10-22 12:05:08 0:0:0:0:0:0:0:1 GET /action/TableView - 200 203 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
 2010-10-22 12:05:10 0:0:0:0:0:0:0:1 GET /action/Welcome/ad/welcome - 200 34 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.472.63 Safari/534.3" "http://localhost:8080/"
+#Remark ==========================================================================
+#Remark 28-Oct-2010 Thu 21:39:16 CST
+#Version 1.0
+#Software webmod::LogMod 1.0.55
+#Start-Date 2010-10-28 13:39:16
+#Fields date time c-ip cs-method cs-uri-stem cs-uri-query sc-status time-taken cs(User-Agent) cs(Referer)
+2010-10-28 13:39:16 0:0:0:0:0:0:0:1 GET / - 200 79 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:39:22 0:0:0:0:0:0:0:1 GET / - 200 5253 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:40:08 0:0:0:0:0:0:0:1 GET / - 200 19 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /action/TableView - 200 483 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/fwt/fwt.js - 304 5 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/sys/sys.js - 304 32 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/gfx/gfx.js - 304 4 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/concurrent/concurrent.js - 304 6 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/web/web.js - 304 7 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:42 0:0:0:0:0:0:0:1 GET /pod/dom/dom.js - 304 6 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:40:45 0:0:0:0:0:0:0:1 GET /action/tableView/data - 200 2927 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+#Remark ==========================================================================
+#Remark 28-Oct-2010 Thu 21:43:40 CST
+#Version 1.0
+#Software webmod::LogMod 1.0.55
+#Start-Date 2010-10-28 13:43:40
+#Fields date time c-ip cs-method cs-uri-stem cs-uri-query sc-status time-taken cs(User-Agent) cs(Referer)
+2010-10-28 13:43:40 0:0:0:0:0:0:0:1 GET / - 200 81 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 58 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/sys/sys.js - 304 14 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/concurrent/concurrent.js - 304 7 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/web/web.js - 304 9 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/gfx/gfx.js - 304 10 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/fwt/fwt.js - 304 9 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:05 0:0:0:0:0:0:0:1 GET /pod/dom/dom.js - 304 7 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:09 0:0:0:0:0:0:0:1 GET / - 200 4135 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:44:10 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1085 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 864 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/sys/sys.js - 304 8 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/gfx/gfx.js - 304 6108 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/concurrent/concurrent.js - 304 6098 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/web/web.js - 304 6103 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/fwt/fwt.js - 304 6125 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:11 0:0:0:0:0:0:0:1 GET /pod/dom/dom.js - 304 6120 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome"
+2010-10-28 13:44:13 0:0:0:0:0:0:0:1 GET /action/TableView - 200 1803 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:44:15 0:0:0:0:0:0:0:1 GET /action/tableView/data - 200 1950 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/TableView"
+2010-10-28 13:45:01 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 42 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:46:08 0:0:0:0:0:0:0:1 GET / - 200 17 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:46:09 0:0:0:0:0:0:0:1 GET /action/Welcome/printInfo/apdb m=bac&i=123 200 1287 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:47:25 0:0:0:0:0:0:0:1 GET / - 200 18 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:47:26 0:0:0:0:0:0:0:1 GET / - 200 643 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:47:26 0:0:0:0:0:0:0:1 GET / - 200 194 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:47:26 0:0:0:0:0:0:0:1 GET / - 200 176 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:47:27 0:0:0:0:0:0:0:1 GET /action/Welcome/fwt - 200 1063 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /action/Welcome/fwt - 200 32 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/sys/sys.js - 304 10 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/web/web.js - 304 1 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/gfx/gfx.js - 304 0 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/concurrent/concurrent.js - 304 2 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/dom/dom.js - 304 0 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:56 0:0:0:0:0:0:0:1 GET /pod/fwt/fwt.js - 304 0 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /action/Welcome/fwt - 200 1099 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/sys/sys.js - 304 10 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/concurrent/concurrent.js - 304 1112 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/web/web.js - 304 1114 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/dom/dom.js - 304 1125 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/fwt/fwt.js - 304 1131 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:57 0:0:0:0:0:0:0:1 GET /pod/gfx/gfx.js - 304 1124 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/action/Welcome/fwt"
+2010-10-28 13:47:58 0:0:0:0:0:0:0:1 GET / - 200 1496 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:47:59 0:0:0:0:0:0:0:1 GET / - 200 407 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:48:00 0:0:0:0:0:0:0:1 GET /action/Welcome/fwt - 200 1298 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:48:03 0:0:0:0:0:0:0:1 GET /action/TableView - 200 2594 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:48:05 0:0:0:0:0:0:0:1 GET /action/Welcome/printInfo/apdb m=bac&i=123 200 2281 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:48:07 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1814 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:48:22 0:0:0:0:0:0:0:1 GET / - 200 1 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:48:23 0:0:0:0:0:0:0:1 GET / - 200 482 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:06 0:0:0:0:0:0:0:1 GET / - 200 1 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:08 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1952 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:49:11 0:0:0:0:0:0:0:1 GET /action/Welcome/printInfo/apdb m=bac&i=123 200 2365 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:49:19 0:0:0:0:0:0:0:1 GET / - 200 8159 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:19 0:0:0:0:0:0:0:1 GET / - 200 454 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:19 0:0:0:0:0:0:0:1 GET / - 200 199 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:20 0:0:0:0:0:0:0:1 GET / - 200 200 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:20 0:0:0:0:0:0:0:1 GET / - 200 200 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:20 0:0:0:0:0:0:0:1 GET / - 200 191 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:20 0:0:0:0:0:0:0:1 GET / - 200 185 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:49:21 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1172 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:49:25 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 3755 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:09 0:0:0:0:0:0:0:1 GET / - 200 16 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" -
+2010-10-28 13:50:11 0:0:0:0:0:0:0:1 GET /action/Welcome/welcome - 200 1648 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:14 0:0:0:0:0:0:0:1 GET /action/Welcome/welcome - 200 3377 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:16 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1861 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:18 0:0:0:0:0:0:0:1 GET /action/Welcome/printInfo/apdb m=bac&i=123 200 1938 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:20 0:0:0:0:0:0:0:1 GET /action/TableView - 200 2270 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:22 0:0:0:0:0:0:0:1 GET /action/Welcome/fwt - 200 1734 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:23 0:0:0:0:0:0:0:1 GET /action/Welcome - 200 1643 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"
+2010-10-28 13:50:26 0:0:0:0:0:0:0:1 GET /action/Welcome/welcome - 200 2476 "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7" "http://localhost:8080/"

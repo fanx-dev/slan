@@ -18,12 +18,15 @@ using concurrent
 **
 const class SlanService
 {
-  const SlanRouteMod route
+  const SlanRouteMod? route
   const Uri logDir:=`log/`
   const Int port:=8080
 
   new make(|This| f){
-      f(this)
+    f(this)
+    if(route==null){
+      route=SlanRouteMod()
+    }
   }
 
   Void run(){
@@ -31,7 +34,7 @@ const class SlanService
     Actor.sleep(Duration.maxVal)
   }
 
-  private Service createService()
+  Service createService()
   {
     loger:=initLoger
 

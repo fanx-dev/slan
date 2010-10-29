@@ -9,12 +9,12 @@ using slanweb
 **
 **
 **
-class TableView : SlanWeblet
+class TableViewCtrl : SlanWeblet
 {
-  override Void onGet()
+  Void get()
   {
     writeContentType
-    renderFwt(`fwt/TableFwt.fan`)
+    renderFwt(`TableFwt.fan`)
   }
   
   Void data(){
