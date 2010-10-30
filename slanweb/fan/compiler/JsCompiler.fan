@@ -18,7 +18,7 @@ class JsCompiler
   static Void render(WebOutStream out,File file,Str:Str env:=["fwt.window.root":"fwt-root"])
   {
     // compile script into js
-    compiler:=compile(file)
+    Compiler compiler:=compile(file)
     Str js:=compiler.compile.js
     main := compiler.types[0].qname
 

@@ -5,7 +5,7 @@
 // History:
 //   yangjiandong 2010-10-24 - Initial Contribution
 //
-
+using compiler
 
 **
 ** if not committed:
@@ -26,8 +26,10 @@ const class DefaultWeblet:SlanWeblet
     //call
     try{
       onInvoke(type,method,constructorParams,methodParams)
+    }catch(TemplateErr e){
+      this.res.out.print(e.dump)
     }catch(Err e){
-      throw Err("call method error : name $type.name#$method.name,
+      throw Err("Action error : name $type.name#$method.name,
                   on $constructorParams,with $methodParams",e)
     }
   }

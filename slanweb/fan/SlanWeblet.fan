@@ -8,7 +8,7 @@
 using web
 using concurrent
 **
-** enhanced Weblet.convenience for rendering template.
+** enhanced Weblet for rendering template.
 **
 mixin SlanWeblet
 {

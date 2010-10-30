@@ -9,16 +9,14 @@
 using web
 using compiler
 
-
+** compile and run template file
 const class TemplateCompiler
 {
-  //shift for mutil line string
-  private const Str gap := "\n   "
+  
   private const Cache cache:=Cache()
-  const Log log:=Pod.of(this).log
+  private const CodeTransform codeTrans:=CodeTransform()
   
   static const TemplateCompiler instance:=TemplateCompiler()
-  
 
   private new make(){}
 
@@ -30,7 +28,7 @@ const class TemplateCompiler
   }
   
   ** from cache or compile
-  Type getType(File file){
+  private Type getType(File file){
     key:=file.toStr
     Type? type
     cacheScript:=getCache(key,file)
@@ -39,7 +37,8 @@ const class TemplateCompiler
     }
 
     if(type==null){
-      type=compile(file.in)
+      type=compile(file)
+      
       putCache(key,Script{
           modified=file.modified;
           size=file.size;
@@ -66,69 +65,34 @@ const class TemplateCompiler
 //////////////////////////////////////////////////////////////////////////
 // compile
 //////////////////////////////////////////////////////////////////////////
-
-  private Type compile(InStream in){
-    all := StrBuf()
-    in.eachLine{
-      parse(it,"#",all)
+  
+  //compile
+  private Type compile(File file){
+    source:=codeTrans.transform(file)
+    Pod? pod
+    try{
+      pod=compileScript(source,file)
+    }catch(CompilerErr e){
+      throw TemplateErr(e,source,file)
     }
-
-    s:= "using web
-         using slanweb
-         const class HtmlTemplet : SlanWeblet{
-          Void dump(|->|? lay){
-            out:=res.out
-            $all.toStr
-          }}"
-
-    log.debug(s)
-    pod:=compileScript("fsp_pod_$DateTime.nowUnique",s)
     type:=pod.type("HtmlTemplet")
     return type
   }
 
-  //m is escapes tick
-  private Void parse(Str line,Str m,StrBuf all){
-    for(i:=0;i<line.size;i++){
-      c:=line[i].toChar
-      if(c.isSpace){//continue until nonSpace
-        continue
-      }else if(c==m){
-        //escape m
-        if(i+1<line.size && line[i+1].toChar==m){
-          s := StrBuf()
-          s.add(line)
-          r:=s.remove(i).toStr
-          all.add(gap+Str<|out.printLine(""" |>+r+Str<| """)|>)
-          return
-        }
-        //it's fantom code
-        s := StrBuf()
-        s.add(line)
-        all.add(gap+"              "+
-            s.remove(i).toStr)
-        return
-      }else{//it's html code
-        all.add(gap+Str<|out.printLine(""" |>+line+Str<| """)|>)
-        return
-      }
-    }
-  }
-
   //compileFantomScript
-  private Pod compileScript(Str podName, Str source)
+  private Pod compileScript(Str source,File file)
   {
     input := CompilerInput
     {
-      it.podName  = podName
-      summary     = "fsp"
+      it.podName  = "${file.basename}_$DateTime.nowUnique"
+      summary     = "HtmlTemplet"
       isScript    = true
       version     = Version.defVal
       it.log.level   = LogLevel.warn
       output      = CompilerOutputMode.transientPod
       mode        = CompilerInputMode.str
       srcStr      = source
-      srcStrLoc   = Loc("fsp")
+      srcStrLoc   = Loc.makeFile(file,100,100)
     }
 
     return Compiler(input).compile.transientPod
