@@ -9304,3 +9304,5 @@ sys::Err: Must set Content-Length or Content-Type to write content
   concurrent::Actor._work (Actor.java:196)
   concurrent::ThreadPool$Worker.run (ThreadPool.java:255)
 [22:13:46 28-Oct-10] [info] [web] WispService started on port 8080
+[20:30:18 29-Oct-10] [info] [web] WispService started on port 8080
+[20:31:02 29-Oct-10] [info] [web] WispService started on port 8080

@@ -1,8 +1,9 @@
-// To change this License template, choose Tools / Templates
-// and edit Licenses / FanDefaultLicense.txt
+//
+// Copyright (c) 2010 Yang Jiandong
+// Licensed under Eclipse Public License version 1.0
 //
 // History:
-//   2010-6-27 yangjiandong Creation
+//   yangjiandong 2010-10-27 - Initial Contribution
 //
 using slanweb
 **
@@ -18,9 +19,10 @@ class Main
     }
   
     static Void run(){
+      pod:=Main#.pod
       SlanService{
-          logDir=`log/`
-          port=8080
+          logDir=pod.config("logDir","log/").toUri
+          port=pod.config("port","8080").toInt
       }.run
     }
 }

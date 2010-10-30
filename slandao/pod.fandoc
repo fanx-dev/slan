@@ -12,9 +12,6 @@ Overview [#overview]
 restrict,limit,related,check... all thing maintain by application.
 database is only for persistent no business logic.
 
-joinQuery separate into single table query,
-just improve performance by cache.
-
 Mapping [#mapping]
 ================
 
@@ -32,7 +29,7 @@ Mapping [#mapping]
       DateTime? dt
       @Transient Bool? large
       
-      @Colu{m=256}
+      @Text
       Str? description//text
       
       Weekday? loveWeek//enum
@@ -43,7 +40,6 @@ rule:
 - must @Persistent and @Serializable
 - must has and only has a @Id
 - using @Transient to ignore field
-- convenient but not necessary subclass from Record
 - using @Colu{m=256} to add extra parameter
 - enum will store as smallInt
 - object will store serialization string
@@ -53,7 +49,7 @@ Usage [#usage]
 ============
 query by Context's API.
 the CacheableContext will auto cache.
-Record is convenient for query
+convenient but not necessary subclass from Record.
 
 insert:
   stu:=Student{
@@ -64,13 +60,12 @@ insert:
       dt=DateTime.now
   }.insert
 
-query:
-  Student stu2:=c.findById(Student#,2)
-  Student[] stus:=c.selectWhere(Student#,"StudentAge>23")
+select:
+  list:=Student{age=23}.list
+  stu2:=Student().findById(2)
+  stus:=c.selectWhere(Student#,"StudentAge>23")
   n:=Student{weight=55f}.count
-  Student stu:=Student{sid=1}.one
-  
-  c.findById(Student#,2) is high performance than Student{sid=1}.one
+  stu:=Student{sid=1}.one
   
 update:
     Student stu:=Student{sid=1}.one

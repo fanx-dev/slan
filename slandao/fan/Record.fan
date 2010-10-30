@@ -31,11 +31,11 @@ mixin Record
     context.deleteById(this.typeof,context.getId(this))
   }
   
-  Obj[] list(Str orderby:="",Int offset:=0,Int limit:=20){
+  Record[] list(Str orderby:="",Int offset:=0,Int limit:=20){
     context.list(this,orderby,offset,limit)
   }
   
-  Obj? one(Str orderby:="",Int offset:=0){
+  Record? one(Str orderby:="",Int offset:=0){
     context.one(this,orderby,offset)
   }
   
@@ -59,11 +59,11 @@ mixin Record
   ////////////////////////////////////////////////////////////////////////
 
   ** static
-  Obj[] select(Str where,Int offset:=0,Int limit:=20){
+  Record[] select(Str where,Int offset:=0,Int limit:=20){
     context.select(this.typeof,where,offset)
   }
   ** static
-  Obj? findById(Obj id){
+  Record? findById(Obj id){
     context.findById(this.typeof,id)
   }
   ** static

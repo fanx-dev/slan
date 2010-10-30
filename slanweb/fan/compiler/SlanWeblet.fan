@@ -98,6 +98,6 @@ mixin SlanWeblet
     res.redirect(toUri(type,method,id))
   }
   
-  ** req.stash
+  ** req.stash[]
   const static ReqStash m:=ReqStash()
 }

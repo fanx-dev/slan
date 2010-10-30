@@ -9,76 +9,31 @@
 Overview [#overview]
 ********************
 
-only see the pod of mywebDemo
+mywebDemo is a good base to start.
 
-Setup [#setup]
-==========
-
-  class Main
-  {
-      static Void main()
-      {
-          //hack
-          Config.instance.podName=Main#.pod.name
-          run
-      }
-    
-      static Void run(){
-        SlanService{
-            logDir=`log/`
-            port=8080
-            route=SlanRouteMod
-            {
-              routes=
-              [
-                "action":MyActionMod(`action/`),
-                "public":StaticFileMod(`public/`),
-                "pod":PodJsMod()
-              ]
-            }
-        }.run
-      }
-  }
-  
-SlanRouteMod has a errorPage ,default is 'error.html'
 
 Run Mode[#runMode]
 ==========
-default runing on the script mode.
-script modeis instant for change.
+
+There are two way to run service.script mode/pod mode
+script is instant for change,pod is easy to deploy.
 
 add 'Config.instance.podName=Main#.pod.name' before runing service,
 it will run as pod mode.
 
-Authorized [#authorized]
-==========
-add authorized
-
-  const class MyActionMod:ActionMod{
-    new make(Uri dir):super(dir){}
-    
-    protected override Bool beforeInvoke(Type type,Method method){
-      if(method.name=="welcome")return false
-      return true
-    }
-  }
-
 Route [#route]
 ============
 
-see the uri 'http://localhost:8080/action/welcome/ad/printInfo?i=123&m=bac'
-  it will route to 'action'(dir) and compile 'Welcome.fan'(class),
-  then newInstance 'Welecome' with 'ad'(params).
-  call 'printInfo'(method) with 'i=123,m=bac'(named params)
+see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
+    it will route to 'action'(dir) and compile 'WelcomeCtrl.fan'(class),
+    then newInstance 'WelecomeCtrl' with 'ad'(params).
+    call 'printInfo'(method) with 'i=123,m=bac'(named params)
+    dan set req.stash["id"]=115
   
-if no explicit method,then call 'onService'
-named method expected 'WebMethod' facet, except 'onService'
-  
-  default mod 'action'.
-  default class/file is 'Index'.
-  default method is 'onService'.
-  
-if need rewrite url, override the ActionMod's 'convertPath' method
+Most of the time, you should just use 'http://localhost:8080/Welcome/print'
+    it will route to 'action' and call WelcomeCtrl's print method.
+    if no method be provide ,will to 'get' or 'post' method.
+
   
 Html Template [#htmlTemplate]
 ==============
@@ -87,35 +42,19 @@ the template code like this:
    <html>
     <head>
       <title>Welcome</title>
-      ${req.stash["SlanWeblet.compileFwt"]}
     </head>
     <body>
-     <h1>Welcome ${req.stash["name"]} !</h1>
-     #//<h2>$req.absUri</h2>
+     <h1>Welcome ${m->name} !</h1>
      #for(i:=0;i<3;i++){
-        <h3>abc\${i}line</h3>
         <h4>abc${i}line</h4>
-        ##bacd
      #}
-     <div id='fwt-root' style='position:relative; width:400px; height:300px;'>
-     </div>
     </body>
   </html>
   
-fantom code start with '#'(escape '#' with '##').
-other code will be compile to fantom string :
-   out.printLine("""text""")
-so we can embedded '$ interpolation'
-  
-the 'req.stash' be used to pass params.
+Fantom code start with '#'(escape '#' with '##').
+Other code will be output directly.
+In fact it be compile to fantom string,so we can embedded '$ interpolation'
 
-
-template extends by closures:
-  in the base template:
-	#lay()
-  in the sub template:
-    #render(`view/main.html`)|->|{
-    	...
-    #}
+'m->name' is short cut of 'req.stash'.It be used to pass params from controller to view.
 
 subclass your controller from 'SlanWeblet' will be convenience.

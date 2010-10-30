@@ -49,7 +49,7 @@ const class DefaultWeblet:SlanWeblet
   private Void toDefaultView(){
     if(m->defaultView!=null){
       writeContentType
-      this.render(m->defaultView as Uri)
+      this.render((Uri)(m->defaultView))
     }else{
       //to back pre view
       back

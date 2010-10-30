@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>Welcome</title>
-    ${req.stash["SlanWeblet.compileFwt"]}
+    ${m->compileJs}
   </head>
   <body>
-   <h1>Welcome ${req.stash["name"]} !</h1>
+   <h1>Welcome ${m->name} !</h1>
    #//<h2>$req.absUri</h2>
    #for(i:=0;i<3;i++){
       <h3>abc\${i}line</h3>
