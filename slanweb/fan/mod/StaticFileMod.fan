@@ -21,7 +21,7 @@ const class StaticFileMod:WebMod
   override Void onService()
   {
     rel:=req.modRel.relTo(`/`)
-    ps:=dir+req.modRel
+    ps:=dir+rel
     File file:=Config.getUri(ps).get
     FileWeblet(file).onService
   }
