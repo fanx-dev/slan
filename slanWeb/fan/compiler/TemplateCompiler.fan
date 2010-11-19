@@ -15,7 +15,7 @@ using compiler
 const class TemplateCompiler
 {
 
-  private const Cache cache := Cache()
+  private const ScriptCache cache := ScriptCache()
   private const CodeTransform codeTrans := CodeTransform()
 
   static const TemplateCompiler instance := TemplateCompiler()
@@ -32,48 +32,7 @@ const class TemplateCompiler
   ** from cache or compile
   private Type getType(File file)
   {
-    key := file.toStr
-    Type? type
-
-    //try from cache
-    cacheScript := getCache(key, file)
-    if (cacheScript != null)
-    {
-      type = Type.find(cacheScript.typeName, false)
-    }
-
-    //compile
-    if (type == null)
-    {
-      type = compile(file)
-
-      putCache(key, Script
-        {
-          modified = file.modified;
-          size = file.size;
-          typeName = type.qname
-        })
-    }
-    return type
-  }
-
-  private Script? getCache(Str key, File file)
-  {
-    Script? c := cache[key]
-    if (c == null) return null
-
-    //remove if out date
-    if (!c.eq(file))
-    {
-      cache.remove(key)
-      return null
-    }
-    return c
-  }
-
-  private Void putCache(Str key, Script script)
-  {
-    cache[key] = script
+    cache.getOrAdd(file){ compile(file) }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -114,28 +73,5 @@ const class TemplateCompiler
     }
 
     return Compiler(input).compile.transientPod
-  }
-}
-
-**************************************************************************
-** Script Cache Object
-**************************************************************************
-
-const class Script
-{
-  const DateTime modified;
-  const Int size;
-  const Str? typeName;
-
-  Bool eq(File file)
-  {
-    if (this.modified != file.modified) return false
-    if (this.size != file.size) return false
-    return true
-  }
-
-  new make(|This| f)
-  {
-    f(this)
   }
 }

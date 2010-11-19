@@ -28,7 +28,7 @@ class Main
       pod := Main#.pod
       SlanService
       {
-          logDir = pod.config("logDir", "log/").toUri
+          logDir = pod.config("logDir", "/log/").toUri
           port = pod.config("port", "8080").toInt
       }.run
     }

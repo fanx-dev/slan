@@ -75,9 +75,13 @@ mixin SlanWeblet
 // tools
 //////////////////////////////////////////////////////////////////////////
 
+  **
   ** text/html; charset=utf-8
+  ** init session
+  **
   Void writeContentType()
   {
+    //init session
     req.session
     res.headers["Content-Type"] = "text/html; charset=utf-8"
   }

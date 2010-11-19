@@ -64,7 +64,7 @@ insert:
 select:
   list := Student{ age = 23 }.list
   stu2 := Student().findById(2)
-  stus := c.selectWhere(Student#, "StudentAge>23")
+  stus := c.selectWhere(Student#, "Student_age>23")
   n := Student{ weight = 55f}.count
   stu := Student{ sid = 1 }.one
 

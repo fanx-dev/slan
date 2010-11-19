@@ -12,10 +12,7 @@
 **
 const class MysqlDialect : SlanDialect
 {
-  override Str bool()
-  {
-    return "bit"
-  }
+  override Str bool(){ "bit" }
 
   override Str identity(){ "bigint auto_increment" }
 }

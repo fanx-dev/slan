@@ -22,11 +22,11 @@ class Cookies : Window
     {
       EdgePane
       {
-        top = InsetPane(0,0,12,0) {
+        top = InsetPane(0, 0, 12, 0) {
           GridPane {
             Button {
-              text = "Refrush"
-              onAction.add { addCookie }
+              text = "loadData"
+              onAction.add { loadData }
             },
           },
         }
@@ -40,45 +40,41 @@ class Cookies : Window
     open
   }
 
-  Void addCookie()
+  Void loadData()
   {
-    namet  := Text { prefCols=40 }
-    value := Text { prefCols=40 }
+    namet := Text { prefCols = 40 }
+    value := Text { prefCols = 40 }
     dlg   := Dialog(window)
     {
-      it.title = "Add Cookie"
-      it.body = GridPane
-      {
-        numCols = 2
-        Label { text="Name"  }, namet,
-        Label { text="Value" }, value,
-      }
+      it.title = "load data from server"
+      it.body = "Are you sure?"
       it.commands = Dialog.okCancel
     }
     dlg.onClose.add |e|
     {
-     if (e.data == Dialog.ok)
-     {
-       try
-       {
-         HttpReq { uri=`/action/tableView/data`; headers["foo"]="bar!" }.get |res|
-         {
-           c := res.content.in.readObj
-           //Win.cur.alert(c)
+      if (e.data == Dialog.ok)
+      {
+        try
+        {
+          HttpReq { uri = `/action/tableView/data`; headers["foo"] = "bar!" }.get |res|
+          {
+            c := res.content.in.readObj
+            //Win.cur.alert(c)
 
-           table.model=ListModel(c)
-           table.refreshAll
-         }
-       }
-       catch (Err err)
-       {
-         Dialog.openErr(window, "Could not add cookie", err)
-       }
-     }
+            table.model=ListModel(c)
+            table.refreshAll
+          }
+        }
+        catch (Err err)
+        {
+          Dialog.openErr(window, "Could not add cookie", err)
+        }
+      }
     }
     dlg.open
   }
 
+  ** field
   Table table
 }
 

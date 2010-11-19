@@ -14,6 +14,7 @@ const class SlanRouteMod : WebMod
 {
   const ActionMod actionMod
   const PodJsMod podJsMod
+  const FwtMod fwtMod
   const StaticFileMod staticFileMod
   const Uri errorPage
 
@@ -21,6 +22,7 @@ const class SlanRouteMod : WebMod
   {
     actionMod = ActionMod(`action/`)
     podJsMod = PodJsMod()
+    fwtMod = FwtMod(`fwt/`)
     staticFileMod = StaticFileMod(`public/`)
     errorPage = `/public/error.html`
   }
@@ -71,6 +73,9 @@ const class SlanRouteMod : WebMod
       case "public":
         deepInto(name)
         req.mod = staticFileMod
+      case "fwt":
+        deepInto(name)
+        req.mod = fwtMod
       case "pod":
         deepInto(name)
         req.mod = podJsMod

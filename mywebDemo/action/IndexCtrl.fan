@@ -23,8 +23,8 @@ class IndexCtrl : Weblet
       a(`/Welcome`).w("/Welcome").aEnd.br.
       a(`/action/Welcome/welcome`).w("/action/Welcome/welcome").aEnd.br.
       a(`/action/Welcome/printInfo/apdb?i=123&m=bac`).w("/action/Welcome/printInfo/apdb?i=123&m=bac").aEnd.br.
-      a(`/action/TableView`).w("/action/TableView").aEnd.br.
       a(`/action/Welcome/fwt`).w("/action/Welcome/fwt").aEnd.br.
+      a(`/fwt/TableFwt.fan`).w("/fwt/TableFwt.fan").aEnd.br.
 
     htmlEnd
   }

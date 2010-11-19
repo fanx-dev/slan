@@ -29,8 +29,8 @@ const class TemplateErr : Err
     colorSource := dumpSource(source, err.line, err.col)
 
     //new line
-    line := err.line - 9
-    col := err.col - 23
+    line := err.line - 10
+    col := err.col - 21
 
     s:="""<html>
             <head><title>template error</title></head>
@@ -51,7 +51,7 @@ const class TemplateErr : Err
     lines := source.splitLines
 
     errorLine := """<span style="background-color:red; font-weight:bold;">${replace(lines[line])}</span>"""
-    errorCursor := Str.spaces(col) + "^\n"
+    errorCursor := Str.spaces(col) + "^ " + err.msg
     above := replace(lines[0..<line].join("\n"))
     below := replace(lines[line+1..-1].join("\n"))
     code := """<div style="background-color:#aaa">

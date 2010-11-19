@@ -16,12 +16,12 @@ using compiler
 **
 class JsCompiler
 {
-  static Void render(WebOutStream out, File file, Uri[]? usings := null, Str:Str env := ["fwt.window.root":"fwt-root"])
+  private static const ScriptCache cache := ScriptCache()
+
+  static Void render(WebOutStream out, File file, Uri[]? usings := null,
+    Str:Str env := ["fwt.window.root":"fwt-root"])
   {
-    // compile script into js
-    Compiler compiler := compile(file)
-    Str js := compiler.compile.js
-    main := compiler.types[0].qname
+    script := getJsScript(file)
 
     //add system class path
     out.includeJs(`/pod/sys/sys.js`)
@@ -40,11 +40,28 @@ class JsCompiler
       }
     }
 
-    out.script.w(js).scriptEnd
-    WebUtil.jsMain(out, main,env)
+    out.script.w(script.js).scriptEnd
+    WebUtil.jsMain(out, script.main, env)
   }
 
-  static Compiler compile(File file)
+  ** from cache or compiler
+  static JsScript getJsScript(File file)
+  {
+    cache.getOrAdd(file)|->Obj|
+    {
+      // compile script into js
+      Compiler compiler := compile(file)
+      Str js := compiler.compile.js
+      main := compiler.types[0].qname
+      return JsScript
+      {
+        it.js = js;
+        it.main = main
+      }
+    }
+  }
+
+  private static Compiler compile(File file)
   {
     input := CompilerInput.make
     input.podName   = file.basename
@@ -58,5 +75,20 @@ class JsCompiler
     input.output    = CompilerOutputMode.js
 
     return Compiler(input)
+  }
+}
+
+**************************************************************************
+** JsScript
+**************************************************************************
+
+const class JsScript
+{
+  const Str js;
+  const Str main;
+
+  new make(|This| f)
+  {
+    f(this)
   }
 }

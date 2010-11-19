@@ -10,6 +10,9 @@ using gfx
 using fwt
 using dom
 
+**
+** say hello
+**
 class Hello : Window
 {
   new make() : super(null, null)

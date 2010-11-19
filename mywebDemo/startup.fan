@@ -13,6 +13,7 @@ class startup
 {
     static Void main()
     {
-        Main.run
+      //config appHome like this 'Config.cur.toDebugMode(`/C:/code/app/`)'
+      Main.run
     }
 }

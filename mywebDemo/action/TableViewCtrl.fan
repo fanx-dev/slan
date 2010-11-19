@@ -13,12 +13,7 @@ using slanWeb
 **
 class TableViewCtrl : SlanWeblet
 {
-  Void index()
-  {
-    writeContentType
-    renderFwt(`TableFwt.fan`)
-  }
-
+  ** ajax for `fwt/TableFwt.fan`
   Void data()
   {
     writeContentType

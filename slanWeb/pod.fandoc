@@ -15,10 +15,10 @@ mywebDemo is a good base to start.
 Run Mode[#runMode]
 ==========
 
-There are two way to run service.script mode/pod mode
+There are two way to run service. script mode/pod mode
 script is instant for change,pod is easy to deploy.
 
-add 'Config.instance.podName=Main#.pod.name' before runing service,
+add 'Config.cur.toProductMode(Main#.pod.name)' before runing service,
 it will run as pod mode.
 
 Route [#route]
@@ -29,12 +29,12 @@ see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
     then newInstance 'WelecomeCtrl' with 'ad'(params).
     call 'printInfo'(method) with 'i=123,m=bac'(named params)
     dan set req.stash["id"]=115
-  
+
 Most of the time, you should just use 'http://localhost:8080/Welcome/print'
     it will route to 'action' and call WelcomeCtrl's print method.
-    if no method be provide ,will to 'get' or 'post' method.
+    if no method be provide ,will to 'index' method.
 
-  
+
 Html Template [#htmlTemplate]
 ==============
 the template code like this:
@@ -45,12 +45,13 @@ the template code like this:
     </head>
     <body>
      <h1>Welcome ${m->name} !</h1>
-     #for(i:=0;i<3;i++){
+     #for(i := 0; i < 3; i++)
+     #{
         <h4>abc${i}line</h4>
      #}
     </body>
   </html>
-  
+
 Fantom code start with '#'(escape '#' with '##').
 Other code will be output directly.
 In fact it be compile to fantom string,so we can embedded '$ interpolation'
