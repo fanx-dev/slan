@@ -1,32 +1,37 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-30 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
+
 using compiler
 
 **
+** err show
 **
-**
-const class TemplateErr:Err
+const class TemplateErr : Err
 {
   const CompilerErr err
   const Str source
   const File file
-  new make(CompilerErr err,Str source,File file):super(err.msg,err){
-    this.err=err
-    this.source=source
-    this.file=file
+
+  new make(CompilerErr err, Str source, File file) : super(err.msg, err)
+  {
+    this.err = err
+    this.source = source
+    this.file = file
   }
-  
-  Str dump(){
-    colorSource:=dumpSource(source,err.line)
+
+  Str dump()
+  {
+    colorSource := dumpSource(source, err.line, err.col)
+
     //new line
-    line:=err.line-4
-    col:=err.col-21
-    
+    line := err.line - 9
+    col := err.col - 23
+
     s:="""<html>
             <head><title>template error</title></head>
             <body>
@@ -38,24 +43,30 @@ const class TemplateErr:Err
           </html>"""
     return s
   }
-  
+
   //dump error source
-  private Str dumpSource(Str source,Int line){
-    line-=1//to base 0
-    lines:=source.splitLines
-    
-    errorLine:="""<span style="background-color:red; font-weight:bold;">${replace(lines[line])}</span>"""
-    above:=replace(lines[0..<line].join("\n"))
-    below:=replace(lines[line+1..-1].join("\n"))
-    code:="""<div style="background-color:#aaa">
-             <code><pre>$above
-             $errorLine
-             $below</pre></code>
-             </div>"""
-    return code+"<p>by slanweb</p>"
+  private Str dumpSource(Str source, Int line, Int col)
+  {
+    line -= 1//to base 0
+    lines := source.splitLines
+
+    errorLine := """<span style="background-color:red; font-weight:bold;">${replace(lines[line])}</span>"""
+    errorCursor := Str.spaces(col) + "^\n"
+    above := replace(lines[0..<line].join("\n"))
+    below := replace(lines[line+1..-1].join("\n"))
+    code := """<div style="background-color:#aaa">
+               <code><pre>
+               $above
+               $errorLine
+               $errorCursor
+               $below
+               </pre></code>
+               </div>"""
+    return code + "<p>by slanweb</p>"
   }
-  
-  private Str replace(Str s){
+
+  private Str replace(Str s)
+  {
     s.replace("<","&lt;").replace(">","&gt;")
   }
 }

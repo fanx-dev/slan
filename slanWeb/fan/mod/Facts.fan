@@ -1,9 +1,9 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-28 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
 
 
@@ -12,8 +12,7 @@
 **************************************************************************
 
 ** http request method 'GET'
-facet class WebGet {
-}
+facet class WebGet {}
+
 ** http request method 'POST'
-facet class WebPost {
-}
+facet class WebPost {}

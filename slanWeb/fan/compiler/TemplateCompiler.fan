@@ -1,86 +1,104 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
 
 using web
 using compiler
 
+**
 ** compile and run template file
+**
 const class TemplateCompiler
 {
-  
-  private const Cache cache:=Cache()
-  private const CodeTransform codeTrans:=CodeTransform()
-  
-  static const TemplateCompiler instance:=TemplateCompiler()
+
+  private const Cache cache := Cache()
+  private const CodeTransform codeTrans := CodeTransform()
+
+  static const TemplateCompiler instance := TemplateCompiler()
 
   private new make(){}
 
-  Void render(File file,|->|? lay:=null)
+  Void render(File file, |->|? lay := null)
   {
-    type:=getType(file)
-    obj:=type.make
-    type.method("dump").call(obj,lay)
+    type := getType(file)
+    obj := type.make
+    type.method("dump").call(obj, lay)
   }
-  
+
   ** from cache or compile
-  private Type getType(File file){
-    key:=file.toStr
+  private Type getType(File file)
+  {
+    key := file.toStr
     Type? type
-    cacheScript:=getCache(key,file)
-    if(cacheScript!==null){
-      type= Type.find(cacheScript.typeName, false)
+
+    //try from cache
+    cacheScript := getCache(key, file)
+    if (cacheScript != null)
+    {
+      type = Type.find(cacheScript.typeName, false)
     }
 
-    if(type==null){
-      type=compile(file)
-      
-      putCache(key,Script{
-          modified=file.modified;
-          size=file.size;
-          typeName=type.qname
+    //compile
+    if (type == null)
+    {
+      type = compile(file)
+
+      putCache(key, Script
+        {
+          modified = file.modified;
+          size = file.size;
+          typeName = type.qname
         })
     }
     return type
   }
 
-  private Script? getCache(Str key,File file){
-    Script? c:= cache[key]
-    if(c==null)return null
-    if(!c.eq(file)){
+  private Script? getCache(Str key, File file)
+  {
+    Script? c := cache[key]
+    if (c == null) return null
+
+    //remove if out date
+    if (!c.eq(file))
+    {
       cache.remove(key)
       return null
     }
     return c
   }
 
-  private Void putCache(Str key,Script script){
-    cache[key]=script
+  private Void putCache(Str key, Script script)
+  {
+    cache[key] = script
   }
 
 //////////////////////////////////////////////////////////////////////////
 // compile
 //////////////////////////////////////////////////////////////////////////
-  
+
   //compile
-  private Type compile(File file){
-    source:=codeTrans.transform(file)
+  private Type compile(File file)
+  {
+    source := codeTrans.transform(file)
     Pod? pod
-    try{
-      pod=compileScript(source,file)
-    }catch(CompilerErr e){
-      throw TemplateErr(e,source,file)
+    try
+    {
+      pod = compileScript(source, file)
     }
-    type:=pod.type("HtmlTemplet")
+    catch (CompilerErr e)
+    {
+      throw TemplateErr(e, source, file)
+    }
+    type := pod.type("HtmlTemplet")
     return type
   }
 
   //compileFantomScript
-  private Pod compileScript(Str source,File file)
+  private Pod compileScript(Str source, File file)
   {
     input := CompilerInput
     {
@@ -92,7 +110,7 @@ const class TemplateCompiler
       output      = CompilerOutputMode.transientPod
       mode        = CompilerInputMode.str
       srcStr      = source
-      srcStrLoc   = Loc.makeFile(file,100,100)
+      srcStrLoc   = Loc.makeFile(file, 100, 100)
     }
 
     return Compiler(input).compile.transientPod
@@ -103,19 +121,21 @@ const class TemplateCompiler
 ** Script Cache Object
 **************************************************************************
 
-const class Script{
-
+const class Script
+{
   const DateTime modified;
   const Int size;
   const Str? typeName;
 
-  Bool eq(File file){
-    if(this.modified!=file.modified)return false
-    if(this.size!=file.size)return false
+  Bool eq(File file)
+  {
+    if (this.modified != file.modified) return false
+    if (this.size != file.size) return false
     return true
   }
 
-  new make(|This| f){
+  new make(|This| f)
+  {
     f(this)
   }
 }

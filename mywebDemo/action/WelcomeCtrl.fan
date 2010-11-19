@@ -1,38 +1,43 @@
-// To change this License template, choose Tools / Templates
-// and edit Licenses / FanDefaultLicense.txt
+//
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-6-26 yangjiandong Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 using web
-using slanweb
+using slanWeb
+
 **
 ** welcome
 **
 class WelcomeCtrl : SlanWeblet
 {
-  Void get()
+  Void index()
   {
-    req.stash["name"]=m->id
+    req.stash["name"] = m->id
     compileJs(`hello.fwt`)
   }
 
   @WebGet
-  Void welcome(){
-    req.stash["name"]=m->id
+  Void welcome()
+  {
+    req.stash["name"] = m->id
   }
-  
-  Void fwt(){
+
+  Void fwt()
+  {
     renderFwt(`hello.fwt`)
   }
 
-  Void printInfo(Int i,Str? m){
+  Void printInfo(Int i, Str? m){
     writeContentType
     res.out.w("$i,$m")
   }
 
   @WebPost
-  Void printInfo3(Int i,Str m){
+  Void printInfo3(Int i, Str m){
     writeContentType
     res.out.w("$i,$m")
   }

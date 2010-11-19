@@ -1,9 +1,12 @@
-// To change this License template, choose Tools / Templates
-// and edit Licenses / FanDefaultLicense.txt
+#! /usr/bin/env fan
+//
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-7  yangjiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 using build
 
 **
@@ -13,7 +16,7 @@ class Build : BuildPod
 {
   new make()
   {
-    podName = "slanweb"
+    podName = "slanWeb"
     summary = "slan web"
     depends =
     [

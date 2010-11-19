@@ -1,72 +1,80 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-1 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
 
-
 **
 **
 **
-internal class CacheTest:NewTestBase
+internal class CacheTest : NewTestBase
 {
-  override Void setup(){
+  override Void setup()
+  {
     c.refreshDatabase
-    log.level=LogLevel.debug
+    log.level = LogLevel.debug
   }
-  
-  Void test(){
-    c.use{
+
+  Void test()
+  {
+    c.use
+    {
       this.insert
       this.select
       this.selectWhere
       this.count
     }
   }
-  
-  Void insert(){
-    stu:=Student{
-      name="yjd"
-      age=23
-      married=false
-      weight=55f
-      dt=DateTime.now
+
+  Void insert()
+  {
+    stu := Student
+    {
+      name = "yjd"
+      age = 23
+      married = false
+      weight = 55f
+      dt = DateTime.now
     }.insert
-    verifyEq(stu.sid,1)
+    verifyEq(stu.sid, 1)
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   //query
   ////////////////////////////////////////////////////////////////////////
-  
-  Void select(){
-    stu:=Student{sid=1}.list.first
-    stu2:=Student{sid=1}.list.first
-    stu3:=Student{sid=1}.one
+
+  Void select()
+  {
+    stu := Student{ sid = 1 }.list.first
+    stu2 := Student{ sid = 1 }.list.first
+    stu3 := Student{ sid = 1 }.one
   }
-  
-  Void selectWhere(){
-    stu:=c.select(Student#,"where StudentAge>20")
-    stu2:=c.select(Student#,"where StudentAge>20")
+
+  Void selectWhere()
+  {
+    stu := c.select(Student#, "where Student_age>20")
+    stu2 := c.select(Student#, "where Student_age>20")
   }
-  
-  Void count(){
-    n:=Student{sid=1}.count
-    n2:=Student{sid=1}.count
+
+  Void count()
+  {
+    n := Student{ sid = 1 }.count
+    n2 := Student{ sid = 1 }.count
     verifyEq(n,n2)
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   //write
   ////////////////////////////////////////////////////////////////////////
-  
-  Void testDelete(){
+
+  Void testDelete()
+  {
     insert
-    stu:=Student{sid=1}.one as Student
+    stu := Student{ sid = 1 }.one as Student
     stu.deleteByExample
-    stu2:=Student{sid=1}.one
-    verify(stu2==null)
+    stu2 := Student{ sid = 1 }.one
+    verify(stu2 == null)
   }
 }

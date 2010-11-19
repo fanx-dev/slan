@@ -1,9 +1,9 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
 
 **
@@ -11,14 +11,14 @@
 ** 
 facet class Id
 {
-  const Bool? generate:=null
+  const Bool? generate := null
 }
 
 **
 ** long string
 ** 
-facet class Text{
-}
+facet class Text {}
+
 **
 ** extend extra parameter
 ** 
@@ -32,5 +32,4 @@ facet class Colu
 **
 ** will mapping to table
 ** 
-facet class Persistent{
-}
+facet class Persistent {}

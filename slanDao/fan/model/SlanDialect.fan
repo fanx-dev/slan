@@ -1,11 +1,10 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-9-30 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
-
 
 **
 ** decide whice type column to create.
@@ -13,5 +12,28 @@
 **
 const abstract class SlanDialect
 {
-  abstract Column createColumn(Field field,Str? name:=null,Int? m:=null,Int? d:=null)
+  virtual Str bigInt(){ "bigint" }
+  virtual Str smallInt(){ "smallint" }
+
+  virtual Str datetime(){ "datetime" }
+  virtual Str date(){ "date" }
+  virtual Str time(){ "time" }
+
+  virtual Str bool(){ "boolean" }
+  virtual Str identity(){ "identity"}
+
+  virtual Str float(){ "double" }
+  virtual Str decimal(){ "decimal" }
+
+  virtual Str string(Int m := 255)
+  {
+    if (m <= 255)
+    {
+      return "varchar($m)"
+    }
+    else
+    {
+      return "text"
+    }
+  }
 }

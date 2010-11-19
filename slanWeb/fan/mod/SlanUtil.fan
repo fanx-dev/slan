@@ -1,9 +1,9 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
 
 **
@@ -12,23 +12,30 @@
 class SlanUtil
 {
   ** get constructorParams
-  static Obj?[] getParams(Str[] path,Param[] params,Int start){
-    Obj?[] list:=[,]
-    for (i:=0; i<params.size; ++i)
+  static Obj?[] getParams(Str[] path, Param[] params, Int start)
+  {
+    Obj?[] list := [,]
+    for (i := 0; i < params.size; ++i)
     {
-      p:=params[i]
-      if(i+start < path.size){
-        value:=typeConvert(path[i+start],p.type)
+      p := params[i]
+      if (i + start < path.size)
+      {
+        value := typeConvert(path[i+start], p.type)
         list.add(value)
         continue
       }
-      
-      if(p.hasDefault){
+
+      if (p.hasDefault)
+      {
         break
-      }else if(p.type.isNullable){
+      }
+      else if (p.type.isNullable)
+      {
         list.add(null)
         break
-      }else{
+      }
+      else
+      {
         throw ArgErr("too less parameter")
       }
     }
@@ -36,38 +43,50 @@ class SlanUtil
   }
 
   ** convert string to object,by 'fromStr' method
-  private static Obj typeConvert(Str s,Type type){
-    if(type.qname==Str#.qname){
+  private static Obj typeConvert(Str s, Type type)
+  {
+    if (type.qname == Str#.qname)
+    {
       return s
-    }else{
+    }
+    else
+    {
       return type.method("fromStr").call(s)
     }
   }
-  
+
   ** methodParams
-  static Obj?[] getParamsByName(Str:Str query,Param[] params,[Str:Str]? other){
-    Obj?[] list:=[,]
-    for (i:=0; i<params.size; ++i)
+  static Obj?[] getParamsByName(Str:Str query, Param[] params, [Str:Str]? other)
+  {
+    Obj?[] list := [,]
+    for (i := 0; i < params.size; ++i)
     {
-      Param p:=params[i]
-      value:=query[p.name]
-      if(value==null && other!=null){
-        value=other[p.name]
+      Param p := params[i]
+      value := query[p.name]
+      if (value == null && other != null)
+      {
+        value = other[p.name]
       }
-      
-      if(value!=null){
-        list.add(typeConvert(value,p.type))
+
+      if (value != null)
+      {
+        list.add(typeConvert(value, p.type))
         continue
       }
-      
-      if(p.hasDefault){
+
+      if (p.hasDefault)
+      {
         break
-      }else if(p.type.isNullable){
+      }
+      else if (p.type.isNullable)
+      {
         list.add(null)
-      }else{
+      }
+      else
+      {
         throw ArgErr("parameter $p.name is not found")
       }
-      
+
     }
     return list
   }

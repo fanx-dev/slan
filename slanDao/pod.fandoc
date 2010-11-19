@@ -1,8 +1,8 @@
 **************************************************************************
 ** title:      slandao
-** author:     Yang Jiandong
+** author:     chunquedong
 ** created:    2010-10-6
-** copyright:  Copyright (c) 2010, Yang Jiandong
+** copyright:  Copyright (c) 2010, chunquedong
 ** license:    Licensed under the Academic Free License version 3.0
 **************************************************************************
 
@@ -17,25 +17,25 @@ Mapping [#mapping]
 
     @Persistent
     @Serializable
-    internal class Student:Record
+    internal class Student : Record
     {
-      @Id{auto=true} 
+      @Id{ auto = true }
       Int? sid
-      
+
       Str? name
       Bool? married
       Int? age
       Float? weight
       DateTime? dt
       @Transient Bool? large
-      
+
       @Text
       Str? description//text
-      
+
       Weekday? loveWeek//enum
       Uri? uri//obj
     }
-    
+
 rule:
 - must @Persistent and @Serializable
 - must has and only has a @Id
@@ -52,33 +52,35 @@ the CacheableContext will auto cache.
 convenient but not necessary subclass from Record.
 
 insert:
-  stu:=Student{
-      name="yjd"
-      age=23
-      married=false
-      weight=55f
-      dt=DateTime.now
+  stu := Student
+  {
+      name = "yjd"
+      age = 23
+      married = false
+      weight = 55f
+      dt = DateTime.now
   }.insert
 
 select:
-  list:=Student{age=23}.list
-  stu2:=Student().findById(2)
-  stus:=c.selectWhere(Student#,"StudentAge>23")
-  n:=Student{weight=55f}.count
-  stu:=Student{sid=1}.one
-  
+  list := Student{ age = 23 }.list
+  stu2 := Student().findById(2)
+  stus := c.selectWhere(Student#, "StudentAge>23")
+  n := Student{ weight = 55f}.count
+  stu := Student{ sid = 1 }.one
+
 update:
-    Student stu:=Student{sid=1}.one
-    stu.married=true
+    Student stu := Student{ sid = 1 }.one
+    stu.married = true
     stu.update
-    
+
 delete:
-    Student stu:=Student{sid=1}.select.first
+    Student stu := Student{ sid = 1 }.select.first
     stu.delete
 
 transaction:
-    c.trans{
-        Student{sid=1}.one->delete
-        verifyFalse(Student{sid=1}.exist)
+    c.trans
+    {
+        Student{ sid = 1 }.one->delete
+        verifyFalse(Student{ sid = 1 }.exist)
         throw Err("test transaction")//it will aotu rollback
     }

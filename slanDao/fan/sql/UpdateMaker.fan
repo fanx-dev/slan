@@ -1,17 +1,20 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 internal const class UpdateMaker
 {
-  Str getSql(Table table,Obj obj){
-    sql:=StrBuf()
+  Str getSql(Table table,Obj obj)
+  {
+    sql := StrBuf()
     sql.add("update $table.name set ")
     
-    table.nonIdColumn{
+    table.nonIdColumn
+    {
       //if(it.field.get(obj)!=null){
         sql.add("$it.name=@$it.name,")
       //}
@@ -23,12 +26,14 @@ internal const class UpdateMaker
     return sql.toStr
   }
   
-  Str:Obj getParam(Table table,Obj obj){
-    Str:Obj? param:=[:]
-    table.columns.each|Column c|{
-      value:=c.getValue(obj)
+  Str:Obj getParam(Table table, Obj obj)
+  {
+    Str:Obj? param := [:]
+    table.columns.each |Column c|
+    {
+      value := c.getValue(obj)
       //if(value!=null){
-        param[c.name]=value
+        param[c.name] = value
       //}
     }
     return param

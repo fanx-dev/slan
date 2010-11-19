@@ -1,9 +1,9 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed.Y  Creation
 //
 
 **
@@ -12,23 +12,70 @@
 class Config
 {
   ** do not change this once init
-  static const Unsafe unsafe:=Unsafe(Config())
-  static Config instance(){
+  private static const Unsafe unsafe := Unsafe(Config())
+  static Config cur()
+  {
     return unsafe.val
   }
 
   private new make(){}
-  Str? podName:=null
-  
+
+  private Str? podName := null
+  private Uri? appHome := null
+
+  ** default is debugMode
+  private Bool productMode := false
+
+  **
+  ** switch to product mode
+  **
+  Void toProductMode(Str podName)
+  {
+    productMode = true
+    this.podName = podName
+  }
+
+  **
+  ** switch to debug mode
+  **
+  Void toDebugMode(Uri? appHome)
+  {
+    productMode = false
+    this.appHome = appHome
+  }
+
   **
   ** switch podFile or file
-  ** 
-  static Uri getUri(Uri ps){
-    Str? podName:=Config.instance.podName
-    if(podName==null){
-      return `file:`+ps
-    }else{
-      return (`fan://` + podName +`/`+ ps).toUri
+  **
+  Uri getUri(Uri path)
+  {
+    if (podName == null)
+    {
+      return appHome == null ? `file:$path` : `file:$appHome$path`
+    }
+    else
+    {
+      return `fan://$podName/$path`
+    }
+  }
+
+  **
+  ** find type by script or pod
+  **
+  Obj findTypeUri(Str typeName, Uri dir)
+  {
+    if (podName == null)
+    {
+      //find in file
+      path := `${dir.toStr}${typeName}.fan`.toFile
+      file := appHome == null ? `file:$path` : `file:$appHome$path`
+      return file
+    }
+    else
+    {
+      //find in pod
+      //return `fan://$podName/$typeName`
+      return podName
     }
   }
 }

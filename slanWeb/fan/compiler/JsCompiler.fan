@@ -1,34 +1,45 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 using util
 using web
 using webmod
 using compiler
-//using compilerJs
+
 **
 ** Compiler for fwt
 **
 class JsCompiler
 {
-  static Void render(WebOutStream out,File file,Str:Str env:=["fwt.window.root":"fwt-root"])
+  static Void render(WebOutStream out, File file, Uri[]? usings := null, Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     // compile script into js
-    Compiler compiler:=compile(file)
-    Str js:=compiler.compile.js
+    Compiler compiler := compile(file)
+    Str js := compiler.compile.js
     main := compiler.types[0].qname
 
+    //add system class path
     out.includeJs(`/pod/sys/sys.js`)
     out.includeJs(`/pod/concurrent/concurrent.js`)
     out.includeJs(`/pod/web/web.js`)
     out.includeJs(`/pod/gfx/gfx.js`)
     out.includeJs(`/pod/dom/dom.js`)
     out.includeJs(`/pod/fwt/fwt.js`)
-    
+
+    //add user's class path
+    if (usings != null)
+    {
+      usings.each
+      {
+        out.includeJs(it)
+      }
+    }
+
     out.script.w(js).scriptEnd
     WebUtil.jsMain(out, main,env)
   }

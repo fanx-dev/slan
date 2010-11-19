@@ -1,30 +1,40 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 using concurrent
-** cache for compiler
+
+**
+** singleton map, cache for compiled script
+**
 const class Cache
 {
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}
-  
-  private Obj? receive(Obj?[] arg){
-    Str op:=arg[0]
-    switch(op){
+
+  private Obj? receive(Obj?[] arg)
+  {
+    Str op := arg[0]
+    switch(op)
+    {
       case "get":
       return Actor.locals[arg[1]]
       case "set":
-      return Actor.locals[arg[1]]=arg[2]
+      return Actor.locals[arg[1]] = arg[2]
       case "remove":
       return Actor.locals.remove(arg[1])
     }
     return null;
   }
 
+  @Operator
   Obj? get(Str key) { actor.send(["get",key].toImmutable).get }
+
+  @Operator
   Void set(Str key,Obj val) { actor.send(["set",key,val].toImmutable) }
+
   Void remove(Str key) {actor.send(["remove",key].toImmutable)}
 }

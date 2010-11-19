@@ -1,22 +1,26 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
+
 internal const class InsertMaker
 {
-  Str getSql(Table table){
-    sql:=StrBuf()
+  Str getSql(Table table)
+  {
+    sql := StrBuf()
     sql.add("insert into $table.name(")
     
-    table.nonAutoGenerate{
+    table.nonAutoGenerate
+    {
       sql.add(it.name+",")
     }
     Utils.removeLastChar(sql).add(")values(")
     
-    table.nonAutoGenerate{
+    table.nonAutoGenerate
+    {
       sql.add("@$it.name,")
     }
     Utils.removeLastChar(sql).add(")")
@@ -24,9 +28,11 @@ internal const class InsertMaker
     return sql.toStr
   }
   
-  Str:Obj getParam(Table table,Obj obj){
-    Str:Obj? param:=[:]
-    table.nonAutoGenerate|Column c|{
+  Str:Obj getParam(Table table, Obj obj)
+  {
+    Str:Obj? param := [:]
+    table.nonAutoGenerate |Column c|
+    {
       param[c.name]=c.getValue(obj)
     }
     return param

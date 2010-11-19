@@ -1,11 +1,12 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-7 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
-using sql
+
+using isql
 
 **
 **
@@ -13,14 +14,16 @@ using sql
 mixin TestConnection
 {
   const static CacheableContext c
-  static{
-    pod := Pod.find("sql");
-    db:= SqlService(
+  static
+  {
+    pod := Pod.find("isql")
+    db := SqlService(
       pod.config("test.connection"),
       pod.config("test.username"),
       pod.config("test.password"),
-      Type.find(pod.config("test.dialect")).make)
-    tables:=CacheableContext.mappingTables([:],TestConnection#.pod)
-    c=CacheableContext(db,tables)
+      pod.config("test.driver"))
+    
+    tables := CacheableContext.mappingTables([:], TestConnection#.pod)
+    c = CacheableContext(db, tables)
   }
 }

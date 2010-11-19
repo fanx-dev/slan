@@ -1,16 +1,15 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-25 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
-
 
 **
 ** wrap for req.stash
 **
-const class ReqStash:SlanWeblet
+const class ReqStash : SlanWeblet
 {
   ** call req.stash[name]
   override Obj? trap(Str name, Obj?[]? args)

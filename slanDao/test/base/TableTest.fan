@@ -1,15 +1,17 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
-internal class TableTest:Test
+
+internal class TableTest : Test
 {
-  Void testCreateFromType(){
-    t:=Table.mappingFromType(Student#,MysqlDialect())
-    verify(t.id.name=="StudentSid")
-    verifyEq(t.columns.size,9)
+  Void testCreateFromType()
+  {
+    t := Table.mappingFromType(Student#, MysqlDialect())
+    verify(t.id.name == "Student_sid")
+    verifyEq(t.columns.size, 9)
   }
 }

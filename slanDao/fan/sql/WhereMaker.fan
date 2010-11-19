@@ -1,9 +1,9 @@
 //
-// Copyright (c) 2010, Yang Jiandong
+// Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Yang Jiandong  Creation
+//   2010-9-22  Jed Young  Creation
 //
 
 **
@@ -11,16 +11,19 @@
 ** 
 internal const class WhereMaker
 {
-  Str getSql(Table table,Obj obj){
-    from:="from $table.name"
-    condition:=StrBuf()
-    table.columns.each{
-      if(it.field.get(obj)!=null){
+  Str getSql(Table table, Obj obj)
+  {
+    from := "from $table.name"
+    condition := StrBuf()
+    table.columns.each
+    {
+      if (it.field.get(obj) != null)
+      {
         condition.add("$it.name=@$it.name and ")
       }
     }
     
-    if(condition.size==0){
+    if (condition.size == 0){
       return from
     }
     
@@ -28,12 +31,15 @@ internal const class WhereMaker
     return "$from where $condition"
   }
   
-  Str:Obj getParam(Table table,Obj obj){
-    Str:Obj param:=[:]
-    table.columns.each |Column c|{
-      value:=c.getValue(obj)
-      if(value!=null){
-        param[c.name]=value
+  Str:Obj getParam(Table table, Obj obj)
+  {
+    Str:Obj param := [:]
+    table.columns.each |Column c|
+    {
+      value := c.getValue(obj)
+      if (value != null)
+      {
+        param[c.name] = value
       }
     }
     return param

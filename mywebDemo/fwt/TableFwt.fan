@@ -61,11 +61,11 @@ class Cookies : Window
      {
        try
        {
-         HttpReq { uri=`/action/tableView/data`; headers["foo"]="bar!" }.get |res| 
+         HttpReq { uri=`/action/tableView/data`; headers["foo"]="bar!" }.get |res|
          {
-           c:=res.content.in.readObj
+           c := res.content.in.readObj
            //Win.cur.alert(c)
-           
+
            table.model=ListModel(c)
            table.refreshAll
          }
@@ -85,7 +85,7 @@ class Cookies : Window
 class ListModel : TableModel
 {
   List[] list
-  
+
   new make(List[] list)
   {
     this.list=list

@@ -1,32 +1,35 @@
 //
-// Copyright (c) 2010 Yang Jiandong
-// Licensed under Eclipse Public License version 1.0
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   yangjiandong 2010-10-1 - Initial Contribution
+//   2010-9-22  Jed Young  Creation
 //
-using slanweb
+
+using slanWeb
+
 **
 **
 **
 class TableViewCtrl : SlanWeblet
 {
-  Void get()
+  Void index()
   {
     writeContentType
     renderFwt(`TableFwt.fan`)
   }
-  
-  Void data(){
+
+  Void data()
+  {
     writeContentType
-    
-    s:="""
-          [
-            ["key","value"],
-            ["1","yjd"],
-            ["2","yqq"]
-          ]
-          """
+
+    s := """
+            [
+              ["key","value"],
+              ["1","yjd"],
+              ["2","yqq"]
+            ]
+            """
     res.out.w(s)
   }
 }
