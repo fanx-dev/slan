@@ -34,7 +34,7 @@ const class DefaultWeblet : SlanWeblet
     }
     catch(TemplateErr e)
     {
-      this.res.out.print(e.dump)
+      res.out.print(e.dump)
     }
     catch(Err e)
     {

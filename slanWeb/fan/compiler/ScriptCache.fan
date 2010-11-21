@@ -15,6 +15,7 @@ using compiler
 const class ScriptCache
 {
   protected const Cache cache := Cache()
+  private const Log log := Pod.of(this).log
 
   Obj getOrAdd(File file, |File->Obj| f)
   {
@@ -39,6 +40,10 @@ const class ScriptCache
       cache.remove(key)
       return null
     }
+
+    if (log.isDebug)
+      log.debug("using cache $key")
+
     return c.value
   }
 
@@ -51,6 +56,9 @@ const class ScriptCache
       it.value = value
     }
     cache[file.toStr] = obj
+
+    if (log.isDebug)
+      log.debug("put cache $file.toStr")
   }
 }
 

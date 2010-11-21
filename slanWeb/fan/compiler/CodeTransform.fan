@@ -17,7 +17,7 @@ const class CodeTransform
   //shift for mutil line string
   private const Str gap := "\n    "
   private const Str codeGap := gap + Str.spaces(19)
-  const Log log := Pod.of(this).log
+  private const Log log := Pod.of(this).log
 
   Str transform(File file)
   {

@@ -1,7 +1,4 @@
 //
-// Copyright (c) 2010 chunquedong
-// Licensed under Eclipse Public License version 1.0
-//
 // Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
 //
@@ -16,20 +13,20 @@ using slanWeb
 **
 class Main
 {
-    static Void main()
-    {
-        //run on pod mode
-        Config.cur.toProductMode(Main#.pod.name)
-        run
-    }
+  static Void main()
+  {
+    //run on pod mode
+    Config.cur.toProductMode(Main#.pod.name)
+    run
+  }
 
-    static Void run()
+  static Void run()
+  {
+    pod := Main#.pod
+    SlanService
     {
-      pod := Main#.pod
-      SlanService
-      {
-          logDir = pod.config("logDir", "/log/").toUri
-          port = pod.config("port", "8080").toInt
-      }.run
-    }
+      logDir = pod.config("logDir", "/log/").toUri
+      port = pod.config("port", "8080").toInt
+    }.run
+  }
 }

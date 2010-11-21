@@ -22,7 +22,7 @@ mixin SlanWeblet
   ** The WebReq instance for this current web request.  Raise an exception
   ** if the current actor thread is not serving a web request.
   **
-  WebReq req()
+  static WebReq req()
   {
     try
       return Actor.locals["web.req"]
@@ -34,7 +34,7 @@ mixin SlanWeblet
   ** The WebRes instance for this current web request.  Raise an exception
   ** if the current actor thread is not serving a web request.
   **
-  WebRes res()
+  static WebRes res()
   {
     try
       return Actor.locals["web.res"]
@@ -112,6 +112,12 @@ mixin SlanWeblet
   Void redirect(Type type, Method? method := null, Str? id := null)
   {
     res.redirect(toUri(type, method, id))
+  }
+
+  ** id is the last word of uri
+  Str? id()
+  {
+    req.stash["id"]
   }
 
   ** req.stash[]

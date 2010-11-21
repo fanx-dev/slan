@@ -10,25 +10,20 @@ using web
 using slanWeb
 
 **
-** welcome
+** route and template
 **
 class WelcomeCtrl : SlanWeblet
 {
   Void index()
   {
-    req.stash["name"] = m->id
+    m->name = "world"
     compileJs(`hello.fwt`)
   }
 
   @WebGet
   Void welcome()
   {
-    req.stash["name"] = m->id
-  }
-
-  Void fwt()
-  {
-    renderFwt(`hello.fwt`)
+    m->name = id
   }
 
   Void printInfo(Int i, Str? m){

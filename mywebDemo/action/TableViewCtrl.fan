@@ -9,7 +9,7 @@
 using slanWeb
 
 **
-**
+** ajax example
 **
 class TableViewCtrl : SlanWeblet
 {

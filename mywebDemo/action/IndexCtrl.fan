@@ -13,19 +13,32 @@ using web
 **
 class IndexCtrl : Weblet
 {
+  ** home page
   Void index()
   {
     res.headers["Content-Type"] = "text/html; charset=utf-8"
 
     res.out.html.
-      h1().w("Slan Framework").h1End.br.
+      h1.w("Slan Framework").h1End.
 
+      h2.w("Base Examples").h2End.
       a(`/Welcome`).w("/Welcome").aEnd.br.
-      a(`/action/Welcome/welcome`).w("/action/Welcome/welcome").aEnd.br.
-      a(`/action/Welcome/printInfo/apdb?i=123&m=bac`).w("/action/Welcome/printInfo/apdb?i=123&m=bac").aEnd.br.
-      a(`/action/Welcome/fwt`).w("/action/Welcome/fwt").aEnd.br.
+      a(`/action/Welcome/welcome/abc`).w("/action/Welcome/welcome/abc").aEnd.br.
+      a(`/Welcome/printInfo/apdb?i=123&m=bac`).w("/Welcome/printInfo/apdb?i=123&m=bac").aEnd.br.
+
+      h2.w("FWT and Ajax").h2End.
       a(`/fwt/TableFwt.fan`).w("/fwt/TableFwt.fan").aEnd.br.
 
-    htmlEnd
+
+      h2.w("slanUtil examples").h2End.
+      a(`/Tool/patchca`).w("/Tool/patchca").aEnd.br.
+
+      htmlEnd
+  }
+
+  Void dump()
+  {
+    res.headers["Content-Type"] = "text/html; charset=utf-8"
+    req.headers.each |Str v, Str k| { res.out.printLine("  $k: $v <br/>") }
   }
 }

@@ -11,9 +11,9 @@ using mywebDemo
 
 class startup
 {
-    static Void main()
-    {
-      //config appHome like this 'Config.cur.toDebugMode(`/C:/code/app/`)'
-      Main.run
-    }
+  static Void main()
+  {
+    //config appHome like this 'Config.cur.toDebugMode(`/C:/code/app/`)'
+    Main.run
+  }
 }

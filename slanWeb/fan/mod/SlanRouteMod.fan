@@ -9,22 +9,27 @@
 using webmod
 using web
 
+**
 ** RouteMod added error dispose
+**
 const class SlanRouteMod : WebMod
 {
-  const ActionMod actionMod
-  const PodJsMod podJsMod
-  const FwtMod fwtMod
-  const StaticFileMod staticFileMod
-  const Uri errorPage
+  const Uri errorPage := `/public/error.html`
 
-  new make()
+  ** Map of URI path names to sub-WebMods.
+  const Str:WebMod routes := Str:WebMod[:]
+
+  new make(|[Str:WebMod]|? f := null)
   {
-    actionMod = ActionMod(`action/`)
-    podJsMod = PodJsMod()
-    fwtMod = FwtMod(`fwt/`)
-    staticFileMod = StaticFileMod(`public/`)
-    errorPage = `/public/error.html`
+    Str:WebMod map :=
+    [
+      "action" : ActionMod(`action/`),
+      "pod" : PodJsMod(),
+      "fwt" : FwtMod(`fwt/`),
+      "public" : StaticFileMod(`public/`),
+    ]
+    f?.call(map)
+    routes = map
   }
 
   override Void onService()
@@ -56,39 +61,41 @@ const class SlanRouteMod : WebMod
     name := req.modRel.path.first
 
     //lookup Mod
-    switchMod(name)
+    mod := findMod(name)
+    if (mod == null) { res.sendErr(404); return }
 
     //execute
-    req.mod.onService
+    req.mod = mod
+    mod.onService
   }
 
   ** lookup route
-  private Void switchMod(Str? name)
+  private WebMod? findMod(Str? name)
   {
-    switch(name)
+    //default mod
+    if (name == null)
     {
-      case "action":
-        deepInto(name)
-        req.mod = actionMod
-      case "public":
-        deepInto(name)
-        req.mod = staticFileMod
-      case "fwt":
-        deepInto(name)
-        req.mod = fwtMod
-      case "pod":
-        deepInto(name)
-        req.mod = podJsMod
-      case "favicon.ico":
-        req.mod = staticFileMod
-      default:
-        req.mod = actionMod
+      return routes["action"]
     }
-  }
 
-  private Void deepInto(Str name)
-  {
-    req.modBase = req.modBase + `$name/`
+    //favicon mod
+    if (name == "favicon.ico")
+    {
+      return routes["public"]
+    }
+
+    //normal mod
+    route := routes[name]
+
+    //deepInto
+    if (route != null)
+    {
+      req.modBase = req.modBase + `$name/`
+      return route
+    }
+
+    //default mod
+    return routes["action"]
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -106,16 +113,12 @@ const class SlanRouteMod : WebMod
 
   override Void onStart()
   {
-    actionMod.onStart
-    staticFileMod.onStart
-    podJsMod.onStart
+    routes.each |mod| { mod.onStart }
   }
 
   override Void onStop()
   {
-    actionMod.onStop
-    staticFileMod.onStop
-    podJsMod.onStop
+    routes.each |mod| { mod.onStop }
   }
 
   ////////////////////////////////////////////////////////////////////////
