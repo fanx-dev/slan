@@ -11,7 +11,7 @@ using isql
 **
 **
 **
-mixin TestConnection
+internal mixin TestConnection
 {
   const static CacheableContext c
   static
@@ -22,7 +22,7 @@ mixin TestConnection
       pod.config("test.username"),
       pod.config("test.password"),
       pod.config("test.driver"))
-    
+
     tables := CacheableContext.mappingTables([:], TestConnection#.pod)
     c = CacheableContext(db, tables)
   }

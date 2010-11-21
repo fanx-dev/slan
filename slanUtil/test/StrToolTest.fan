@@ -6,7 +6,7 @@
 //   2010-11-20  Jed Young  Creation
 //
 
-class StrToolTest : Test
+internal class StrToolTest : Test
 {
   Void testEncrypt()
   {

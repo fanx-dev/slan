@@ -9,20 +9,20 @@
 **
 **
 **
-class LimitQueryTest : NewTestBase
+internal class LimitQueryTest : NewTestBase
 {
   Void testLimit()
   {
     ps := Student{}.list("", 0, 3)
     verifyEq(ps.size, 3)
   }
-  
+
   Void testLimitAndOffset()
   {
     ps := Student{}.list("", 2, 10)
     verifyEq(ps.size, 2)
   }
-  
+
   Void testOffset()
   {
     Student? ps := Student{}.one("", 1)

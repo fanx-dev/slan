@@ -6,7 +6,7 @@
 //   2010-11-20  Jed Young  Creation
 //
 
-class ValidateTest : Test
+internal class ValidateTest : Test
 {
   Void testIsEmail()
   {

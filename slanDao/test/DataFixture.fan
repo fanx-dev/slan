@@ -9,7 +9,7 @@
 **
 **
 **
-class DataFixture
+internal class DataFixture
 {
   static Void init()
   {
@@ -21,7 +21,7 @@ class DataFixture
       weight = 55f
       dt = DateTime.now
     }.insert
-    
+
     Student
     {
       name = "yjd2"
@@ -30,7 +30,7 @@ class DataFixture
       weight = 56f
       dt = DateTime.now
     }.insert
-    
+
     Student
     {
       name = "yjd3"
@@ -39,7 +39,7 @@ class DataFixture
       weight = 57f
       dt = DateTime.now
     }.insert
-    
+
     Student
     {
       name = "yjd4"

@@ -9,7 +9,7 @@
 **
 **
 **
-class QueryTest : NewTestBase
+internal class QueryTest : NewTestBase
 {
   Void testSelectAll()
   {

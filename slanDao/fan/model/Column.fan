@@ -152,7 +152,7 @@ const class Column
     {
       nvalue = value.toStr.in.readObj()
     }
-    echo("Column#setValue $obj,${field.name},$nvalue")
+    //echo("Column#setValue $obj,${field.name},$nvalue")
     field.set(obj,nvalue)
   }
 

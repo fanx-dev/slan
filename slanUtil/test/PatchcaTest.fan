@@ -6,7 +6,7 @@
 //   2010-11-20  Jed Young  Creation
 //
 
-class PatchcaTest : Test
+internal class PatchcaTest : Test
 {
   Void testRandomCode()
   {
