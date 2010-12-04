@@ -49,19 +49,32 @@ class JsCompiler
   {
     cache.getOrAdd(file)|->Obj|
     {
-      // compile script into js
-      Compiler compiler := compile(file)
-      Str js := compiler.compile.js
-      main := compiler.types[0].qname
-      return JsScript
+      source := file.readAllStr
+      try
       {
-        it.js = js;
-        it.main = main
+        return compile(source, file)
+      }
+      catch (CompilerErr e)
+      {
+        throw SlanCompilerErr(e, source, file)
       }
     }
   }
 
-  private static Compiler compile(File file)
+  ** compile script into js
+  private static JsScript compile(Str source, File file)
+  {
+    Compiler compiler := getCompile(source, file)
+    Str js := compiler.compile.js
+    main := compiler.types[0].qname
+    return JsScript
+    {
+      it.js = js;
+      it.main = main
+    }
+  }
+
+  private static Compiler getCompile(Str source, File file)
   {
     input := CompilerInput.make
     input.podName   = file.basename
@@ -69,7 +82,7 @@ class JsCompiler
     input.version   = Version("0")
     input.log.level = LogLevel.err
     input.isScript  = true
-    input.srcStr    = file.readAllStr
+    input.srcStr    = source
     input.srcStrLoc = Loc.makeFile(file)
     input.mode      = CompilerInputMode.str
     input.output    = CompilerOutputMode.js

@@ -15,7 +15,7 @@ internal class WebUtilTest : Test
 
   Void testGetParams()
   {
-    objs := SlanUtil.getParams(["action", "welcom", "123", "p2"],
+    objs := ParameterHelper.getParams(["action", "welcom", "123", "p2"],
       #m4test.params, 2)
     this.verify(objs.size == 2)
     this.verify(objs[0] == 123)
@@ -26,7 +26,7 @@ internal class WebUtilTest : Test
 
   Void testGetParamsByName()
   {
-    objs:=SlanUtil.getParamsByName(["s":"p2"], #m4test.params, ["i":"123"])
+    objs := ParameterHelper.getParamsByName(["s":"p2"], #m4test.params, ["i":"123"])
     this.verify(objs.size == 2)
     this.verify(objs[0] == 123)
     this.verify(objs[1] == "p2")

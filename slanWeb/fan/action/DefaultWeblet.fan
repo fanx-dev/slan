@@ -9,9 +9,7 @@
 using compiler
 
 **
-** if not committed:
-** - on GET render view at view/typename/method.html.
-** - on POST(or others) just back
+** m->defaultView is typename/method.html
 **
 const class DefaultWeblet : SlanWeblet
 {
@@ -21,20 +19,17 @@ const class DefaultWeblet : SlanWeblet
   Void execute(Type type, Method method,
              Obj[] constructorParams, Obj[] methodParams)
   {
-    //if GET will find the Ctrl#ation.html
-    if (req.method == "GET")
-    {
-      m->defaultView=`$type.name/${method.name}.html`
-    }
+    //m->defaultView is typename/method.html, you can overwrite this
+    m->defaultView = `$type.name/${method.name}.html`
 
     //call
     try
     {
       onInvoke(type, method, constructorParams, methodParams)
     }
-    catch(TemplateErr e)
+    catch(SlanCompilerErr e)
     {
-      res.out.print(e.dump)
+      throw e
     }
     catch(Err e)
     {
@@ -42,12 +37,12 @@ const class DefaultWeblet : SlanWeblet
                   on $constructorParams,with $methodParams", e)
     }
   }
+
   **
   ** call method.
   **
   private Void onInvoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
-
     obj := type.make(constructorParams)
     method.callOn(obj, methodParams)
 
@@ -64,11 +59,6 @@ const class DefaultWeblet : SlanWeblet
     {
       writeContentType
       this.render((Uri)(m->defaultView))
-    }
-    else
-    {
-      //to back pre view
-      back
     }
   }
 }

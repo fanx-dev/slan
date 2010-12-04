@@ -6,6 +6,8 @@
 //   2010-9-22  Jed.Y  Creation
 //
 
+using build
+
 **
 ** Config
 **
@@ -45,11 +47,24 @@ class Config
   }
 
   **
+  ** get pod name. if debugMod pull from build.fan
+  **
+  Str getPodName()
+  {
+     if (podName == null)
+     {
+       BuildPod build := Env.cur.compileScript(getUri(`build.fan`).toFile).make
+       podName = build.podName
+     }
+     return podName
+  }
+
+  **
   ** switch podFile or file
   **
   Uri getUri(Uri path)
   {
-    if (podName == null)
+    if (!productMode)
     {
       return appHome == null ? `file:$path` : `file:$appHome$path`
     }
@@ -64,7 +79,7 @@ class Config
   **
   Obj findTypeUri(Str typeName, Uri dir)
   {
-    if (podName == null)
+    if (!productMode)
     {
       //find in file
       path := `${dir.toStr}${typeName}.fan`.toFile

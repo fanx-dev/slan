@@ -17,7 +17,7 @@ class WelcomeCtrl : SlanWeblet
   Void index()
   {
     m->name = "world"
-    compileJs(`hello.fwt`)
+    m->compileJs = compileJs(`hello.fwt`)
   }
 
   @WebGet

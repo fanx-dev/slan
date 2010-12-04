@@ -11,7 +11,7 @@ using compiler
 **
 ** err show
 **
-const class TemplateErr : Err
+const class SlanCompilerErr : Err
 {
   const CompilerErr err
   const Str source
@@ -28,15 +28,11 @@ const class TemplateErr : Err
   {
     colorSource := dumpSource(source, err.line, err.col)
 
-    //new line
-    line := err.line - 10
-    col := err.col - 21
-
     s:="""<html>
-            <head><title>template error</title></head>
+            <head><title>Compiler Error</title></head>
             <body>
-              <h1>TemplateErr: $err.msg</h1>
-              <h2>$file.toStr ($line,$col)
+              <h1>Message: $err.msg</h1>
+              <h2>$file.toStr ($err.line,$err.col)
               </h2>
               <p>$colorSource</p>
             </body>

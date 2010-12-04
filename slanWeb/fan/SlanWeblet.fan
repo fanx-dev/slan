@@ -46,29 +46,25 @@ mixin SlanWeblet
 // template method
 //////////////////////////////////////////////////////////////////////////
 
+  **
   ** render the template
+  **
   Void render(Uri html, |->|? lay := null)
   {
     file := Config.cur.getUri(`view/` + html).get
     TemplateCompiler.instance.render(file, lay)
   }
 
-  ** compile js file ,default set to req.stash["compileJs"]
-  Void compileJs(Uri fwt, Str name := "compileJs", Uri[]? usings := null,
+  **
+  ** compile js file.
+  **
+  Str compileJs(Uri fwt, Uri[]? usings := null,
     Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     file := Config.cur.getUri(`fwt/` + fwt).get
     strBuf := StrBuf()
     JsCompiler.render(WebOutStream(strBuf.out), file, usings, env)
-    req.stash[name] = strBuf.toStr
-  }
-
-  ** render fwt
-  Void renderFwt(Uri fwt, Uri[]? usings := null)
-  {
-    file := Config.cur.getUri(`fwt/` + fwt).get
-    writeContentType
-    JsCompiler.render(res.out, file, usings, [:])
+    return strBuf.toStr
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,17 +73,14 @@ mixin SlanWeblet
 
   **
   ** text/html; charset=utf-8
-  ** init session
   **
   Void writeContentType()
   {
-    //init session
-    req.session
     res.headers["Content-Type"] = "text/html; charset=utf-8"
   }
 
   ** go back to referer uri
-  Void back()
+  Void goback()
   {
     Str uri := req.headers["Referer"]
     res.redirect(uri.toUri)
@@ -122,4 +115,23 @@ mixin SlanWeblet
 
   ** req.stash[]
   const static ReqStash m := ReqStash()
+}
+
+
+**************************************************************************
+** ReqStash
+**************************************************************************
+
+**
+** wrap for req.stash
+**
+const class ReqStash : SlanWeblet
+{
+  ** call req.stash[name]
+  override Obj? trap(Str name, Obj?[]? args)
+  {
+    if (args.size == 0) { return req.stash.get(name) }
+    if (args.size == 1) { req.stash.set(name, args.first); return null }
+    return super.trap(name, args)
+  }
 }

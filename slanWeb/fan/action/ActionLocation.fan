@@ -13,7 +13,7 @@ using web
 **
 class ActionLocation : Weblet
 {
-  //private Str? podName //current pod name
+  private const static ScriptCompiler compiler := ScriptCompiler()
   private Uri dir //action directory
 
   private Str[]? path
@@ -52,7 +52,7 @@ class ActionLocation : Weblet
     else
     {
       file := (typeRes as Uri).get
-      type = Env.cur.compileScript(file)
+      type = compiler.getType(file)
     }
   }
 
@@ -63,7 +63,7 @@ class ActionLocation : Weblet
   {
     //constructor parameter
     cparams := type.method("make").params
-    constructorParams=SlanUtil.getParams(path, cparams, 1)
+    constructorParams=ParameterHelper.getParams(path, cparams, 1)
 
     //rest path
     hasRestParams := path.size > (1 + cparams.size)
@@ -97,7 +97,7 @@ class ActionLocation : Weblet
     }
 
     //getParams
-    methodParams = SlanUtil.getParamsByName(req.uri.query, method.params, req.form)
+    methodParams = ParameterHelper.getParamsByName(req.uri.query, method.params, req.form)
   }
 
   //check for WebMethod facet

@@ -26,9 +26,10 @@ class Build : BuildPod
         "compiler 1.0",
         "wisp 1.0",
         "util 1.0",
-        "concurrent 1.0"
+        "concurrent 1.0",
+        "build 1.0"
     ]
-    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/compiler/`]
+    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/compiler/`, `fan/action/`]
     resDirs = [`res/`]
   }
 }

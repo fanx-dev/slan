@@ -45,6 +45,11 @@ const class SlanRouteMod : WebMod
         doService
       }
     }
+    catch(SlanCompilerErr e)
+    {
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+      res.out.print(e.dump)
+    }
     catch (Err err)
     {
       onErro(err)
@@ -131,7 +136,7 @@ const class SlanRouteMod : WebMod
       //dump errInfo
       if (res.isCommitted)
       {
-        res.out.print("ERROR: $req.uri<br/>")
+        res.out.print("<p>ERROR: $req.uri</p>")
         res.out.w(err.traceToStr.replace("\n","<br/>"))
       }
       throw err

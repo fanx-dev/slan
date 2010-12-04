@@ -7,9 +7,9 @@
 //
 
 **
-** MyWebUtil
+** helper for parse parameter
 **
-class SlanUtil
+class ParameterHelper
 {
   ** get constructorParams
   static Obj?[] getParams(Str[] path, Param[] params, Int start)

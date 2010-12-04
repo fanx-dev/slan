@@ -175,8 +175,8 @@ const class Patchca
 
     x1 := Int.random(0..width)
     y1 := Int.random(0..height)
-    w := Int.random(1..5)
-    h := Int.random(1..5)
+    w := Int.random(1..3)
+    h := Int.random(1..3)
 
     g.fillOval(x1, y1, w, h)
   }
