@@ -14,7 +14,7 @@ using compiler
 **
 const class ScriptCache
 {
-  protected const Cache cache := Cache()
+  protected const SingletonMap cache := SingletonMap()
   private const Log log := Pod.of(this).log
 
   Obj getOrAdd(File file, |File->Obj| f)
@@ -26,6 +26,11 @@ const class ScriptCache
       putCache(file, obj)
     }
     return obj
+  }
+
+  Void clear()
+  {
+    cache.clear
   }
 
   private Obj? getCache(File file)
@@ -66,7 +71,7 @@ const class ScriptCache
 ** Script Cache Object
 **************************************************************************
 
-const class CacheObj
+internal const class CacheObj
 {
   const DateTime modified;
   const Int size;

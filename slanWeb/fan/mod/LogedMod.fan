@@ -14,46 +14,42 @@ using compiler
 using concurrent
 
 **
-** web service
+** add log for mod
 **
-const class SlanService
+const class LogedMod : WebMod
 {
-  const SlanRouteMod? route
-  const Uri logDir := `log/`
-  const Int port := 8080
+  private const WebMod root
+  private const Uri logDir
+  private const LogMod logger
 
-  new make(|This| f)
+  new make(WebMod root, Uri logDir := `/log/`)
   {
-    f(this)
-    if (route == null)
-    {
-      route = SlanRouteMod()
-    }
+    this.logDir = logDir
+    this.root = root
+    logger = initLoger
   }
 
-  Void run()
+  override Void onService()
   {
-    createService.start
-    Actor.sleep(Duration.maxVal)
+    try
+      root.onService
+    finally
+      logger.onService
   }
 
-  Service createService()
+  override Void onStart()
   {
-    loger := initLoger
-
-    pipeline := PipelineMod
-    {
-        steps = [route]
-        after = [loger]
-    }
-
-    return WispService 
-    {
-      it.port = this.port
-      root = pipeline 
-    }
+    root.onStart
+    logger.onStart
   }
 
+  override Void onStop()
+  {
+    root.onStop
+    logger.onStop
+  }
+
+  ** create logMod
   private LogMod initLoger()
   {
     // create log dir is it doesn't exist

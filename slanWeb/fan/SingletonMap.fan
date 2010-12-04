@@ -9,9 +9,9 @@
 using concurrent
 
 **
-** singleton map, cache for compiled script
+** singleton map
 **
-const class Cache
+const class SingletonMap
 {
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}
 
@@ -21,11 +21,15 @@ const class Cache
     switch(op)
     {
       case "get":
-      return Actor.locals[arg[1]]
+        return Actor.locals[arg[1]]
       case "set":
-      return Actor.locals[arg[1]] = arg[2]
+        return Actor.locals[arg[1]] = arg[2]
       case "remove":
-      return Actor.locals.remove(arg[1])
+        return Actor.locals.remove(arg[1])
+      case "clear":
+        Actor.locals.clear
+      default:
+        throw Err("unreachable code")
     }
     return null;
   }
@@ -36,5 +40,7 @@ const class Cache
   @Operator
   Void set(Str key,Obj val) { actor.send(["set",key,val].toImmutable) }
 
-  Void remove(Str key) {actor.send(["remove",key].toImmutable)}
+  Void remove(Str key) { actor.send(["remove",key].toImmutable) }
+
+  Void clear() { actor.send(["clear"].toImmutable) }
 }

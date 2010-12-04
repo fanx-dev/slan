@@ -22,8 +22,12 @@ class Config
 
   private new make(){}
 
+//////////////////////////////////////////////////////////////////////////
+// field
+//////////////////////////////////////////////////////////////////////////
+
   private Str? podName := null
-  private Uri? appHome := null
+  private Uri appHome := ``
 
   ** default is debugMode
   private Bool productMode := false
@@ -40,11 +44,26 @@ class Config
   **
   ** switch to debug mode
   **
-  Void toDebugMode(Uri? appHome)
+  Void toDebugMode(Uri appHome)
   {
     productMode = false
     this.appHome = appHome
   }
+
+  **
+  ** parent folder
+  **
+  Uri getAppHome()
+  {
+    if (productMode) throw Err("productMode no appHome")
+    return appHome
+  }
+
+  Bool isProductMode(){ productMode }
+
+//////////////////////////////////////////////////////////////////////////
+// build.fan
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** get pod name. if debugMod pull from build.fan
@@ -53,11 +72,23 @@ class Config
   {
      if (podName == null)
      {
-       BuildPod build := Env.cur.compileScript(getUri(`build.fan`).toFile).make
+       BuildPod build := getBuildScript
        podName = build.podName
      }
      return podName
   }
+
+  **
+  ** build.fan
+  **
+  BuildPod getBuildScript()
+  {
+    Env.cur.compileScript(Config.cur.getUri(`build.fan`).toFile).make
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// resource helper
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** switch podFile or file
@@ -66,7 +97,7 @@ class Config
   {
     if (!productMode)
     {
-      return appHome == null ? `file:$path` : `file:$appHome$path`
+      return `file:$appHome$path`
     }
     else
     {
@@ -83,7 +114,7 @@ class Config
     {
       //find in file
       path := `${dir.toStr}${typeName}.fan`.toFile
-      file := appHome == null ? `file:$path` : `file:$appHome$path`
+      file := `file:$appHome$path`
       return file
     }
     else

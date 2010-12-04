@@ -11,21 +11,20 @@ using compiler
 **
 ** m->defaultView is typename/method.html
 **
-const class DefaultWeblet : SlanWeblet
+internal const class DefaultWeblet : SlanWeblet
 {
   **
   ** call method.
   **
-  Void execute(Type type, Method method,
-             Obj[] constructorParams, Obj[] methodParams)
+  Void execute(ActionLocation loc)
   {
     //m->defaultView is typename/method.html, you can overwrite this
-    m->defaultView = `$type.name/${method.name}.html`
+    m->defaultView = `$loc.type.name/${loc.method.name}.html`
 
     //call
     try
     {
-      onInvoke(type, method, constructorParams, methodParams)
+      onInvoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
     }
     catch(SlanCompilerErr e)
     {
@@ -33,8 +32,8 @@ const class DefaultWeblet : SlanWeblet
     }
     catch(Err e)
     {
-      throw Err("Action error : name $type.name#$method.name,
-                  on $constructorParams,with $methodParams", e)
+      throw Err("Action error : name $loc.type.name#$loc.method.name,
+                  on $loc.constructorParams,with $loc.methodParams", e)
     }
   }
 

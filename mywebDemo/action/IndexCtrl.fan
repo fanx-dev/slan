@@ -29,9 +29,11 @@ class IndexCtrl : Weblet
       h2.w("FWT and Ajax").h2End.
       a(`/fwt/TableFwt.fan`).w("/fwt/TableFwt.fan").aEnd.br.
 
-
       h2.w("slanUtil examples").h2End.
       a(`/Tool/patchca`).w("/Tool/patchca").aEnd.br.
+
+      h2.w("Test").h2End.
+      a(`/HotChange`).w("/HotChange").aEnd.br.
 
       htmlEnd
   }

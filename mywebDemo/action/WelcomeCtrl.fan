@@ -23,7 +23,7 @@ class WelcomeCtrl : SlanWeblet
   @WebGet
   Void welcome()
   {
-    m->name = id
+    m->name = stashId
   }
 
   Void printInfo(Int i, Str? m){

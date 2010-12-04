@@ -1,4 +1,3 @@
-#! /usr/bin/env fan
 //
 // Copyright (c) 2010, chunquedong
 // Licensed under the Academic Free License version 3.0
@@ -7,13 +6,16 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using mywebDemo
+using slanWeb
 
-class startup
+**
+** code hot change
+**
+class HotChangeCtrl : SlanWeblet
 {
-  static Void main()
+  Void index()
   {
-    //config appHome like this 'Config.cur.toDebugMode(`/C:/code/app/`)'
-    Main.run
+    writeContentType
+    res.out.w(HotChangeModel.s)
   }
 }

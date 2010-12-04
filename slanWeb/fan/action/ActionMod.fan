@@ -21,6 +21,7 @@ const class ActionMod : WebMod
 {
   private const Uri dir //action directory
   private const DefaultWeblet defaultWeblet
+  private const ModelKeeper modelKeeper
 
   **
   ** dir:action directory
@@ -29,6 +30,7 @@ const class ActionMod : WebMod
   {
     this.dir = dir
     defaultWeblet = DefaultWeblet()
+    modelKeeper = ModelKeeper()
   }
 
   override Void onService()
@@ -46,9 +48,9 @@ const class ActionMod : WebMod
   ** find and call
   private Void onActionFile(Str[] path)
   {
-    loc := ActionLocation(dir).execute(path)
-    defaultWeblet.execute(
-      loc.type, loc.method, loc.constructorParams, loc.methodParams)
+    if (!modelKeeper.loadChange) return
+    location := ActionLocation(dir).execute(path)
+    defaultWeblet.execute(location)
   }
 
   **

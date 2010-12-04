@@ -9,7 +9,7 @@
 **
 ** helper for parse parameter
 **
-class ParameterHelper
+internal class ParameterHelper
 {
   ** get constructorParams
   static Obj?[] getParams(Str[] path, Param[] params, Int start)

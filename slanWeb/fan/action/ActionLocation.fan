@@ -11,9 +11,8 @@ using web
 **
 ** find Ctrller#action and fill params
 **
-class ActionLocation : Weblet
+internal class ActionLocation : Weblet
 {
-  private const static ScriptCompiler compiler := ScriptCompiler()
   private Uri dir //action directory
 
   private Str[]? path
@@ -52,7 +51,7 @@ class ActionLocation : Weblet
     else
     {
       file := (typeRes as Uri).get
-      type = compiler.getType(file)
+      type = ScriptCompiler.cur.getType(file)
     }
   }
 
@@ -83,7 +82,7 @@ class ActionLocation : Weblet
       if (restPath.size > 1)
       {
         //put id on req.stash["id"]
-        req.stash["id"] = restPath[1]
+        req.stash["_stashId"] = restPath[1]
       }
     }
 

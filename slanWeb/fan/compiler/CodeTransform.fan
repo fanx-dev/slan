@@ -12,7 +12,7 @@ using compiler
 **
 ** tranform form template to fantom sources string
 **
-const class CodeTransform
+internal const class CodeTransform
 {
   //shift for mutil line string
   private const Str gap := "\n    "

@@ -16,6 +16,8 @@ const class ScriptCompiler
 {
   private const ScriptCache cache := ScriptCache()
 
+  static const ScriptCompiler cur := ScriptCompiler()
+
   ** from cache or compile
   Type getType(File file)
   {
@@ -37,6 +39,11 @@ const class ScriptCompiler
     }
     type := pod.types[0]
     return type
+  }
+
+  Void clearCache()
+  {
+    cache.clear
   }
 
   protected virtual Str codeTransform(File file)

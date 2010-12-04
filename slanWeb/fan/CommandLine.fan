@@ -6,25 +6,28 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using slanWeb::SlanRouteMod
-using slanWeb::Config
-using slanWeb::LogedMod
-using wisp
 using util
+using wisp
 
 **
 ** Main
 **
-class Main : AbstractMain
+class CommandLine : AbstractMain
 {
+
+  @Arg { help = "your app path" }
+  Uri? appHome
+
+  @Opt { help = "http port"; aliases = ["p"]}
+  Int port := 8080
+
   override Int run()
   {
-    Config.cur.toProductMode(Main#.pod.name)
-    pod := Main#.pod
+    Config.cur.toDebugMode(appHome)
     wisp := WispService
     {
-      it.port = pod.config("port", "8080").toInt
-      it.root = LogedMod(SlanRouteMod())
+      it.port = this.port
+      it.root = SlanRouteMod()
     }
     return runServices([wisp])
   }

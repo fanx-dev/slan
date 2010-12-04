@@ -87,7 +87,7 @@ mixin SlanWeblet
   }
 
   ** convert method to uri
-  Uri toUri(Type type, Method? method := null, Str? id := null)
+  Uri getUri(Type type, Method? method := null, Str? id := null)
   {
     uri := "/action/$type.name"
     if (method != null)
@@ -101,16 +101,10 @@ mixin SlanWeblet
     return uri.toUri
   }
 
-  ** #toUri and res.redirect
-  Void redirect(Type type, Method? method := null, Str? id := null)
-  {
-    res.redirect(toUri(type, method, id))
-  }
-
   ** id is the last word of uri
-  Str? id()
+  Str? stashId()
   {
-    req.stash["id"]
+    req.stash["_stashId"]
   }
 
   ** req.stash[]
