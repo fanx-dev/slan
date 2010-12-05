@@ -72,21 +72,32 @@ mixin SlanWeblet
 //////////////////////////////////////////////////////////////////////////
 
   **
-  ** text/html; charset=utf-8
+  ** default is 'text/html; charset=utf-8'
   **
-  Void writeContentType()
+  Void writeContentType(Str? ext := null)
   {
-    res.headers["Content-Type"] = "text/html; charset=utf-8"
+    if (ext == null)
+    {
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+    }
+    else
+    {
+      res.headers["Content-Type"] = MimeType.forExt(ext).toStr
+    }
   }
 
+  **
   ** go back to referer uri
+  **
   Void goback()
   {
     Str uri := req.headers["Referer"]
     res.redirect(uri.toUri)
   }
 
+  **
   ** convert method to uri
+  **
   Uri getUri(Type type, Method? method := null, Str? id := null)
   {
     uri := "/action/$type.name"
@@ -101,13 +112,26 @@ mixin SlanWeblet
     return uri.toUri
   }
 
+  **
   ** id is the last word of uri
+  **
   Str? stashId()
   {
-    req.stash["_stashId"]
+    req.stash["stashId"]
   }
 
+  **
+  ** escaped xml control characters
+  **
+  Str? h(Obj? obj)
+  {
+    if (obj == null) return null
+    return obj.toStr.toXml
+  }
+
+  **
   ** req.stash[]
+  **
   const static ReqStash m := ReqStash()
 }
 

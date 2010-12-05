@@ -23,11 +23,12 @@ class Main : AbstractMain
 
   override Int run()
   {
-    i := Process(["fan", "slanWeb::CommandLine", appHome.toStr, "-p", "$port"]).run().join()
-    if (i == 2025)
+    Config.cur.toDebugMode(appHome)
+    wisp := WispService
     {
-      return run
+      it.port = this.port
+      it.root = SlanRouteMod()
     }
-    return i
+    return runServices([wisp])
   }
 }

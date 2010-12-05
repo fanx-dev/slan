@@ -8,5 +8,5 @@
 
 class HotChangeModel
 {
-  static const Str s:= "hello world - 12"
+  static const Str s:= "hello world - 14"
 }

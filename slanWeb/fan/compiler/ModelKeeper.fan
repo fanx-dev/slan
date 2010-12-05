@@ -15,61 +15,22 @@ internal const class ModelKeeper : Weblet
 {
   private static const SingletonMap map := SingletonMap()
 
-  ** return false to interception
-  Bool loadChange()
+  **
+  ** rebuild pod if necessary
+  **
+  Void loadChange()
   {
-    if (Config.cur.isProductMode) return true
+    if (Config.cur.isProductMode) return
 
     DateTime? lastNoted :=  map["lastNoted"]
-    if (lastNoted == null)
-    {
-      map["lastNoted"] = DateTime.now
-      return true
-    }
-
     appHome := Config.cur.getAppHome
 
     if (modelChanged(appHome, lastNoted))
     {
-       restart
-       return false
+       ScriptCompiler.cur.clearCache
+       Config.cur.rebuild
+       map["lastNoted"] = DateTime.now
     }
-    return true
-  }
-
-  ** restart process
-  private Void restart()
-  {
-     res.headers["Content-Type"] = "text/html; charset=utf-8"
-     res.out.w(Str<|
-                    <html>
-                     <head>
-                      <script language="javascript">
-                        function opencolortext(){ window.location.reload() }
-                        setTimeout("opencolortext()",5000)
-                      </script>
-                     </head>
-                     <body>
-                       <h1>Service restarting... This page will refresh after 5sec</h1>
-                     </body>
-                    <html>
-                   |>)
-     res.out.flush
-
-     a := Actor(ActorPool()) |msg|
-     {
-       //rebuild
-       BuildPod build := Config.cur.getBuildScript
-       build.main(Str[,])
-
-       //stop service
-       Service.find(WispService#).stop.uninstall
-
-       //will start other process to run
-       Env.cur.exit(2025)
-       return null
-     }
-     a.sendLater(1sec, null)
   }
 
   private Bool modelChanged(Uri appHome, DateTime? lastNoted){

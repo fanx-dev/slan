@@ -82,7 +82,7 @@ internal class ActionLocation : Weblet
       if (restPath.size > 1)
       {
         //put id on req.stash["id"]
-        req.stash["_stashId"] = restPath[1]
+        req.stash["stashId"] = restPath[1]
       }
     }
 

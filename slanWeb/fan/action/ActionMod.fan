@@ -48,7 +48,7 @@ const class ActionMod : WebMod
   ** find and call
   private Void onActionFile(Str[] path)
   {
-    if (!modelKeeper.loadChange) return
+    modelKeeper.loadChange
     location := ActionLocation(dir).execute(path)
     defaultWeblet.execute(location)
   }

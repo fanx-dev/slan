@@ -66,14 +66,13 @@ class Config
 //////////////////////////////////////////////////////////////////////////
 
   **
-  ** get pod name. if debugMod pull from build.fan
+  ** get pod name. rebuild on debugMode
   **
   Str getPodName()
   {
      if (podName == null)
      {
-       BuildPod build := getBuildScript
-       podName = build.podName
+       rebuild
      }
      return podName
   }
@@ -81,9 +80,13 @@ class Config
   **
   ** build.fan
   **
-  BuildPod getBuildScript()
+  Void rebuild()
   {
-    Env.cur.compileScript(Config.cur.getUri(`build.fan`).toFile).make
+    BuildPod build := Env.cur.compileScript(Config.cur.getUri(`build.fan`).toFile).make
+    Str name := build.podName + DateTime.nowUnique
+    build.podName = name
+    podName = name
+    build.main(Str[,])
   }
 
 //////////////////////////////////////////////////////////////////////////

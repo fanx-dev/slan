@@ -59,8 +59,8 @@ const class ScriptCompiler
   {
     input := CompilerInput
     {
-      it.podName  = "${file.basename}_$DateTime.nowUnique"
-      summary     = "HtmlTemplet"
+      it.podName  = "$file.basename$DateTime.nowUnique"
+      summary     = "slanScript"
       isScript    = true
       version     = Version.defVal
       it.log.level   = LogLevel.warn
