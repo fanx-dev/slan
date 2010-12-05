@@ -9,6 +9,7 @@
 using compiler
 
 **
+** Execute the action.
 ** m->defaultView is typename/method.html
 **
 internal const class DefaultWeblet : SlanWeblet

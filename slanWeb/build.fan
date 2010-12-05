@@ -29,7 +29,7 @@ class Build : BuildPod
         "concurrent 1.0",
         "build 1.0"
     ]
-    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/compiler/`, `fan/action/`]
+    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/compiler/`, `fan/action/`, `fan/build/`]
     resDirs = [`res/`]
   }
 }

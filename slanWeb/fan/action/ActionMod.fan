@@ -9,7 +9,7 @@
 using web
 
 **
-** ActionCompiler.
+** Action Mod
 **
 ** see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
 **  it will route to 'action'(dir) and compile 'Welcome.fan'(class),

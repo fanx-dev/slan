@@ -15,9 +15,9 @@ const class SlanCompilerErr : Err
 {
   const CompilerErr err
   const Str source
-  const File file
+  const Str file
 
-  new make(CompilerErr err, Str source, File file) : super(err.msg, err)
+  new make(CompilerErr err, Str source, Str file) : super(err.msg, err)
   {
     this.err = err
     this.source = source
@@ -47,7 +47,7 @@ const class SlanCompilerErr : Err
     lines := source.splitLines
 
     errorLine := """<span style="background-color:red; font-weight:bold;">${replace(lines[line])}</span>"""
-    errorCursor := Str.spaces(col) + "^ " + err.msg
+    errorCursor := """<span style="color:blue;">${Str.spaces(col)}^ $err.msg</span>"""
     above := replace(lines[0..<line].join("\n"))
     below := replace(lines[line+1..-1].join("\n"))
     code := """<div style="background-color:#aaa">

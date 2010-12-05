@@ -25,7 +25,7 @@ const class ScriptCompiler
   }
 
   //compile
-  private Type compile(File file)
+  protected Type compile(File file)
   {
     source := codeTransform(file)
     Pod? pod
@@ -35,7 +35,7 @@ const class ScriptCompiler
     }
     catch (CompilerErr e)
     {
-      throw SlanCompilerErr(e, source, file)
+      throw SlanCompilerErr(e, source, file.toStr)
     }
     type := pod.types[0]
     return type

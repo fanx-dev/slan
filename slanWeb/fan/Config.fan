@@ -82,11 +82,7 @@ class Config
   **
   Void rebuild()
   {
-    BuildPod build := Env.cur.compileScript(Config.cur.getUri(`build.fan`).toFile).make
-    Str name := build.podName + DateTime.nowUnique
-    build.podName = name
-    podName = name
-    build.main(Str[,])
+    podName = BuildCompiler.buildCompiler.runBuild(`${appHome}build.fan`.toFile)
   }
 
 //////////////////////////////////////////////////////////////////////////

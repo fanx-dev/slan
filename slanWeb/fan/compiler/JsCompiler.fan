@@ -56,7 +56,7 @@ class JsCompiler
       }
       catch (CompilerErr e)
       {
-        throw SlanCompilerErr(e, source, file)
+        throw SlanCompilerErr(e, source, file.toStr)
       }
     }
   }
@@ -78,7 +78,7 @@ class JsCompiler
   {
     input := CompilerInput.make
     input.podName   = file.basename
-    input.summary   = ""
+    input.summary   = "fwt"
     input.version   = Version("0")
     input.log.level = LogLevel.err
     input.isScript  = true
