@@ -12,7 +12,7 @@ using compiler
 ** Execute the action.
 ** m->defaultView is typename/method.html
 **
-internal const class DefaultWeblet : SlanWeblet
+internal const class ActionRunner : SlanWeblet
 {
   **
   ** call method.
@@ -33,8 +33,9 @@ internal const class DefaultWeblet : SlanWeblet
     }
     catch(Err e)
     {
-      throw Err("Action error : name $loc.type.name#$loc.method.name,
-                  on $loc.constructorParams,with $loc.methodParams", e)
+      //throw Err("Action error : name $loc.type.name#$loc.method.name,
+      //            on $loc.constructorParams,with $loc.methodParams", e)
+      throw e
     }
   }
 

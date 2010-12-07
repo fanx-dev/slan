@@ -49,7 +49,7 @@ const class ScriptCompiler
   protected virtual Str codeTransform(File file)
   {
     source := file.readAllStr
-    podName := Config.cur.getPodName
+    podName := Config.cur.podName
     return "using $podName
             $source"
   }

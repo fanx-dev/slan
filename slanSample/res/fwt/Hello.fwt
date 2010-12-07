@@ -13,6 +13,7 @@ using dom
 **
 ** say hello
 **
+@Js
 class Hello : Window
 {
   new make() : super(null, null)

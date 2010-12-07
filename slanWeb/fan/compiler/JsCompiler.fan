@@ -44,7 +44,33 @@ class JsCompiler
     WebUtil.jsMain(out, script.main, env)
   }
 
-  ** from cache or compiler
+  static Void renderByType(WebOutStream out, Str podName, Str qname, Uri[]? usings := null,
+    Str:Str env := ["fwt.window.root":"fwt-root"])
+  {
+    //add system class path
+    out.includeJs(`/pod/sys/sys.js`)
+    out.includeJs(`/pod/concurrent/concurrent.js`)
+    out.includeJs(`/pod/web/web.js`)
+    out.includeJs(`/pod/gfx/gfx.js`)
+    out.includeJs(`/pod/dom/dom.js`)
+    out.includeJs(`/pod/fwt/fwt.js`)
+    out.includeJs(`/pod/$podName/${podName}.js`)
+
+    //add user's class path
+    if (usings != null)
+    {
+      usings.each
+      {
+        out.includeJs(it)
+      }
+    }
+
+    WebUtil.jsMain(out, qname, env)
+  }
+
+  **
+  ** compile to jscode
+  **
   static JsScript getJsScript(File file)
   {
     cache.getOrAdd(file)|->Obj|

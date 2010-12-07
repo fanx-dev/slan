@@ -13,9 +13,9 @@ class Build : build::BuildPod
 {
   new make()
   {
-    podName = "mywebDemo"
+    podName = "slanSample"
     summary = "it's demo for slanweb"
-    srcDirs = [`fan/`, `action/`]
+    srcDirs = [`fan/`, `fan/model/`, `app/`, `app/action/`, `app/jsfan/`]
     depends =
     [
       "sys 1.0",
@@ -23,17 +23,19 @@ class Build : build::BuildPod
       "web 1.0",
       "compiler 1.0",
       "wisp 1.0",
-      "util 1.0",
       "concurrent 1.0",
       "slanWeb 1.0",
       "slanUtil 1.0",
+      "dom 1.0",
+      "gfx 1.0",
+      "fwt 1.0",
     ]
     resDirs =
     [
       `public/`,
-      `view/`,
-      `view/WelcomeCtrl/`,
-      `fwt/`
+      `res/fwt/`,
+      `res/html/WelcomeCtrl/`,
+      `res/html/ToolCtrl/`,
     ]
   }
 }

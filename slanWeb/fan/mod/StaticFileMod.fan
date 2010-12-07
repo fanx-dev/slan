@@ -25,7 +25,7 @@ const class StaticFileMod : WebMod
   {
     rel := req.modRel.relTo(`/`)
     ps := dir + rel
-    File file := Config.cur.getUri(ps).get
+    File file := ResourceHelper.i.getUri(ps).get
     FileWeblet(file).onService
   }
 }

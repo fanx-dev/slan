@@ -11,7 +11,8 @@ using gfx
 using fwt
 using web
 
-class Cookies : Window
+@Js
+class TableFwt : Window
 {
   new make() : super(null, null)
   {
@@ -77,7 +78,7 @@ class Cookies : Window
   ** field
   Table table
 }
-
+@Js
 class ListModel : TableModel
 {
   List[] list

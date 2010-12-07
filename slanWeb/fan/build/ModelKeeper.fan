@@ -26,7 +26,7 @@ internal const class ModelKeeper : Weblet
     if (Config.cur.isProductMode) return
 
     DateTime? lastNoted :=  map["lastNoted"]
-    appHome := Config.cur.getAppHome
+    appHome := Config.cur.appHome
 
     if (modelChanged(appHome, lastNoted))
     {

@@ -10,7 +10,7 @@ using util
 using wisp
 
 **
-** Main
+** comment line tool to run web app
 **
 class Main : AbstractMain
 {

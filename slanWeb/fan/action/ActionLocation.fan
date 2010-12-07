@@ -31,7 +31,7 @@ internal class ActionLocation : Weblet
     this.dir = dir
   }
 
-  This execute(Str[] path)
+  This parse(Str[] path)
   {
     this.path = path
 
@@ -44,7 +44,7 @@ internal class ActionLocation : Weblet
 
   private Void findType(Str typeName)
   {
-    typeRes := Config.cur.findTypeUri(typeName, dir)
+    typeRes := ResourceHelper.i.findTypeUri(typeName, dir)
     if (typeRes is Str)
     {
       type = Pod.find(typeRes).type(typeName)

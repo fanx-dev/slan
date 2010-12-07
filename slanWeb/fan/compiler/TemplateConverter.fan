@@ -12,7 +12,7 @@ using compiler
 **
 ** tranform form template to fantom sources string
 **
-internal const class CodeTransform
+internal const class TemplateConverter
 {
   //shift for mutil line string
   private const Str gap := "\n    "
@@ -27,7 +27,7 @@ internal const class CodeTransform
           using web
           using slanWeb
 
-          const class HtmlTemplet : SlanWeblet
+          const class HtmlTemplet : ${SlanWeblet#.name}
           {
             Void dump(|->|? lay)
             {

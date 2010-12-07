@@ -51,7 +51,7 @@ mixin SlanWeblet
   **
   Void render(Uri html, |->|? lay := null)
   {
-    file := Config.cur.getUri(`view/` + html).get
+    file := ResourceHelper.i.getUri(`view/` + html).get
     TemplateCompiler.instance.render(file, lay)
   }
 
@@ -61,7 +61,7 @@ mixin SlanWeblet
   Str compileJs(Uri fwt, Uri[]? usings := null,
     Str:Str env := ["fwt.window.root":"fwt-root"])
   {
-    file := Config.cur.getUri(`fwt/` + fwt).get
+    file := ResourceHelper.i.getUri(`fwt/` + fwt).get
     strBuf := StrBuf()
     JsCompiler.render(WebOutStream(strBuf.out), file, usings, env)
     return strBuf.toStr

@@ -14,7 +14,7 @@ using compiler
 **
 const class TemplateCompiler : ScriptCompiler
 {
-  private const CodeTransform codeTrans := CodeTransform()
+  private const TemplateConverter codeTrans := TemplateConverter()
 
   static const TemplateCompiler instance := TemplateCompiler()
 

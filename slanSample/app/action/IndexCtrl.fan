@@ -35,6 +35,9 @@ class IndexCtrl : Weblet
       h2.w("Test").h2End.
       a(`/HotChange`).w("/HotChange").aEnd.br.
 
+      h2.w("Other").h2End.
+      a(`/Index/dump`).w("RequestHeaders").aEnd.br.
+
       htmlEnd
   }
 

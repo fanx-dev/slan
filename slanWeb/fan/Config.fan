@@ -15,10 +15,7 @@ class Config
 {
   ** do not change this once init
   private static const Unsafe unsafe := Unsafe(Config())
-  static Config cur()
-  {
-    return unsafe.val
-  }
+  static Config cur(){ return unsafe.val }
 
   private new make(){}
 
@@ -26,18 +23,38 @@ class Config
 // field
 //////////////////////////////////////////////////////////////////////////
 
-  private Str? podName := null
-  private Uri appHome := ``
+  readonly Str? podName := null
+  {
+    get
+    {
+      if (&podName == null) { rebuild }
+      return &podName
+    }
+  }
 
+  **
+  ** parent folder
+  **
+  readonly Uri appHome := ``
+  {
+    get
+    {
+      if (isProductMode) throw Err("productMode no appHome")
+      return &appHome
+    }
+  }
+
+  **
   ** default is debugMode
-  private Bool productMode := false
+  **
+  readonly Bool isProductMode := false
 
   **
   ** switch to product mode
   **
   Void toProductMode(Str podName)
   {
-    productMode = true
+    isProductMode = true
     this.podName = podName
   }
 
@@ -46,81 +63,19 @@ class Config
   **
   Void toDebugMode(Uri appHome)
   {
-    productMode = false
+    isProductMode = false
     this.appHome = appHome
   }
-
-  **
-  ** parent folder
-  **
-  Uri getAppHome()
-  {
-    if (productMode) throw Err("productMode no appHome")
-    return appHome
-  }
-
-  Bool isProductMode(){ productMode }
 
 //////////////////////////////////////////////////////////////////////////
 // build.fan
 //////////////////////////////////////////////////////////////////////////
 
   **
-  ** get pod name. rebuild on debugMode
-  **
-  Str getPodName()
-  {
-     if (podName == null)
-     {
-       rebuild
-     }
-     return podName
-  }
-
-  **
   ** build.fan
   **
-  Void rebuild()
+  internal Void rebuild()
   {
     podName = BuildCompiler.buildCompiler.runBuild(`${appHome}build.fan`.toFile)
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// resource helper
-//////////////////////////////////////////////////////////////////////////
-
-  **
-  ** switch podFile or file
-  **
-  Uri getUri(Uri path)
-  {
-    if (!productMode)
-    {
-      return `file:$appHome$path`
-    }
-    else
-    {
-      return `fan://$podName/$path`
-    }
-  }
-
-  **
-  ** find type by script or pod
-  **
-  Obj findTypeUri(Str typeName, Uri dir)
-  {
-    if (!productMode)
-    {
-      //find in file
-      path := `${dir.toStr}${typeName}.fan`.toFile
-      file := `file:$appHome$path`
-      return file
-    }
-    else
-    {
-      //find in pod
-      //return `fan://$podName/$typeName`
-      return podName
-    }
   }
 }

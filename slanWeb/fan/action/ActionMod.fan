@@ -20,7 +20,7 @@ using web
 const class ActionMod : WebMod
 {
   private const Uri dir //action directory
-  private const DefaultWeblet defaultWeblet
+  private const ActionRunner actionRunner
   private const ModelKeeper modelKeeper
 
   **
@@ -29,7 +29,7 @@ const class ActionMod : WebMod
   new make(Uri dir)
   {
     this.dir = dir
-    defaultWeblet = DefaultWeblet()
+    actionRunner = ActionRunner()
     modelKeeper = ModelKeeper()
   }
 
@@ -49,8 +49,8 @@ const class ActionMod : WebMod
   private Void onActionFile(Str[] path)
   {
     modelKeeper.loadChange
-    location := ActionLocation(dir).execute(path)
-    defaultWeblet.execute(location)
+    location := ActionLocation(dir).parse(path)
+    actionRunner.execute(location)
   }
 
   **

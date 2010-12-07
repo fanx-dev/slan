@@ -23,9 +23,9 @@ const class SlanRouteMod : WebMod
   {
     Str:WebMod map :=
     [
-      "action" : ActionMod(`action/`),
+      "action" : ActionMod(`app/action/`),
       "pod" : PodJsMod(),
-      "fwt" : FwtMod(`fwt/`),
+      "fwt" : FwtMod(`app/jsfan/`),
       "public" : StaticFileMod(`public/`),
     ]
     f?.call(map)
