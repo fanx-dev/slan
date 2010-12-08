@@ -16,37 +16,23 @@ using concurrent
 **
 ** add log for mod
 **
-const class LogedMod : WebMod
+const class LogedMod : SlanRouteMod
 {
-  private const WebMod root
   private const Uri logDir
   private const LogMod logger
 
-  new make(WebMod root, Uri logDir := `/log/`)
+  new make(Uri logDir := `log/`) : super()
   {
     this.logDir = logDir
-    this.root = root
     logger = initLoger
   }
 
   override Void onService()
   {
     try
-      root.onService
+      super.onService
     finally
       logger.onService
-  }
-
-  override Void onStart()
-  {
-    root.onStart
-    logger.onStart
-  }
-
-  override Void onStop()
-  {
-    root.onStop
-    logger.onStop
   }
 
   ** create logMod

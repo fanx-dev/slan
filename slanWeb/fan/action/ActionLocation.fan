@@ -44,16 +44,7 @@ internal class ActionLocation : Weblet
 
   private Void findType(Str typeName)
   {
-    typeRes := ResourceHelper.i.findTypeUri(typeName, dir)
-    if (typeRes is Str)
-    {
-      type = Pod.find(typeRes).type(typeName)
-    }
-    else
-    {
-      file := (typeRes as Uri).get
-      type = ScriptCompiler.cur.getType(file)
-    }
+    type = ResourceHelper.i.getType(typeName, dir)
   }
 
   **

@@ -11,7 +11,7 @@ using build
 **
 ** compiler build script and run it
 **
-const class BuildCompiler : ScriptCompiler
+internal const class BuildCompiler : ScriptCompiler
 {
   static const BuildCompiler buildCompiler := BuildCompiler()
 

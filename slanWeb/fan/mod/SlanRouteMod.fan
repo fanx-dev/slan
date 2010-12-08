@@ -14,7 +14,7 @@ using web
 **
 const class SlanRouteMod : WebMod
 {
-  const Uri errorPage := `/public/error.html`
+  const Uri errorPage := `/res/error.html`
 
   ** Map of URI path names to sub-WebMods.
   const Str:WebMod routes := Str:WebMod[:]
@@ -23,10 +23,10 @@ const class SlanRouteMod : WebMod
   {
     Str:WebMod map :=
     [
-      "action" : ActionMod(`app/action/`),
+      "action" : ActionMod(`fan/action/`),
       "pod" : PodJsMod(),
-      "fwt" : FwtMod(`app/jsfan/`),
-      "public" : StaticFileMod(`public/`),
+      "fwt" : FwtMod(`fan/jsfan/`),
+      "res" : StaticFileMod(`res/`),
     ]
     f?.call(map)
     routes = map
@@ -86,7 +86,7 @@ const class SlanRouteMod : WebMod
     //favicon mod
     if (name == "favicon.ico")
     {
-      return routes["public"]
+      return routes["res"]
     }
 
     //normal mod
@@ -106,10 +106,7 @@ const class SlanRouteMod : WebMod
   ////////////////////////////////////////////////////////////////////////
 
   ** return false will cancle the request
-  protected virtual Bool beforeInvoke()
-  {
-    return true
-  }
+  protected virtual Bool beforeInvoke() { true }
 
   ** guarantee will be called
   protected virtual Void afterInvoke() {}

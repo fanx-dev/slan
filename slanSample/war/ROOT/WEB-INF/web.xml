@@ -10,7 +10,7 @@
     <servlet-class>fan.servlet.FanServlet</servlet-class>
     <init-param>
       <param-name>fan.servlet.webmod</param-name>
-      <param-value>mywebDemo::ProductMod</param-value>
+      <param-value>slanSample::RootMod</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

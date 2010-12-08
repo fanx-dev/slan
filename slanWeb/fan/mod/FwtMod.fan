@@ -25,12 +25,6 @@ const class FwtMod : WebMod
 
   override Void onService()
   {
-   // rel := req.modRel.relTo(`/`)
-    //ps := dir + rel
-    //File file := Config.cur.getUri(ps).get
-
-    //res.headers["Content-Type"] = "text/html; charset=utf-8"
-    //JsCompiler.render(res.out, file, usings, [:])
     typeName := req.uri.basename
     typeRes := ResourceHelper.i.findTypeUri(typeName, dir)
     if (typeRes is Str)

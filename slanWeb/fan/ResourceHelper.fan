@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Jed.Y  Creation
+//   2010-12-7  Jed.Y  Creation
 //
 
 using build
@@ -21,33 +21,47 @@ const class ResourceHelper
   **
   Uri getUri(Uri path)
   {
-    if (Config.cur.isProductMode)
+    if (Config.i.isProductMode)
     {
-      return `fan://${Config.cur.podName}/$path`
+      return `fan://${Config.i.podName}/$path`
     }
     else
     {
-      return `file:${Config.cur.appHome}$path`
+      return `file:${Config.i.appHome}$path`
     }
   }
 
   **
   ** find type by script or pod
   **
-  Obj findTypeUri(Str typeName, Uri dir)
+  internal Obj findTypeUri(Str typeName, Uri dir)
   {
-    if (Config.cur.isProductMode)
+    if (Config.i.isProductMode)
     {
       //find in pod
       //return `fan://$podName/$typeName`
-      return Config.cur.podName
+      return Config.i.podName
     }
     else
     {
       //find in file
       path := `${dir.toStr}${typeName}.fan`.toFile
-      file := `file:${Config.cur.appHome}$path`
+      file := `file:${Config.i.appHome}$path`
       return file
+    }
+  }
+
+  Type getType(Str typeName, Uri dir)
+  {
+    typeRes := findTypeUri(typeName, dir)
+    if (typeRes is Str)
+    {
+      return Pod.find(typeRes).type(typeName)
+    }
+    else
+    {
+      file := (typeRes as Uri).get
+      return ScriptCompiler.i.getType(file)
     }
   }
 }

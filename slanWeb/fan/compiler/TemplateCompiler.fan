@@ -16,7 +16,7 @@ const class TemplateCompiler : ScriptCompiler
 {
   private const TemplateConverter codeTrans := TemplateConverter()
 
-  static const TemplateCompiler instance := TemplateCompiler()
+  static const TemplateCompiler templateCompiler := TemplateCompiler()
 
   private new make(){}
 

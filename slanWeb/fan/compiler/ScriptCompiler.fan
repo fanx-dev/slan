@@ -16,7 +16,7 @@ const class ScriptCompiler
 {
   private const ScriptCache cache := ScriptCache()
 
-  static const ScriptCompiler cur := ScriptCompiler()
+  static const ScriptCompiler i := ScriptCompiler()
 
   ** from cache or compile
   Type getType(File file)
@@ -49,7 +49,7 @@ const class ScriptCompiler
   protected virtual Str codeTransform(File file)
   {
     source := file.readAllStr
-    podName := Config.cur.podName
+    podName := Config.i.podName
     return "using $podName
             $source"
   }

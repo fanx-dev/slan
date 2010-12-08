@@ -21,7 +21,6 @@ const class ActionMod : WebMod
 {
   private const Uri dir //action directory
   private const ActionRunner actionRunner
-  private const ModelKeeper modelKeeper
 
   **
   ** dir:action directory
@@ -30,7 +29,6 @@ const class ActionMod : WebMod
   {
     this.dir = dir
     actionRunner = ActionRunner()
-    modelKeeper = ModelKeeper()
   }
 
   override Void onService()
@@ -48,7 +46,7 @@ const class ActionMod : WebMod
   ** find and call
   private Void onActionFile(Str[] path)
   {
-    modelKeeper.loadChange
+    ModelKeeper.i.loadChange
     location := ActionLocation(dir).parse(path)
     actionRunner.execute(location)
   }
@@ -75,6 +73,7 @@ const class ActionMod : WebMod
       //suffix Ctrl
       path[0] = (typeName + "Ctrl").capitalize
     }
+
     return path
   }
 

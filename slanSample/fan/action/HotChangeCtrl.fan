@@ -17,9 +17,5 @@ class HotChangeCtrl : SlanWeblet
   {
     writeContentType
     res.out.w(HotChangeModel.s)
-    res.out.flush
-    res.out.w("hi")
-
-    echo("hi")
   }
 }

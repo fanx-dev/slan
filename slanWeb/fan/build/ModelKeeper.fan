@@ -18,26 +18,33 @@ internal const class ModelKeeper : Weblet
 {
   private static const SingletonMap map := SingletonMap()
 
+  static const ModelKeeper i := ModelKeeper()
+  private new make() {}
+
   **
   ** rebuild pod if necessary
   **
   Void loadChange()
   {
-    if (Config.cur.isProductMode) return
+    if (Config.i.isProductMode) return
+    rebuild
+  }
 
+  internal Void rebuild()
+  {
     DateTime? lastNoted :=  map["lastNoted"]
-    appHome := Config.cur.appHome
-
+    appHome := Config.i.appHome
     if (modelChanged(appHome, lastNoted))
     {
-       ScriptCompiler.cur.clearCache
-       Config.cur.rebuild
+       ScriptCompiler.i.clearCache
+       podName := BuildCompiler.buildCompiler.runBuild(`${appHome}build.fan`.toFile)
        map["lastNoted"] = DateTime.now
+       Config.i.setPodName(podName)
     }
   }
 
   private Bool modelChanged(Uri appHome, DateTime? lastNoted){
-    return isFolderChanged(File(appHome + `fan/`), lastNoted)
+    return isFolderChanged(File(appHome + `fan/model/`), lastNoted)
   }
 
   **

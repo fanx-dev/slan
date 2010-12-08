@@ -11,7 +11,7 @@ internal class HtmlTemComTest : Test
   Void test()
   {
     Pod.of(this).log.level = LogLevel.debug
-    TemplateCompiler c := TemplateCompiler.instance
+    TemplateCompiler c := TemplateCompiler.templateCompiler
     c->getType(`fan://slanWeb/res/welcome.html`.get)
     Pod.of(this).log.level = LogLevel.info
   }

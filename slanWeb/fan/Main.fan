@@ -8,27 +8,56 @@
 
 using util
 using wisp
+using web
+using concurrent
 
 **
 ** comment line tool to run web app
 **
-class Main : AbstractMain
+class Main : CommandLine
 {
 
   @Arg { help = "your app path" }
   Uri? appHome
 
   @Opt { help = "http port"; aliases = ["p"]}
-  Int port := 8080
+  Int port := 8081
 
   override Int run()
   {
-    Config.cur.toDebugMode(appHome)
+    //init service
     wisp := WispService
     {
       it.port = this.port
-      it.root = SlanRouteMod()
+      it.root = DebugRootMod(appHome)
     }
-    return runServices([wisp])
+
+    //run service
+    asyRunService([wisp])
+
+    //read command line input
+    processInput([wisp])
+
+    return -1
   }
+}
+
+**
+** proxy root for debug
+**
+const class DebugRootMod : WebMod
+{
+  new make(Uri appHome)
+  {
+    Config.i.toDebugMode(appHome)
+  }
+
+  override Void onService()
+  {
+    Config.i.getRootMod.onService
+  }
+
+  override Void onStart() { Config.i.getRootMod.onStart }
+
+  override Void onStop() { Config.i.getRootMod.onStop }
 }
