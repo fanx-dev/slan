@@ -14,7 +14,9 @@ using web
 **
 const class SlanRouteMod : WebMod
 {
-  const Uri errorPage := `/res/error.html`
+  const static Str publics := "public"
+  const static Str actions := "action"
+  const Uri errorPage := `/$publics/error.html`
 
   ** Map of URI path names to sub-WebMods.
   const Str:WebMod routes := Str:WebMod[:]
@@ -23,10 +25,10 @@ const class SlanRouteMod : WebMod
   {
     Str:WebMod map :=
     [
-      "action" : ActionMod(`fan/action/`),
+      actions : ActionMod(`fan/$actions/`),
       "pod" : PodJsMod(),
-      "fwt" : FwtMod(`fan/jsfan/`),
-      "res" : StaticFileMod(`res/`),
+      "jsfan" : JsfanMod(`fan/jsfan/`),
+      publics : StaticFileMod(`$publics/`),
     ]
     f?.call(map)
     routes = map
@@ -80,13 +82,13 @@ const class SlanRouteMod : WebMod
     //default mod
     if (name == null)
     {
-      return routes["action"]
+      return routes[actions]
     }
 
     //favicon mod
     if (name == "favicon.ico")
     {
-      return routes["res"]
+      return routes[publics]
     }
 
     //normal mod
@@ -100,7 +102,7 @@ const class SlanRouteMod : WebMod
     }
 
     //default mod
-    return routes["action"]
+    return routes[actions]
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -68,23 +68,22 @@ class Config
   **
   ** switch to debug mode
   **
-  Void toDebugMode(Uri appHome)
+  Void toDebugMode(Uri appPath)
   {
     if (inited) throw Err("already inited")
 
-    if (!checkAppHome(appHome)) throw ArgErr("Invalid appHome. Directory need a slash")
+    checkAppHome(appPath)
 
     isProductMode = false
-    this.appHome = appHome
+    appHome = appPath
 
     inited = true
   }
 
-  private Bool checkAppHome(Uri home)
+  private Void checkAppHome(Uri appPath)
   {
-    if (!home.isDir) return false
-    if (!`${appHome}build.fan`.toFile.exists) return false
-    return true
+    if (!appPath.isDir)  throw ArgErr("Invalid appHome. Directory need a slash")
+    if (!`${appPath}build.fan`.toFile.exists)  throw ArgErr("Invalid appHome. not find build.fan")
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@ class IndexCtrl : Weblet
       a(`/Welcome/printInfo/apdb?i=123&m=bac`).w("/Welcome/printInfo/apdb?i=123&m=bac").aEnd.br.
 
       h2.w("FWT and Ajax").h2End.
-      a(`/fwt/TableFwt.fan`).w("/fwt/TableFwt.fan").aEnd.br.
+      a(`/jsfan/TableFwt.fan`).w("/jsfan/TableFwt.fan").aEnd.br.
 
       h2.w("slanUtil examples").h2End.
       a(`/Tool/patchca`).w("/Tool/patchca").aEnd.br.

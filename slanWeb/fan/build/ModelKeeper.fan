@@ -44,7 +44,8 @@ internal const class ModelKeeper : Weblet
   }
 
   private Bool modelChanged(Uri appHome, DateTime? lastNoted){
-    return isFolderChanged(File(appHome + `fan/model/`), lastNoted)
+    return isFolderChanged(File(appHome + `fan/model/`), lastNoted) ||
+           isFolderChanged(File(appHome + `fan/util/`), lastNoted)
   }
 
   **

@@ -12,7 +12,7 @@ using web
 **
 ** javascript mod
 **
-const class FwtMod : WebMod
+const class JsfanMod : WebMod
 {
   const Uri dir
   const Uri[]? usings := null
