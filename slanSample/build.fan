@@ -37,9 +37,9 @@ class Build : build::BuildPod
       `public/javascript/`,
       `public/stylesheet/`,
       `res/fwt/`,
-      `res/html/`,
-      `res/html/WelcomeCtrl/`,
-      `res/html/ToolCtrl/`,
+      `res/view/`,
+      `res/view/WelcomeCtrl/`,
+      `res/view/ToolCtrl/`,
     ]
   }
 }

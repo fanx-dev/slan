@@ -51,16 +51,17 @@ const class ResourceHelper
     }
   }
 
-  Type getType(Str typeName, Uri dir)
+  Type? getType(Str typeName, Uri dir, Bool checked := true)
   {
     typeRes := findTypeUri(typeName, dir)
     if (typeRes is Str)
     {
-      return Pod.find(typeRes).type(typeName)
+      return Pod.find(typeRes).type(typeName, checked)
     }
     else
     {
-      file := (typeRes as Uri).get
+      file := (typeRes as Uri).get(null, checked)
+      if (file == null) return null
       return ScriptCompiler.i.getType(file)
     }
   }

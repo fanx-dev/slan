@@ -51,7 +51,7 @@ mixin SlanWeblet
   **
   Void render(Uri html, |->|? lay := null)
   {
-    file := ResourceHelper.i.getUri(`res/html/` + html).get
+    file := ResourceHelper.i.getUri(`res/view/` + html).get
     TemplateCompiler.templateCompiler.render(file, lay)
   }
 
@@ -78,7 +78,7 @@ mixin SlanWeblet
   {
     if (ext == null)
     {
-      res.headers["Content-Type"] = "text/html; charset=utf-8"
+      res.headers["Content-Type"] = "text/plain; charset=utf-8"
     }
     else
     {

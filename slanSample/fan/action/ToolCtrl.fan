@@ -22,7 +22,7 @@ class ToolCtrl : SlanWeblet
   {
     req.session // init session
     res.headers["Content-Type"] = "image/jpg"
-    patchca := Patchca{}
+    patchca := Patchca{ fontSize = 30; width = 150; height = 40 }
     code := patchca.create(res.out)
     req.session["code"] = code
   }

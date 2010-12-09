@@ -20,7 +20,9 @@ internal const class ActionRunner : SlanWeblet
   Void execute(ActionLocation loc)
   {
     //m->defaultView is typename/method.html, you can overwrite this
-    m->defaultView = `$loc.type.name/${loc.method.name}.html`
+    ext := req.uri.ext ?: "html"
+    m->contentType = ext
+    m->defaultView = `$loc.type.name/${loc.method.name}.$ext`
 
     //call
     try
@@ -33,9 +35,8 @@ internal const class ActionRunner : SlanWeblet
     }
     catch(Err e)
     {
-      //throw Err("Action error : name $loc.type.name#$loc.method.name,
-      //            on $loc.constructorParams,with $loc.methodParams", e)
-      throw e
+      throw Err("Action error : name $loc.type.name#$loc.method.name,
+                  on $loc.constructorParams,with $loc.methodParams", e)
     }
   }
 
@@ -50,16 +51,16 @@ internal const class ActionRunner : SlanWeblet
     //if not committed to default
     if (!res.isCommitted)
     {
-      toDefaultView()
+      renderDefaultView()
     }
   }
 
-  private Void toDefaultView()
+  private Void renderDefaultView()
   {
     if (m->defaultView != null)
     {
-      writeContentType
-      this.render((Uri)(m->defaultView))
+      writeContentType(m->contentType as Str)
+      this.render((Uri)m->defaultView)
     }
   }
 }

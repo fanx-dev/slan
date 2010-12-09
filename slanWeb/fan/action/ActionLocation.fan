@@ -16,7 +16,7 @@ internal class ActionLocation : Weblet
 {
   private Uri dir //action directory
 
-  private Str[]? path
+  //private Str[]? path
   private Str[]? restPath
 
   Type? type
@@ -31,20 +31,65 @@ internal class ActionLocation : Weblet
     this.dir = dir
   }
 
-  This parse(Str[] path)
+  **
+  ** mapping uri to action
+  **
+  Bool parse(Str[] path)
   {
-    this.path = path
+    //this.path = path
+    this.restPath = path
 
-    findType(path.first)
+    findType
     findConstructor
     findMethod
 
-    return this
+    if (!checkWebMethod(method)){ res.sendErr(405); return false }
+
+    findMethodParams
+    setStashId
+
+    return true
   }
 
-  private Void findType(Str typeName)
+  **
+  ** find controller type
+  **
+  private Void findType()
   {
-    type = ResourceHelper.i.getType(typeName, dir)
+    name := restPath.first
+    if(name == null)
+    {
+      useIndexCtrl
+      return
+    }
+
+    type = ResourceHelper.i.getType(getTypeName(name), dir, false)
+    if (type != null)
+    {
+      consumeResPath
+    }
+    else
+    {
+      useIndexCtrl
+    }
+  }
+
+  private Void useIndexCtrl()
+  {
+    type = ResourceHelper.i.getType("IndexCtrl", dir)
+  }
+
+  private Str getTypeName(Str name)
+  {
+    if (name.endsWith("Ctrl"))
+    {
+      return name.capitalize
+    }
+    else
+    {
+      //suffix Ctrl
+      return "${name}Ctrl".capitalize
+    }
   }
 
   **
@@ -54,11 +99,10 @@ internal class ActionLocation : Weblet
   {
     //constructor parameter
     cparams := type.method("make").params
-    constructorParams=ParameterHelper.getParams(path, cparams, 1)
+    constructorParams=ParameterHelper.getParams(restPath, cparams, 0)
 
     //rest path
-    hasRestParams := path.size > (1 + cparams.size)
-    restPath = hasRestParams ? path[(1 + cparams.size)..-1] : Str[,]
+    consumeResPath(cparams.size)
   }
 
   **
@@ -67,37 +111,71 @@ internal class ActionLocation : Weblet
   private Void findMethod()
   {
     //find method
-    methodName := "index"
-    if (restPath.size > 0)
+    methodName := restPath.first
+    if (methodName == null)
     {
-      methodName = restPath[0]
-      if (restPath.size > 1)
-      {
-        //put id on req.stash["id"]
-        req.stash["stashId"] = restPath[1]
-      }
-    }
-
-    method = type.method(methodName)
-
-    //check the facet
-    if (!checkWebMethod(method))
-    {
-      res.sendErr(405)
+      method = type.method("index")
       return
     }
 
-    //getParams
+    method = type.method(methodName, false)
+    if (method != null)
+    {
+      consumeResPath
+    }
+    else
+    {
+      method = type.method("index")
+    }
+  }
+
+  private Void findMethodParams()
+  {
     methodParams = ParameterHelper.getParamsByName(req.uri.query, method.params, req.form)
   }
 
-  //check for WebMethod facet
+  ** put id on req.stash["id"]
+  private Void setStashId()
+  {
+    if (restPath.size > 0)
+    {
+      req.stash["stashId"] = restPath[0]
+      consumeResPath
+    }
+  }
+
+  ** consume
+  private Void consumeResPath(Int n := 1)
+  {
+    restPath = restPath[n..-1]
+  }
+
+  ** check for WebMethod facet
   private Bool checkWebMethod(Method m)
   {
     if (!m.isPublic) return false
     if (m.facets.size == 0) return true
-    if (req.method == "GET") return m.hasFacet(WebGet#)
-    if (req.method == "POST") return m.hasFacet(WebPost#)
-    return true
+
+    Bool allow := false
+    switch(req.method)
+    {
+      case "GET":
+        allow = m.hasFacet(WebGet#)
+      case "POST":
+        allow = m.hasFacet(WebPost#)
+      case "PUT":
+        allow = m.hasFacet(WebPut#)
+      case "DELETE":
+        allow = m.hasFacet(WebDelete#)
+      case "HEAD":
+        allow = m.hasFacet(WebHead#)
+      case "TRACE":
+        allow = m.hasFacet(WebTrace#)
+      case "OPTIONS":
+        allow = m.hasFacet(WebOptions#)
+      default:
+        allow = false
+    }
+    return allow
   }
 }

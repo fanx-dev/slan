@@ -33,48 +33,15 @@ const class ActionMod : WebMod
 
   override Void onService()
   {
-    //rewrite uri
-    path := convertPath(req.modRel.path)
-    if (path.size == 0)
-    {
-      throw Err("path is empty.Maybe some errors on convertPath")
-    }
-
-    onActionFile(path)
-  }
-
-  ** find and call
-  private Void onActionFile(Str[] path)
-  {
+    //load model change
     ModelKeeper.i.loadChange
-    location := ActionLocation(dir).parse(path)
-    actionRunner.execute(location)
+
+    //locate action
+    action := ActionLocation(dir)
+    if (action.parse(req.modRel.path))
+    {
+      //run action
+      actionRunner.execute(action)
+    }
   }
-
-  **
-  ** trap for url rewrite
-  **
-  protected virtual Str[] convertPath(Str[] inPath)
-  {
-    if (inPath.size == 0)
-    {
-      return ["IndexCtrl"]
-    }
-
-    Str[] path := inPath.dup
-
-    Str typeName := path[0]
-    if (typeName.endsWith("Ctrl"))
-    {
-      path[0] = typeName.capitalize
-    }
-    else
-    {
-      //suffix Ctrl
-      path[0] = (typeName + "Ctrl").capitalize
-    }
-
-    return path
-  }
-
 }

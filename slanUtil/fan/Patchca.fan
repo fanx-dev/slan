@@ -30,6 +30,8 @@ const class Patchca
   const Int charPad := 15
   const Int noise := 3
 
+  const Int fontSize := 24
+
   new make(|This|? f := null)
   {
     f?.call(this)
@@ -68,7 +70,7 @@ const class Patchca
 
   private Void drawCode(Str char, Graphics2D g, Int i)
   {
-    g.setFont(Font("Arial", Font.BOLD.or(Font.ITALIC), 22))
+    g.setFont(Font("Arial", Font.BOLD.or(Font.ITALIC), fontSize))
     g.drawString(char, left(i), base)
   }
 
