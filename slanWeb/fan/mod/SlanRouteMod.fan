@@ -14,21 +14,23 @@ using web
 **
 const class SlanRouteMod : WebMod
 {
-  const static Str publics := "public"
-  const static Str actions := "action"
-  const Uri errorPage := `/$publics/error.html`
+  private const static Str publics := "public"
+  private const static Str actions := "action"
+  private const Uri errorPage := `/$publics/error.html`
+  private const SlanApp slanApp
 
   ** Map of URI path names to sub-WebMods.
   const Str:WebMod routes := Str:WebMod[:]
 
-  new make(|[Str:WebMod]|? f := null)
+  new make(SlanApp slanApp, |[Str:WebMod]|? f := null)
   {
+    this.slanApp = slanApp
     Str:WebMod map :=
     [
-      actions : ActionMod(`fan/$actions/`),
+      actions : ActionMod(slanApp, `fan/$actions/`),
       "pod" : PodJsMod(),
-      "jsfan" : JsfanMod(`fan/jsfan/`),
-      publics : StaticFileMod(`$publics/`),
+      "jsfan" : JsfanMod(slanApp, `fan/jsfan/`),
+      publics : StaticFileMod(slanApp, `$publics/`),
     ]
     f?.call(map)
     routes = map

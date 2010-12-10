@@ -21,7 +21,7 @@ const class LogedMod : SlanRouteMod
   private const Uri logDir
   private const LogMod logger
 
-  new make(Uri logDir := `log/`) : super()
+  new make(SlanApp slanApp, Uri logDir := `log/`) : super(slanApp)
   {
     this.logDir = logDir
     logger = initLoger
@@ -35,7 +35,9 @@ const class LogedMod : SlanRouteMod
       logger.onService
   }
 
+  **
   ** create logMod
+  **
   private LogMod initLoger()
   {
     // create log dir is it doesn't exist

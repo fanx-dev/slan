@@ -7,7 +7,6 @@
 //
 
 using slanWeb::SlanRouteMod
-using slanWeb::Config
 using slanWeb::LogedMod
 using slanWeb::CommandLine
 using wisp
@@ -39,8 +38,5 @@ class Main : CommandLine
   **
   ** for jsDist to init classPath
   **
-  static Void init()
-  {
-    Config.i.toProductMode(Main#.pod.name)
-  }
+  static Void init() {}
 }

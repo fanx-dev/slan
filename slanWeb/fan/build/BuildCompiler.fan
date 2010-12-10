@@ -13,7 +13,7 @@ using build
 **
 internal const class BuildCompiler : ScriptCompiler
 {
-  static const BuildCompiler buildCompiler := BuildCompiler()
+  new make(SlanApp slanApp) : super(slanApp) {}
 
   ** run build and return podName
   Str runBuild(File file)

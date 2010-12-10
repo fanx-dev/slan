@@ -7,7 +7,7 @@
 //
 
 using slanWeb::LogedMod
-using slanWeb::Config
+using slanWeb::SlanApp
 
 **
 ** root mod
@@ -23,7 +23,8 @@ const class RootMod : LogedMod
     catch(Err e){}
   }
 
-  new make() : super(logDir) {}
+  new make(SlanApp? slanApp := null) : super(
+    slanApp ?: SlanApp.makeProduct(Main#.pod.name), logDir) {}
 
   **
   ** return false will cancle the request

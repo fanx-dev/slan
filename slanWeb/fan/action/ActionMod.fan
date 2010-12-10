@@ -7,6 +7,7 @@
 //
 
 using web
+using concurrent
 
 **
 ** Action Mod
@@ -21,12 +22,16 @@ const class ActionMod : WebMod
 {
   private const Uri dir //action directory
   private const ActionRunner actionRunner
+  private const SlanApp slanApp
+
+  static const Str slanAppId := "slanWeb.ActionRunner.slanApp"
 
   **
   ** dir:action directory
   **
-  new make(Uri dir)
+  new make(SlanApp slanApp, Uri dir)
   {
+    this.slanApp = slanApp
     this.dir = dir
     actionRunner = ActionRunner()
   }
@@ -34,14 +39,36 @@ const class ActionMod : WebMod
   override Void onService()
   {
     //load model change
-    ModelKeeper.i.loadChange
+    slanApp.modelKeeper.loadChange
 
     //locate action
-    action := ActionLocation(dir)
+    action := ActionLocation(slanApp, dir)
     if (action.parse(req.modRel.path))
     {
-      //run action
+      run(action)
+    }
+  }
+
+  ** run action
+  private Void run(ActionLocation action)
+  {
+    Actor.locals[slanAppId] = slanApp
+    try
+    {
       actionRunner.execute(action)
+    }
+    catch(SlanCompilerErr e)
+    {
+      throw e
+    }
+    catch(Err e)
+    {
+      throw Err("Action error : name $action.type.name#$action.method.name,
+                  on $action.constructorParams,with $action.methodParams", e)
+    }
+    finally
+    {
+      Actor.locals.remove(slanAppId)
     }
   }
 }

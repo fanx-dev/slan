@@ -14,32 +14,45 @@ using concurrent
 **
 ** modle code change detective
 **
-internal const class ModelKeeper : Weblet
+const class ModelKeeper : Weblet
 {
-  private static const SingletonMap map := SingletonMap()
+  private const SlanApp slanApp
 
-  static const ModelKeeper i := ModelKeeper()
-  private new make() {}
+  **
+  ** store lastNoted time
+  **
+  private const AtomicRef lastNoted := AtomicRef()
+
+  **
+  ** build.fan compiler
+  **
+  private const BuildCompiler buildCompiler
+
+  new make(SlanApp slanApp)
+  {
+    this.slanApp = slanApp
+    this.buildCompiler = BuildCompiler(slanApp)
+  }
 
   **
   ** rebuild pod if necessary
   **
   Void loadChange()
   {
-    if (Config.i.isProductMode) return
+    if (slanApp.isProductMode) return
     rebuild
   }
 
   internal Void rebuild()
   {
-    DateTime? lastNoted :=  map["lastNoted"]
-    appHome := Config.i.appHome
-    if (modelChanged(appHome, lastNoted))
+    DateTime? lastTime :=  lastNoted.val
+    appHome := slanApp.appHome
+    if (modelChanged(appHome, lastTime))
     {
-       ScriptCompiler.i.clearCache
-       podName := BuildCompiler.buildCompiler.runBuild(`${appHome}build.fan`.toFile)
-       map["lastNoted"] = DateTime.now
-       Config.i.setPodName(podName)
+       slanApp.scriptCompiler.clearCache
+       podName := buildCompiler.runBuild(`${appHome}build.fan`.toFile)
+       lastNoted.getAndSet(DateTime.now)
+       slanApp.setPodName(podName)
     }
   }
 

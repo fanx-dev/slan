@@ -14,9 +14,9 @@ using web
 **
 internal class ActionLocation : Weblet
 {
+  private const SlanApp slanApp
   private Uri dir //action directory
 
-  //private Str[]? path
   private Str[]? restPath
 
   Type? type
@@ -26,8 +26,9 @@ internal class ActionLocation : Weblet
   Obj?[]? methodParams
 
 
-  new make(Uri dir)
+  new make(SlanApp slanApp, Uri dir)
   {
+    this.slanApp = slanApp
     this.dir = dir
   }
 
@@ -63,7 +64,7 @@ internal class ActionLocation : Weblet
       return
     }
 
-    type = ResourceHelper.i.getType(getTypeName(name), dir, false)
+    type = slanApp.resourceHelper.getType(getTypeName(name), dir, false)
     if (type != null)
     {
       consumeResPath
@@ -76,7 +77,7 @@ internal class ActionLocation : Weblet
 
   private Void useIndexCtrl()
   {
-    type = ResourceHelper.i.getType("IndexCtrl", dir)
+    type = slanApp.resourceHelper.getType("IndexCtrl", dir)
   }
 
   private Str getTypeName(Str name)

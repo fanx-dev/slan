@@ -13,40 +13,41 @@ using build
 **
 const class ResourceHelper
 {
-  const static ResourceHelper i := ResourceHelper()
-  private new make() {}
+  private const SlanApp slanApp
+  new make(SlanApp slanApp) { this.slanApp = slanApp }
 
   **
   ** switch podFile or file
   **
   Uri getUri(Uri path)
   {
-    if (Config.i.isProductMode)
+    if (slanApp.isProductMode)
     {
-      return `fan://${Config.i.podName}/$path`
+      return `fan://${slanApp.podName}/$path`
     }
     else
     {
-      return `file:${Config.i.appHome}$path`
+      return `file:${slanApp.appHome}$path`
     }
   }
 
   **
-  ** find type by script or pod
+  ** find type by script or pod.
+  ** internal for JsfanMod#
   **
   internal Obj findTypeUri(Str typeName, Uri dir)
   {
-    if (Config.i.isProductMode)
+    if (slanApp.isProductMode)
     {
       //find in pod
       //return `fan://$podName/$typeName`
-      return Config.i.podName
+      return slanApp.podName
     }
     else
     {
       //find in file
       path := `${dir.toStr}${typeName}.fan`.toFile
-      file := `file:${Config.i.appHome}$path`
+      file := `file:${slanApp.appHome}$path`
       return file
     }
   }
@@ -62,7 +63,7 @@ const class ResourceHelper
     {
       file := (typeRes as Uri).get(null, checked)
       if (file == null) return null
-      return ScriptCompiler.i.getType(file)
+      return slanApp.scriptCompiler.getType(file)
     }
   }
 }

@@ -7,6 +7,8 @@
 //
 
 using compiler
+using concurrent
+using web
 
 **
 ** Execute the action.
@@ -19,25 +21,14 @@ internal const class ActionRunner : SlanWeblet
   **
   Void execute(ActionLocation loc)
   {
-    //m->defaultView is typename/method.html, you can overwrite this
+    //m->defaultView is typename/method.html.
+    //put into stash in order to uer can overwrite it
     ext := req.uri.ext ?: "html"
-    m->contentType = ext
-    m->defaultView = `$loc.type.name/${loc.method.name}.$ext`
+    req.stash["contentType"] = ext
+    req.stash["defaultView"] = `$loc.type.name/${loc.method.name}.$ext`
 
     //call
-    try
-    {
-      onInvoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
-    }
-    catch(SlanCompilerErr e)
-    {
-      throw e
-    }
-    catch(Err e)
-    {
-      throw Err("Action error : name $loc.type.name#$loc.method.name,
-                  on $loc.constructorParams,with $loc.methodParams", e)
-    }
+    onInvoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
   }
 
   **
@@ -57,10 +48,10 @@ internal const class ActionRunner : SlanWeblet
 
   private Void renderDefaultView()
   {
-    if (m->defaultView != null)
+    if (req.stash["defaultView"] != null)
     {
-      writeContentType(m->contentType as Str)
-      this.render((Uri)m->defaultView)
+      writeContentType(req.stash["contentType"] as Str)
+      this.render((Uri)req.stash["defaultView"])
     }
   }
 }

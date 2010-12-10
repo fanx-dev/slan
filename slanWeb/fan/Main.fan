@@ -45,19 +45,21 @@ class Main : CommandLine
 **
 ** proxy root for debug
 **
-const class DebugRootMod : WebMod
+internal const class DebugRootMod : WebMod
 {
+  private const SlanApp slanApp
+
   new make(Uri appHome)
   {
-    Config.i.toDebugMode(appHome)
+    this.slanApp = SlanApp.makeDebug(appHome)
   }
 
   override Void onService()
   {
-    Config.i.getRootMod.onService
+    slanApp.getRootMod.onService
   }
 
-  override Void onStart() { Config.i.getRootMod.onStart }
+  override Void onStart() { slanApp.getRootMod.onStart }
 
-  override Void onStop() { Config.i.getRootMod.onStop }
+  override Void onStop() { slanApp.getRootMod.onStop }
 }

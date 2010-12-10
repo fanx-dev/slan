@@ -14,6 +14,11 @@ using concurrent
 **
 mixin SlanWeblet
 {
+  **
+  ** current slanApp
+  **
+  SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
+
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
 //////////////////////////////////////////////////////////////////////////
@@ -51,8 +56,8 @@ mixin SlanWeblet
   **
   Void render(Uri html, |->|? lay := null)
   {
-    file := ResourceHelper.i.getUri(`res/view/` + html).get
-    TemplateCompiler.templateCompiler.render(file, lay)
+    file := slanApp.resourceHelper.getUri(`res/view/` + html).get
+    slanApp.templateCompiler.render(file, lay)
   }
 
   **
@@ -61,9 +66,9 @@ mixin SlanWeblet
   Str compileJs(Uri fwt, Uri[]? usings := null,
     Str:Str env := ["fwt.window.root":"fwt-root"])
   {
-    file := ResourceHelper.i.getUri(`res/fwt/` + fwt).get
+    file := slanApp.resourceHelper.getUri(`res/fwt/` + fwt).get
     strBuf := StrBuf()
-    JsCompiler.render(WebOutStream(strBuf.out), file, usings, env)
+    slanApp.jsCompiler.render(WebOutStream(strBuf.out), file, usings, env)
     return strBuf.toStr
   }
 
@@ -113,7 +118,7 @@ mixin SlanWeblet
   }
 
   **
-  ** id is the last word of uri
+  ** id is the first word of unnecessary uri
   **
   Str? stashId()
   {
@@ -137,7 +142,7 @@ mixin SlanWeblet
 
 
 **************************************************************************
-** ReqStash
+** ReqStash pass data from controller to view
 **************************************************************************
 
 **

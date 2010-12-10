@@ -14,9 +14,13 @@ using compiler
 **
 const class ScriptCompiler
 {
+  protected const SlanApp slanApp
   private const ScriptCache cache := ScriptCache()
 
-  static const ScriptCompiler i := ScriptCompiler()
+  new make(SlanApp slanApp)
+  {
+    this.slanApp = slanApp
+  }
 
   ** from cache or compile
   Type getType(File file)
@@ -49,7 +53,7 @@ const class ScriptCompiler
   protected virtual Str codeTransform(File file)
   {
     source := file.readAllStr
-    podName := Config.i.podName
+    podName := slanApp.podName
     return "using $podName
             $source"
   }

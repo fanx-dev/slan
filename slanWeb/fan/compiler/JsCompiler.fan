@@ -12,13 +12,19 @@ using webmod
 using compiler
 
 **
-** Compiler for fwt
+** fantome to javascript Compiler for fwt
 **
-class JsCompiler
+const class JsCompiler
 {
-  private static const ScriptCache cache := ScriptCache()
+  private const SlanApp slanApp
+  private const ScriptCache cache := ScriptCache()
 
-  static Void render(WebOutStream out, File file, Uri[]? usings := null,
+  new make(SlanApp slanApp)
+  {
+    this.slanApp = slanApp
+  }
+
+  Void render(WebOutStream out, File file, Uri[]? usings := null,
     Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     script := getJsScript(file)
@@ -44,7 +50,7 @@ class JsCompiler
     WebUtil.jsMain(out, script.main, env)
   }
 
-  static Void renderByType(WebOutStream out, Str podName, Str qname, Uri[]? usings := null,
+  Void renderByType(WebOutStream out, Str podName, Str qname, Uri[]? usings := null,
     Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     //add system class path
@@ -71,7 +77,7 @@ class JsCompiler
   **
   ** compile to jscode
   **
-  static JsScript getJsScript(File file)
+  JsScript getJsScript(File file)
   {
     cache.getOrAdd(file)|->Obj|
     {
@@ -88,7 +94,7 @@ class JsCompiler
   }
 
   ** compile script into js
-  private static JsScript compile(Str source, File file)
+  private JsScript compile(Str source, File file)
   {
     Compiler compiler := getCompile(source, file)
     Str js := compiler.compile.js
@@ -100,7 +106,7 @@ class JsCompiler
     }
   }
 
-  private static Compiler getCompile(Str source, File file)
+  private Compiler getCompile(Str source, File file)
   {
     input := CompilerInput.make
     input.podName   = file.basename

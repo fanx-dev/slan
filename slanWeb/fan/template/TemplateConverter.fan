@@ -19,11 +19,11 @@ internal const class TemplateConverter
   private const Str codeGap := gap + Str.spaces(19)
   private const Log log := Pod.of(this).log
 
-  Str transform(File file)
+  Str transform(File file, Str podName)
   {
     all := convertTemplate(file)
 
-    s := "
+    s := "using $podName
           using web
           using slanWeb
 

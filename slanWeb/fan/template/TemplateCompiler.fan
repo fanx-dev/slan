@@ -10,15 +10,13 @@ using web
 using compiler
 
 **
-** compile and run template file
+** compile and run http template file
 **
 const class TemplateCompiler : ScriptCompiler
 {
   private const TemplateConverter codeTrans := TemplateConverter()
 
-  static const TemplateCompiler templateCompiler := TemplateCompiler()
-
-  private new make(){}
+  new make(SlanApp slanApp) : super(slanApp) {}
 
   Void render(File file, |->|? lay := null)
   {
@@ -29,6 +27,6 @@ const class TemplateCompiler : ScriptCompiler
 
   protected override Str codeTransform(File file)
   {
-    return codeTrans.transform(file)
+    return codeTrans.transform(file, slanApp.podName)
   }
 }
