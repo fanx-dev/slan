@@ -20,13 +20,13 @@ internal const class BuildCompiler : ScriptCompiler
   {
     Type type := compile(file)
     BuildPod build := type.make
-    Str name := build.podName + DateTime.nowUnique
+    Str name := build.podName + "_" + DateTime.nowUnique
     build.podName = name
     build.compile
     return name
   }
 
-  protected override Str codeTransform(File file)
+  protected override Str codeTranslate(File file)
   {
     script := file.readAllStr
     return script.replace("build::BuildPod", TransientBuild#.qname)

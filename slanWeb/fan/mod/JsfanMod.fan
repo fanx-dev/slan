@@ -15,14 +15,12 @@ using web
 const class JsfanMod : WebMod
 {
   private const Uri dir
-  private const Uri[]? usings := null
   private const SlanApp slanApp
 
-  new make(SlanApp slanApp, Uri dir, Uri[]? usings := null)
+  new make(SlanApp slanApp, Uri dir)
   {
     this.slanApp = slanApp
     this.dir = dir
-    this.usings = usings
   }
 
   override Void onService()
@@ -31,15 +29,15 @@ const class JsfanMod : WebMod
     typeRes := slanApp.resourceHelper.findTypeUri(typeName, dir)
     if (typeRes is Str)
     {
-      type := Pod.find(typeRes).type(typeName)
+      //type := Pod.find(typeRes).type(typeName)
       res.headers["Content-Type"] = "text/html; charset=utf-8"
-      slanApp.jsCompiler.renderByType(res.out, typeRes, type.qname, usings, [:])
+      slanApp.jsCompiler.renderByType(res.out, "$typeRes::$typeName")
     }
     else
     {
       file := (typeRes as Uri).get
       res.headers["Content-Type"] = "text/html; charset=utf-8"
-      slanApp.jsCompiler.render(res.out, file, usings, [:])
+      slanApp.jsCompiler.render(res.out, file)
     }
   }
 }

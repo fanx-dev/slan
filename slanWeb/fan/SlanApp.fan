@@ -20,6 +20,11 @@ const class SlanApp
   private const AtomicRef podNameRef := AtomicRef()
 
   **
+  ** podName on productMode
+  **
+  private const Str? productPodName
+
+  **
   ** parent folder
   **
   const Uri? appHome
@@ -29,7 +34,7 @@ const class SlanApp
   **
   const Bool isProductMode
 
-
+  ** new Debug Mode
   new makeDebug(Uri appHome)
   {
     checkAppHome(appHome)
@@ -38,10 +43,13 @@ const class SlanApp
     this.appHome = appHome
   }
 
+  ** new Product Mode
   new makeProduct(Str podName)
   {
+    checkPodName(podName)
+
     isProductMode = true
-    podNameRef.getAndSet(podName)
+    productPodName = podName
   }
 
   **
@@ -49,11 +57,35 @@ const class SlanApp
   **
   Str podName()
   {
+    if (isProductMode) return productPodName
+
     if (podNameRef.val == null)
     {
       modelKeeper.rebuild
     }
     return podNameRef.val
+  }
+
+  **
+  ** js using need this
+  **
+  internal Str realPodName()
+  {
+    if (isProductMode) return productPodName
+    name := podName
+    i := name.index("_")
+    return name[0..<i]
+  }
+
+  Str[] depends()
+  {
+    podName := realPodName
+    Str[] depends := [,]
+    Pod.find(podName).depends.each
+    {
+      depends.add(it.name)
+    }
+    return depends
   }
 
   private Void checkAppHome(Uri appPath)
@@ -62,9 +94,10 @@ const class SlanApp
     if (!`${appPath}build.fan`.toFile.exists)  throw ArgErr("Invalid appHome. not find build.fan")
   }
 
-//////////////////////////////////////////////////////////////////////////
-// build.fan
-//////////////////////////////////////////////////////////////////////////
+  private Void checkPodName(Str name)
+  {
+    Pod.find(name)
+  }
 
   **
   ** only for debug mode, called by modelKeeper
@@ -73,19 +106,6 @@ const class SlanApp
   {
     if (isProductMode) throw Err("producteMode do not change podName")
     podNameRef.getAndSet(name)
-  }
-
-  **
-  ** custom root web mod
-  **
-  internal SlanRouteMod getRootMod()
-  {
-    if (!isProductMode)
-    {
-      type := resourceHelper.getType("RootMod", `fan/special/`)
-      return type.make([this])
-    }
-    throw Err("unsuppert")
   }
 
 //////////////////////////////////////////////////////////////////////////

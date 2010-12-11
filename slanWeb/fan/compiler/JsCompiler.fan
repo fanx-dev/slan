@@ -16,7 +16,7 @@ using compiler
 **
 const class JsCompiler
 {
-  private const SlanApp slanApp
+  protected const SlanApp slanApp
   private const ScriptCache cache := ScriptCache()
 
   new make(SlanApp slanApp)
@@ -24,55 +24,24 @@ const class JsCompiler
     this.slanApp = slanApp
   }
 
-  Void render(WebOutStream out, File file, Uri[]? usings := null,
-    Str:Str env := ["fwt.window.root":"fwt-root"])
+  Void render(WebOutStream out, File file, [Str:Str]? env := null)
   {
     script := getJsScript(file)
 
-    //add system class path
-    out.includeJs(`/pod/sys/sys.js`)
-    out.includeJs(`/pod/concurrent/concurrent.js`)
-    out.includeJs(`/pod/web/web.js`)
-    out.includeJs(`/pod/gfx/gfx.js`)
-    out.includeJs(`/pod/dom/dom.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-
-    //add user's class path
-    if (usings != null)
-    {
-      usings.each
-      {
-        out.includeJs(it)
-      }
-    }
-
+    includeAllJs(out, slanApp.depends, slanApp.realPodName)
     out.script.w(script.js).scriptEnd
     WebUtil.jsMain(out, script.main, env)
   }
 
-  Void renderByType(WebOutStream out, Str podName, Str qname, Uri[]? usings := null,
-    Str:Str env := ["fwt.window.root":"fwt-root"])
+  Void renderByType(WebOutStream out, Str qname, [Str:Str]? env := null)
   {
-    //add system class path
-    out.includeJs(`/pod/sys/sys.js`)
-    out.includeJs(`/pod/concurrent/concurrent.js`)
-    out.includeJs(`/pod/web/web.js`)
-    out.includeJs(`/pod/gfx/gfx.js`)
-    out.includeJs(`/pod/dom/dom.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-    out.includeJs(`/pod/$podName/${podName}.js`)
-
-    //add user's class path
-    if (usings != null)
-    {
-      usings.each
-      {
-        out.includeJs(it)
-      }
-    }
-
+    includeAllJs(out, slanApp.depends, slanApp.realPodName)
     WebUtil.jsMain(out, qname, env)
   }
+
+//////////////////////////////////////////////////////////////////////////
+// compile js
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** compile to jscode
@@ -120,6 +89,34 @@ const class JsCompiler
     input.output    = CompilerOutputMode.js
 
     return Compiler(input)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// include js
+//////////////////////////////////////////////////////////////////////////
+
+  private Void includeJs(WebOutStream out, Str podName)
+  {
+    out.includeJs(`/pod/$podName/${podName}.js`)
+  }
+
+  private Void includeAllJs(WebOutStream out, Str[] usings, Str curPod)
+  {
+    //add system class path
+    out.includeJs(`/pod/sys/sys.js`)
+    out.includeJs(`/pod/concurrent/concurrent.js`)
+    out.includeJs(`/pod/web/web.js`)
+    out.includeJs(`/pod/gfx/gfx.js`)
+    out.includeJs(`/pod/dom/dom.js`)
+    out.includeJs(`/pod/fwt/fwt.js`)
+    out.includeJs(`/pod/fwt/fwt.js`)
+
+    //add user's class path
+    usings.each
+    {
+      includeJs(out, it)
+    }
+    includeJs(out, curPod)
   }
 }
 

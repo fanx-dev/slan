@@ -34,6 +34,7 @@ const class ResourceHelper
   **
   ** find type by script or pod.
   ** internal for JsfanMod#
+  ** if product mode return podName
   **
   internal Obj findTypeUri(Str typeName, Uri dir)
   {

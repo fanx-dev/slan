@@ -12,14 +12,14 @@ using compiler
 **
 ** tranform form template to fantom sources string
 **
-internal const class TemplateConverter
+internal const class TemplateTranslater
 {
   //shift for mutil line string
   private const Str gap := "\n    "
   private const Str codeGap := gap + Str.spaces(19)
   private const Log log := Pod.of(this).log
 
-  Str transform(File file, Str podName)
+  Str translate(File file, Str podName)
   {
     all := convertTemplate(file)
 

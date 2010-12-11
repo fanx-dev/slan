@@ -14,7 +14,7 @@ using compiler
 **
 const class TemplateCompiler : ScriptCompiler
 {
-  private const TemplateConverter codeTrans := TemplateConverter()
+  private const TemplateTranslater codeTrans := TemplateTranslater()
 
   new make(SlanApp slanApp) : super(slanApp) {}
 
@@ -25,8 +25,8 @@ const class TemplateCompiler : ScriptCompiler
     type.method("dump").call(obj, lay)
   }
 
-  protected override Str codeTransform(File file)
+  protected override Str codeTranslate(File file)
   {
-    return codeTrans.transform(file, slanApp.podName)
+    return codeTrans.translate(file, slanApp.podName)
   }
 }

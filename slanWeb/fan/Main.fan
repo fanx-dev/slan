@@ -29,7 +29,7 @@ class Main : CommandLine
     wisp := WispService
     {
       it.port = this.port
-      it.root = DebugRootMod(appHome)
+      it.root = RootModWrapper(appHome)
     }
 
     //run service
@@ -40,26 +40,4 @@ class Main : CommandLine
 
     return -1
   }
-}
-
-**
-** proxy root for debug
-**
-internal const class DebugRootMod : WebMod
-{
-  private const SlanApp slanApp
-
-  new make(Uri appHome)
-  {
-    this.slanApp = SlanApp.makeDebug(appHome)
-  }
-
-  override Void onService()
-  {
-    slanApp.getRootMod.onService
-  }
-
-  override Void onStart() { slanApp.getRootMod.onStart }
-
-  override Void onStop() { slanApp.getRootMod.onStop }
 }

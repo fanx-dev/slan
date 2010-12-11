@@ -45,7 +45,7 @@ abstract class CommandLine : AbstractMain
       }
       else
       {
-        echo("inut 'quit' to exit")
+        echo("input 'quit' to exit")
       }
     }
   }

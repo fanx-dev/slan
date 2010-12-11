@@ -22,7 +22,14 @@ const class PodJsMod : WebMod
       res.sendErr(403)
       return
     }
-    file := ("fan://" + req.modRel).toUri.get
+    File? file
+    try
+      file = ("fan://" + req.modRel).toUri.get
+    catch
+    {
+      res.sendErr(404)
+      return
+    }
     FileWeblet(file).onService
   }
 }

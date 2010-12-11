@@ -43,7 +43,7 @@ class IndexCtrl : Weblet
 
   Void dump()
   {
-    res.headers["Content-Type"] = "text/html; charset=utf-8"
+    res.headers["Content-Type"] = "text/plain; charset=utf-8"
     req.headers.each |Str v, Str k| { res.out.printLine("  $k: $v <br/>") }
   }
 }

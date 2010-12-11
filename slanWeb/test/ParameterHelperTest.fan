@@ -7,9 +7,9 @@
 //
 
 **
-** MyWebUtilTest
+** ParameterHelperTest
 **
-internal class WebUtilTest : Test
+internal class ParameterHelperTest : Test
 {
   Void m4test(Int i,Str s) {}
 

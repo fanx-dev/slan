@@ -31,7 +31,7 @@ const class ScriptCompiler
   //compile
   protected Type compile(File file)
   {
-    source := codeTransform(file)
+    source := codeTranslate(file)
     Pod? pod
     try
     {
@@ -50,7 +50,7 @@ const class ScriptCompiler
     cache.clear
   }
 
-  protected virtual Str codeTransform(File file)
+  protected virtual Str codeTranslate(File file)
   {
     source := file.readAllStr
     podName := slanApp.podName

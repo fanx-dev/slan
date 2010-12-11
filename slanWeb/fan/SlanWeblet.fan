@@ -63,12 +63,11 @@ mixin SlanWeblet
   **
   ** compile js file.
   **
-  Str compileJs(Uri fwt, Uri[]? usings := null,
-    Str:Str env := ["fwt.window.root":"fwt-root"])
+  Str compileJs(Uri fwt, Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     file := slanApp.resourceHelper.getUri(`res/fwt/` + fwt).get
     strBuf := StrBuf()
-    slanApp.jsCompiler.render(WebOutStream(strBuf.out), file, usings, env)
+    slanApp.jsCompiler.render(WebOutStream(strBuf.out), file, env)
     return strBuf.toStr
   }
 
@@ -122,7 +121,7 @@ mixin SlanWeblet
   **
   Str? stashId()
   {
-    req.stash["stashId"]
+    req.stash["_stashId"]
   }
 
   **
@@ -153,7 +152,12 @@ const class ReqStash : SlanWeblet
   ** call req.stash[name]
   override Obj? trap(Str name, Obj?[]? args)
   {
-    if (args.size == 0) { return req.stash.get(name) }
+    if (args.size == 0)
+    {
+      if (!req.stash.containsKey(name)) throw ArgErr("not find arg $name")
+      return req.stash.get(name)
+    }
+
     if (args.size == 1) { req.stash.set(name, args.first); return null }
     return super.trap(name, args)
   }

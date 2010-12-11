@@ -10,7 +10,7 @@ using webmod
 using web
 
 **
-** RouteMod added error dispose
+** Route for all Mod
 **
 const class SlanRouteMod : WebMod
 {

@@ -24,8 +24,8 @@ internal const class ActionRunner : SlanWeblet
     //m->defaultView is typename/method.html.
     //put into stash in order to uer can overwrite it
     ext := req.uri.ext ?: "html"
-    req.stash["contentType"] = ext
-    req.stash["defaultView"] = `$loc.type.name/${loc.method.name}.$ext`
+    req.stash["_contentType"] = ext
+    req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}.$ext`
 
     //call
     onInvoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
@@ -48,10 +48,10 @@ internal const class ActionRunner : SlanWeblet
 
   private Void renderDefaultView()
   {
-    if (req.stash["defaultView"] != null)
+    if (req.stash["_defaultView"] != null)
     {
-      writeContentType(req.stash["contentType"] as Str)
-      this.render((Uri)req.stash["defaultView"])
+      writeContentType(req.stash["_contentType"] as Str)
+      this.render((Uri)req.stash["_defaultView"])
     }
   }
 }
