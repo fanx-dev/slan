@@ -23,7 +23,7 @@ internal const class RootModWrapper : WebMod
   **
   ** custom root web mod
   **
-  private SlanRouteMod getRootMod()
+  private WebMod getRootMod()
   {
     if (!slanApp.isProductMode)
     {
@@ -35,10 +35,19 @@ internal const class RootModWrapper : WebMod
 
   override Void onService()
   {
-    getRootMod.onService
+    try
+      getRootMod.onService
+    catch(SlanCompilerErr err)
+      showErr(err)
   }
 
-  override Void onStart() { getRootMod.onStart }
+  override Void onStart(){ getRootMod.onStart }
 
-  override Void onStop() { getRootMod.onStop }
+  override Void onStop(){ getRootMod.onStop }
+
+  private Void showErr(SlanCompilerErr err)
+  {
+    res.headers["Content-Type"] = "text/html; charset=utf-8"
+    res.out.print(err.dump)
+  }
 }

@@ -14,7 +14,7 @@ using web
 ** Execute the action.
 ** m->defaultView is typename/method.html
 **
-internal const class ActionRunner : SlanWeblet
+internal const class ActionRunner : Weblet
 {
   **
   ** call method.
@@ -28,30 +28,40 @@ internal const class ActionRunner : SlanWeblet
     req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}.$ext`
 
     //call
-    onInvoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
+    invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
   }
 
   **
   ** call method.
   **
-  private Void onInvoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
+  private Void invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
-    obj := type.make(constructorParams)
-    method.callOn(obj, methodParams)
-
-    //if not committed to default
-    if (!res.isCommitted)
+    SlanWeblet weblet := type.make(constructorParams)
+    try
     {
-      renderDefaultView()
+      weblet.before
+      method.callOn(weblet, methodParams)
+      weblet.after
+      //if not committed to default
+      if (!res.isCommitted){ renderDefaultView(weblet) }
+    }
+    catch(Err e)
+    {
+      throw Err("Action error : name $type.name#$method.name,
+                  on $constructorParams,with $methodParams", e)
+    }
+    finally
+    {
+      weblet.finall
     }
   }
 
-  private Void renderDefaultView()
+  private Void renderDefaultView(SlanWeblet weblet)
   {
     if (req.stash["_defaultView"] != null)
     {
-      writeContentType(req.stash["_contentType"] as Str)
-      this.render((Uri)req.stash["_defaultView"])
+      weblet.writeContentType(req.stash["_contentType"] as Str)
+      weblet.render((Uri)req.stash["_defaultView"])
     }
   }
 }

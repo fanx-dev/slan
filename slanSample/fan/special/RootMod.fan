@@ -6,38 +6,38 @@
 //   2010-12-7  Jed Young  Creation
 //
 
-using slanWeb::LogedMod
 using slanWeb::SlanApp
+using slanWeb::SlanRouteMod
+using slanWeb::SlanLogMod
+using webmod
 
 **
 ** root mod
 **
-const class RootMod : LogedMod
+const class RootMod : PipelineMod
 {
-
-  const static Uri logDir := `log/`
-  static
+  new make(SlanApp? slanApp := null) : super(|PipelineMod pp|
   {
+    pp.steps =
+    [
+      SlanRouteMod(slanApp ?: SlanApp.makeProduct(Main#.pod.name))
+      {
+        //you can add your mod at here
+        it["doc"] = FileMod { file = Env.cur.homeDir + `doc/` }
+        it["log"] = FileMod { file = logDir.toFile }
+      }
+    ]
+    pp.after = [ SlanLogMod(logDir) ]
+
+  }){}
+
+  private Uri logDir()
+  {
+    Uri logDir := `log/`
     try
       logDir = Main#.pod.config("log").toUri
-    catch(Err e){}
+    catch{}
+
+    return logDir
   }
-
-  new make(SlanApp? slanApp := null) : super(
-    slanApp ?: SlanApp.makeProduct(Main#.pod.name), logDir) {}
-
-  **
-  ** return false will cancle the request
-  **
-  override Bool beforeInvoke() { true }
-
-  **
-  ** guarantee will be called
-  **
-  override Void afterInvoke() {}
-
-
-  override Void onStart() {}
-
-  override Void onStop() {}
 }

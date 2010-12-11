@@ -6,8 +6,6 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using slanWeb::SlanRouteMod
-using slanWeb::LogedMod
 using slanWeb::CommandLine
 using wisp
 

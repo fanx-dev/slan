@@ -40,27 +40,11 @@ const class SlanRouteMod : WebMod
   {
     try
     {
-      if (!beforeInvoke)
-      {
-        res.sendErr(401)
-      }
-      else
-      {
-        doService
-      }
-    }
-    catch(SlanCompilerErr e)
-    {
-      res.headers["Content-Type"] = "text/html; charset=utf-8"
-      res.out.print(e.dump)
+      doService
     }
     catch (Err err)
     {
       onErro(err)
-    }
-    finally
-    {
-      afterInvoke
     }
   }
 
@@ -78,7 +62,9 @@ const class SlanRouteMod : WebMod
     mod.onService
   }
 
+  **
   ** lookup route
+  **
   private WebMod? findMod(Str? name)
   {
     //default mod
@@ -107,16 +93,6 @@ const class SlanRouteMod : WebMod
     return routes[actions]
   }
 
-  ////////////////////////////////////////////////////////////////////////
-
-  ** return false will cancle the request
-  protected virtual Bool beforeInvoke() { true }
-
-  ** guarantee will be called
-  protected virtual Void afterInvoke() {}
-
-  ////////////////////////////////////////////////////////////////////////
-
   override Void onStart()
   {
     routes.each |mod| { mod.onStart }
@@ -127,33 +103,46 @@ const class SlanRouteMod : WebMod
     routes.each |mod| { mod.onStop }
   }
 
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// error
+//////////////////////////////////////////////////////////////////////////
 
   ** trace errInfo
   private Void onErro(Err err)
   {
-    if (req.absUri.host == "localhost")
+    if (req.absUri.host == "localhost" || !slanApp.isProductMode)
     {
-      //dump errInfo
-      if (res.isCommitted)
-      {
-        res.out.print("<p>ERROR: $req.uri</p>")
-        res.out.w(err.traceToStr.replace("\n","<br/>"))
-      }
-      throw err
+      //show error on debug mode
+      showErr(err)
     }
     else if (req.uri.relToAuth == errorPage)
     {
-      if (!res.isCommitted)
-      {
-        res.headers["Content-Type"] = "text/html; charset=utf-8"
-      }
+      //error page not found
+      if (!res.isCommitted){ res.headers["Content-Type"] = "text/html; charset=utf-8" }
       res.out.w("sorry! don't find error page $errorPage .by slanweb")
     }
     else
     {
+      //to error page
       err.trace
       this.res.redirect(errorPage)
     }
+  }
+
+  private Void showErr(Err err)
+  {
+    if (err is SlanCompilerErr)
+    {
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+      res.out.print(err->dump)
+      return
+    }
+
+    if (res.isCommitted && !res.isDone)
+    {
+      res.out.print("<p>ERROR: $req.uri</p>")
+      res.out.w(err.traceToStr.replace("\n","<br/>"))
+    }
+    throw err
   }
 }

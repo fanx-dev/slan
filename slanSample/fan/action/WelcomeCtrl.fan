@@ -36,4 +36,8 @@ class WelcomeCtrl : SlanWeblet
     writeContentType
     res.out.w("$i,$m")
   }
+
+  override Void before() { echo("before") }
+  override Void after() { echo("after") }
+  override Void finall() { echo("finall") }
 }

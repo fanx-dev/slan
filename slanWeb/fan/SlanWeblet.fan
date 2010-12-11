@@ -17,7 +17,12 @@ mixin SlanWeblet
   **
   ** current slanApp
   **
-  SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
+  internal SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
+
+
+  virtual Void before(){}
+  virtual Void after(){}
+  virtual Void finall(){}
 
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
