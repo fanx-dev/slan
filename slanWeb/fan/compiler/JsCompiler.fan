@@ -40,6 +40,34 @@ const class JsCompiler
   }
 
 //////////////////////////////////////////////////////////////////////////
+// include js
+//////////////////////////////////////////////////////////////////////////
+
+  private Void includeJs(WebOutStream out, Str podName)
+  {
+    out.includeJs(`/pod/$podName/${podName}.js`)
+  }
+
+  private Void includeAllJs(WebOutStream out, Str[] usings, Str curPod)
+  {
+    //add system class path
+    out.includeJs(`/pod/sys/sys.js`)
+    out.includeJs(`/pod/concurrent/concurrent.js`)
+    out.includeJs(`/pod/web/web.js`)
+    out.includeJs(`/pod/gfx/gfx.js`)
+    out.includeJs(`/pod/dom/dom.js`)
+    out.includeJs(`/pod/fwt/fwt.js`)
+    out.includeJs(`/pod/fwt/fwt.js`)
+
+    //add user's class path
+    usings.each
+    {
+      includeJs(out, it)
+    }
+    includeJs(out, curPod)
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // compile js
 //////////////////////////////////////////////////////////////////////////
 
@@ -89,34 +117,6 @@ const class JsCompiler
     input.output    = CompilerOutputMode.js
 
     return Compiler(input)
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// include js
-//////////////////////////////////////////////////////////////////////////
-
-  private Void includeJs(WebOutStream out, Str podName)
-  {
-    out.includeJs(`/pod/$podName/${podName}.js`)
-  }
-
-  private Void includeAllJs(WebOutStream out, Str[] usings, Str curPod)
-  {
-    //add system class path
-    out.includeJs(`/pod/sys/sys.js`)
-    out.includeJs(`/pod/concurrent/concurrent.js`)
-    out.includeJs(`/pod/web/web.js`)
-    out.includeJs(`/pod/gfx/gfx.js`)
-    out.includeJs(`/pod/dom/dom.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-
-    //add user's class path
-    usings.each
-    {
-      includeJs(out, it)
-    }
-    includeJs(out, curPod)
   }
 }
 

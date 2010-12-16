@@ -8,15 +8,6 @@
 
 const class StrTool
 {
-  static Str encrypt(Str text)
-  {
-    key := text.toBuf.hmac("MD5", "secret".toBuf)
-    s2 := text.toBuf.hmac("SHA1", key)
-    s3 := s2.hmac("MD5", key)
-
-    return BufToStr(s3)
-  }
-
   static Str BufToStr(Buf buf)
   {
     s := StrBuf()

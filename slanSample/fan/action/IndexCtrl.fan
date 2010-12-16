@@ -7,12 +7,11 @@
 //
 
 using web
-using slanWeb
 
 **
 ** default page
 **
-class IndexCtrl : SlanWeblet
+class IndexCtrl : Weblet
 {
   ** home page
   Void index()

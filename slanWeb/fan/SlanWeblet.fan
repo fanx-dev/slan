@@ -59,10 +59,10 @@ mixin SlanWeblet
   **
   ** render the template
   **
-  Void render(Uri html, |->|? lay := null)
+  Void render(Uri html, |->|? lay := null, OutStream? out := null)
   {
     file := slanApp.resourceHelper.getUri(`res/view/` + html).get
-    slanApp.templateCompiler.render(file, lay)
+    slanApp.templateCompiler.render(file, lay, out)
   }
 
   **

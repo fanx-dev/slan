@@ -37,7 +37,12 @@ class WelcomeCtrl : SlanWeblet
     res.out.w("$i,$m")
   }
 
-  override Void before() { echo("before") }
-  override Void after() { echo("after") }
-  override Void finall() { echo("finall") }
+  override Obj? trap(Str name, Obj?[]? args)
+  {
+    echo("before")
+    try
+      return super.trap(name, args)
+    finally
+      echo("finally")
+  }
 }

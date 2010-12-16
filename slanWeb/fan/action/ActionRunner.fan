@@ -36,24 +36,11 @@ internal const class ActionRunner : Weblet
   **
   private Void invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
-    SlanWeblet weblet := type.make(constructorParams)
-    try
-    {
-      weblet.before
-      method.callOn(weblet, methodParams)
-      weblet.after
-      //if not committed to default
-      if (!res.isCommitted){ renderDefaultView(weblet) }
-    }
-    catch(Err e)
-    {
-      throw Err("Action error : name $type.name#$method.name,
-                  on $constructorParams,with $methodParams", e)
-    }
-    finally
-    {
-      weblet.finall
-    }
+    weblet := type.make(constructorParams)
+    weblet.trap(method.name, methodParams)
+
+    //if not committed to default
+    if (!res.isCommitted){ renderDefaultView(weblet) }
   }
 
   private Void renderDefaultView(SlanWeblet weblet)

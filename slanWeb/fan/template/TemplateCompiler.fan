@@ -18,11 +18,11 @@ const class TemplateCompiler : ScriptCompiler
 
   new make(SlanApp slanApp) : super(slanApp) {}
 
-  Void render(File file, |->|? lay := null)
+  Void render(File file, |->|? lay := null, OutStream? out := null)
   {
     type := getType(file)
     obj := type.make
-    type.method("dump").call(obj, lay)
+    type.method("dump").callOn(obj, [lay, out])
   }
 
   protected override Str codeTranslate(File file)

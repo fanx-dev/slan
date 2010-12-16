@@ -29,9 +29,9 @@ internal const class TemplateTranslater
 
           const class HtmlTemplet : ${SlanWeblet#.name}
           {
-            Void dump(|->|? lay)
+            Void dump(|->|? lay, OutStream? out_)
             {
-              out := res.out
+              out := out_ ?: res.out
               $all
             }
           }"

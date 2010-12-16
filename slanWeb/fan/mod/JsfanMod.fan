@@ -27,16 +27,16 @@ const class JsfanMod : WebMod
   {
     typeName := req.uri.basename
     typeRes := slanApp.resourceHelper.findTypeUri(typeName, dir)
+
+    res.headers["Content-Type"] = "text/html; charset=utf-8"
     if (typeRes is Str)
     {
       //type := Pod.find(typeRes).type(typeName)
-      res.headers["Content-Type"] = "text/html; charset=utf-8"
       slanApp.jsCompiler.renderByType(res.out, "$typeRes::$typeName")
     }
     else
     {
       file := (typeRes as Uri).get
-      res.headers["Content-Type"] = "text/html; charset=utf-8"
       slanApp.jsCompiler.render(res.out, file)
     }
   }
