@@ -18,10 +18,10 @@ const class TemplateCompiler : ScriptCompiler
 
   new make(SlanApp slanApp) : super(slanApp) {}
 
-  Void render(File file, |->|? lay := null, OutStream? out := null)
+  Void render(File file, |->|? lay := null, WebOutStream? out := null)
   {
     type := getType(file)
-    obj := type.make
+    obj := type.make()
     type.method("dump").callOn(obj, [lay, out])
   }
 

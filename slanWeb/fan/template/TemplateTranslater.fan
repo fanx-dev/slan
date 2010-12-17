@@ -8,13 +8,14 @@
 
 using web
 using compiler
+using concurrent
 
 **
 ** tranform form template to fantom sources string
 **
 internal const class TemplateTranslater
 {
-  //shift for mutil line string
+  ** shift for mutil line string
   private const Str gap := "\n    "
   private const Str codeGap := gap + Str.spaces(19)
   private const Log log := Pod.of(this).log
@@ -29,7 +30,7 @@ internal const class TemplateTranslater
 
           const class HtmlTemplet : ${SlanWeblet#.name}
           {
-            Void dump(|->|? lay, OutStream? out_)
+            Void dump(|->|? lay, WebOutStream? out_)
             {
               out := out_ ?: res.out
               $all
@@ -40,18 +41,23 @@ internal const class TemplateTranslater
     return s
   }
 
-  //Tokenize
+  ** Tokenize
   private Str convertTemplate(File file)
   {
     all := StrBuf()
     file.in.eachLine
     {
-      all.add(parse(it,"#"))
+      line := this.replace(it, "@", 0)
+      all.add(parse(line,"#"))
     }
     return all.toStr
   }
 
-  //m is escapes tick '#'
+//////////////////////////////////////////////////////////////////////////
+// print html code
+//////////////////////////////////////////////////////////////////////////
+
+  ** m is escapes tick '#'
   private Str parse(Str line, Str m)
   {
     for (i := 0; i < line.size; i++)
@@ -67,15 +73,12 @@ internal const class TemplateTranslater
         //escape '#' using '##'
         if (i + 1 < line.size && line[i + 1].toChar == m)
         {
-          s := StrBuf()
-          s.add(line)
-          r := " " + s.remove(i).toStr
+          r := " " + removeChar(line, i)
           return getHtmlStr(r)
         }
+
         //it's fantom code
-        s := StrBuf()
-        s.add(line)
-        return codeGap + s.remove(i).toStr
+        return codeGap + removeChar(line, i)
       }
       else
       {
@@ -86,8 +89,80 @@ internal const class TemplateTranslater
     return gap
   }
 
+  private Str removeChar(Str old, Int i)
+  {
+    s := StrBuf()
+    s.add(old)
+    return s.remove(i).toStr
+  }
+
   private Str getHtmlStr(Str line)
   {
     gap + Str<|out.printLine(""" |> + line + Str<| """)|>
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// replace $@message to ${m->message}
+//////////////////////////////////////////////////////////////////////////
+
+  private Str replace(Str line, Str m, Int position)
+  {
+    //echo(line)//?
+    for (i := position; i < line.size; i++)
+    {
+      c := line[i].toChar
+      if (c == m && i + 1 < line.size)
+      {
+        //escape by @@
+        if (line[i + 1].toChar == m)
+        {
+          nline := removeChar(line, i)
+          return replace(nline, m, i+1)
+        }
+
+        //following is space
+        if (line[i + 1].isSpace) continue
+
+        //$@
+        if (i - 1 > 0 && line[i - 1].toChar == "\$")
+        {
+          //"\$@"
+          if(i - 2 > 0 && line[i - 2].toChar == "\\") continue
+
+          //"$@" but "\$@"
+          end := endPosition(line, i+1)
+          nline := replateStr(line, i..<end) { "{m->${it[1..-1]}}" }
+          return replace(nline, m, end)
+        }
+
+        //@name
+        end := endPosition(line, i+1)
+        nline := replateStr(line, i..<end) { "m->${it[1..-1]}" }
+        return replace(nline, m, end)
+      }
+    }
+    return line
+  }
+
+  ** Range r ~ [start..<end]
+  private Str replateStr(Str oldStr, Range r, |Str->Str| f)
+  {
+    //echo("$oldStr,$r")//?
+    return oldStr[0..<r.start] + f(oldStr[r]) + oldStr[r.end..-1]
+  }
+
+  private Int endPosition(Str line, Int i)
+  {
+    while (i < line.size)
+    {
+      c := line[i].toChar
+      if (c.isAlphaNum() || c == "_")
+      {
+        ++i
+        continue
+      }
+      else{ return i }
+    }
+    return line.size
   }
 }

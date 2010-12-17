@@ -19,11 +19,6 @@ mixin SlanWeblet
   **
   internal SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
 
-
-  virtual Void before(){}
-  virtual Void after(){}
-  virtual Void finall(){}
-
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
 //////////////////////////////////////////////////////////////////////////
@@ -59,7 +54,7 @@ mixin SlanWeblet
   **
   ** render the template
   **
-  Void render(Uri html, |->|? lay := null, OutStream? out := null)
+  Void render(Uri html, |->|? lay := null, WebOutStream? out := null)
   {
     file := slanApp.resourceHelper.getUri(`res/view/` + html).get
     slanApp.templateCompiler.render(file, lay, out)
@@ -127,15 +122,6 @@ mixin SlanWeblet
   Str? stashId()
   {
     req.stash["_stashId"]
-  }
-
-  **
-  ** escaped xml control characters
-  **
-  Str? h(Obj? obj)
-  {
-    if (obj == null) return null
-    return obj.toStr.toXml
   }
 
   **

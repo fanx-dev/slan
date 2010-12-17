@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-internal class TemplateComTest : Test
+internal class TemplateTest : Test
 {
   Void test()
   {
