@@ -27,7 +27,7 @@ internal const class RootModWrapper : WebMod
   {
     if (!slanApp.isProductMode)
     {
-      type := slanApp.resourceHelper.getType("RootMod", `fan/special/`)
+      type := slanApp.resourceHelper.getType("RootMod", `fan/boot/`)
       return type.make([slanApp])
     }
     throw Err("unsuppert")

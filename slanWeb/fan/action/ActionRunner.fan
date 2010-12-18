@@ -21,11 +21,10 @@ internal const class ActionRunner : Weblet
   **
   Void execute(ActionLocation loc)
   {
-    //m->defaultView is typename/method.html.
+    //m->defaultView is typename/method.
     //put into stash in order to uer can overwrite it
-    ext := req.uri.ext ?: "html"
-    req.stash["_contentType"] = ext
-    req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}.$ext`
+    req.stash["_contentType"] = req.uri.ext
+    req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}`
 
     //call
     invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
@@ -37,18 +36,6 @@ internal const class ActionRunner : Weblet
   private Void invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
     weblet := type.make(constructorParams)
-    weblet.trap(method.name, methodParams)
-
-    //if not committed to default
-    if (!res.isCommitted){ renderDefaultView(weblet) }
-  }
-
-  private Void renderDefaultView(SlanWeblet weblet)
-  {
-    if (req.stash["_defaultView"] != null)
-    {
-      weblet.writeContentType(req.stash["_contentType"] as Str)
-      weblet.render((Uri)req.stash["_defaultView"])
-    }
+    weblet->invoke(method.name, methodParams)
   }
 }

@@ -32,10 +32,17 @@ internal class TemplateTranslaterTest : Test
     verifyReplace(s1, e1)
   }
 
-  Void testReplaceMutil2()
+  Void testReplaceNoSpace()
   {
     s1 := Str<| hi$@message%ok@n "|>
-    e1 := Str<| hi${m->message}%okm->n "|>
+    e1 := Str<| hi${m->message}%ok@n "|>
+    verifyReplace(s1, e1)
+  }
+
+  Void testReplaceHasSpace()
+  {
+    s1 := Str<| hi$@message%ok @n "|>
+    e1 := Str<| hi${m->message}%ok m->n "|>
     verifyReplace(s1, e1)
   }
 
@@ -74,7 +81,7 @@ internal class TemplateTranslaterTest : Test
   Void testReplaceEscapeDO()
   {
     s1 := Str<| hi\$@message%ok "|>
-    e1 := Str<| hi\$@message%ok "|>
+    e1 := Str<| hi\${m->message}%ok "|>
 
     verifyReplace(s1, e1)
   }
@@ -87,9 +94,20 @@ internal class TemplateTranslaterTest : Test
     verifyReplace(s1, e1)
   }
 
+  Void testReplaceLocale()
+  {
+    s1 := Str<| hi$<@message>ok|>
+    e1 := Str<| hi$<slanSample::message>ok|>
+
+    verifyReplace(s1, e1)
+  }
+
   private Void verifyReplace(Str str, Str expected)
   {
-    tt := TemplateTranslater()
+    Pod.of(this).log.level = LogLevel.debug
+    SlanApp slanApp := SlanApp.makeProduct("slanSample")
+
+    tt := TemplateTranslater(slanApp)
     r1 := tt->replace(str, "@", 0)
 
     verifyEq(r1, expected)

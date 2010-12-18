@@ -43,10 +43,22 @@ const class ActionMod : WebMod
 
     //locate action
     action := ActionLocation(slanApp, dir)
-    if (action.parse(req.modRel.path))
+    path := pathArray(req.modRel)
+    if (action.parse(path))
     {
       run(action)
     }
+  }
+
+  private Str[] pathArray(Uri rel)
+  {
+    ext := rel.ext
+    if (ext == null) return rel.path
+
+    //remove ext
+    relStr := rel.pathStr
+    dot := relStr.indexr(".")
+    return relStr[0..<dot].toUri.path
   }
 
   ** run action

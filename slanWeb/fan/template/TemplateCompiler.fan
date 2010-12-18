@@ -14,9 +14,12 @@ using compiler
 **
 const class TemplateCompiler : ScriptCompiler
 {
-  private const TemplateTranslater codeTrans := TemplateTranslater()
+  private const TemplateTranslater codeTrans
 
-  new make(SlanApp slanApp) : super(slanApp) {}
+  new make(SlanApp slanApp) : super(slanApp)
+  {
+    codeTrans = TemplateTranslater(slanApp)
+  }
 
   Void render(File file, |->|? lay := null, WebOutStream? out := null)
   {
@@ -27,6 +30,6 @@ const class TemplateCompiler : ScriptCompiler
 
   protected override Str codeTranslate(File file)
   {
-    return codeTrans.translate(file, slanApp.podName)
+    return codeTrans.translate(file)
   }
 }

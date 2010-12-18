@@ -7,11 +7,12 @@
 //
 
 using web
+using slanWeb
 
 **
 ** default page
 **
-class IndexCtrl : Weblet
+class IndexCtrl : SlanWeblet
 {
   ** home page
   Void index()
@@ -22,15 +23,19 @@ class IndexCtrl : Weblet
     res.headers["Content-Type"] = "text/html; charset=utf-8"
 
     res.out.html.
+      head.title.w("slan sample").titleEnd.headEnd.
       h1.w("Slan Framework").h1End.
 
       h2.w("Base Examples").h2End.
       a(`/Welcome`).w("/Welcome").aEnd.br.
-      a(`/action/Welcome/welcome/abc`).w("/action/Welcome/welcome/abc").aEnd.br.
+      a(`/action/Welcome/welcome/Akoufiky`).w("/action/Welcome/welcome/Akoufiky").aEnd.br.
       a(`/Welcome/printInfo/apdb?i=123&m=bac`).w("/Welcome/printInfo/apdb?i=123&m=bac").aEnd.br.
 
       h2.w("FWT and Ajax").h2End.
       a(`/jsfan/TableFwt.fan`).w("/jsfan/TableFwt.fan").aEnd.br.
+
+      h2.w("Localization").h2End.
+      a(`/Locale`).w("/Locale").aEnd.br.
 
       h2.w("slanUtil examples").h2End.
       a(`/Tool/patchca`).w("/Tool/patchca").aEnd.br.

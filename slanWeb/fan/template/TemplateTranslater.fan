@@ -20,11 +20,18 @@ internal const class TemplateTranslater
   private const Str codeGap := gap + Str.spaces(19)
   private const Log log := Pod.of(this).log
 
-  Str translate(File file, Str podName)
+  private const SlanApp slanApp
+
+  new make(SlanApp slanApp)
+  {
+    this.slanApp = slanApp
+  }
+
+  Str translate(File file)
   {
     all := convertTemplate(file)
 
-    s := "using $podName
+    s := "using $slanApp.podName
           using web
           using slanWeb
 
@@ -123,32 +130,43 @@ internal const class TemplateTranslater
         //following is space
         if (line[i + 1].isSpace) continue
 
-        //$@
-        if (i - 1 > 0 && line[i - 1].toChar == "\$")
+        //previous
+        if (i - 1 > 0)
         {
-          //"\$@"
-          if(i - 2 > 0 && line[i - 2].toChar == "\\") continue
+          prev := line[i - 1].toChar
+          if(prev.isAlphaNum()) continue
 
-          //"$@" but "\$@"
-          end := endPosition(line, i+1)
-          nline := replateStr(line, i..<end) { "{m->${it[1..-1]}}" }
-          return replace(nline, m, end)
+          //$@name => ${m->name}
+          if (prev == "\$")
+          {
+            end := endPosition(line, i+1)
+            nline := replateStr(line, i..end) { "{m->${it[1..-1]}}" }
+            return replace(nline, m, end)
+          }
+
+          //Localization
+          //$<@name> => $<pod::name>
+          if(i-2 > 0 && line[i-2..i-1] == "\$<")
+          {
+            nline := replateStr(line, i..-2) { "${slanApp.realPodName}::${it[1..-1]}" }
+            return replace(nline, m, i+1)
+          }
         }
 
-        //@name
+        //@name => m->name
         end := endPosition(line, i+1)
-        nline := replateStr(line, i..<end) { "m->${it[1..-1]}" }
+        nline := replateStr(line, i..end) { "m->${it[1..-1]}" }
         return replace(nline, m, end)
       }
     }
     return line
   }
 
-  ** Range r ~ [start..<end]
+  ** Range r ~ [start..end]
   private Str replateStr(Str oldStr, Range r, |Str->Str| f)
   {
     //echo("$oldStr,$r")//?
-    return oldStr[0..<r.start] + f(oldStr[r]) + oldStr[r.end..-1]
+    return oldStr[0..<r.start] + f(oldStr[r.start..r.end]) + oldStr[r.end+1..-1]
   }
 
   private Int endPosition(Str line, Int i)
@@ -161,8 +179,8 @@ internal const class TemplateTranslater
         ++i
         continue
       }
-      else{ return i }
+      else{ return i - 1 }
     }
-    return line.size
+    return line.size -1
   }
 }

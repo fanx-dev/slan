@@ -18,12 +18,14 @@ class WelcomeCtrl : SlanWeblet
   {
     m->name = "world"
     m->compileJs = compileJs(`Hello.fwt`)
+    render
   }
 
-  @WebGet
+  @WebMethod
   Void welcome()
   {
     m->name = stashId
+    render
   }
 
   Void printInfo(Int i, Str? m){
@@ -31,17 +33,17 @@ class WelcomeCtrl : SlanWeblet
     res.out.w("$i,$m")
   }
 
-  @WebPost
+  @WebMethod{ name = "POST" }
   Void printInfo3(Int i, Str m){
     writeContentType
     res.out.w("$i,$m")
   }
 
-  override Obj? trap(Str name, Obj?[]? args)
+  override Void invoke(Str name, Obj?[]? args)
   {
     echo("before")
     try
-      return super.trap(name, args)
+      trap(name, args)
     finally
       echo("finally")
   }

@@ -15,8 +15,8 @@ using slanUtil
 **
 class ToolCtrl : SlanWeblet
 {
-  @WebGet
-  Void patchca() {}
+  @WebMethod
+  Void patchca() { render }
 
   Void image()
   {
@@ -27,7 +27,7 @@ class ToolCtrl : SlanWeblet
     req.session["code"] = code
   }
 
-  @WebPost
+  @WebMethod{ name = "POST" }
   Void validate(Str code)
   {
     ocode := req.session["code"]

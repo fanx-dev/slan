@@ -155,28 +155,11 @@ internal class ActionLocation : Weblet
   private Bool checkWebMethod(Method m)
   {
     if (!m.isPublic) return false
-    if (m.facets.size == 0) return true
-
-    Bool allow := false
-    switch(req.method)
+    if (m.hasFacet(WebMethod#))
     {
-      case "GET":
-        allow = m.hasFacet(WebGet#)
-      case "POST":
-        allow = m.hasFacet(WebPost#)
-      case "PUT":
-        allow = m.hasFacet(WebPut#)
-      case "DELETE":
-        allow = m.hasFacet(WebDelete#)
-      case "HEAD":
-        allow = m.hasFacet(WebHead#)
-      case "TRACE":
-        allow = m.hasFacet(WebTrace#)
-      case "OPTIONS":
-        allow = m.hasFacet(WebOptions#)
-      default:
-        allow = false
+      WebMethod f := m.facet(WebMethod#)
+      return req.method == f.name
     }
-    return allow
+    return true
   }
 }

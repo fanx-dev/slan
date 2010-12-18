@@ -44,7 +44,7 @@ the template code like this:
       <title>Welcome</title>
     </head>
     <body>
-     <h1>Welcome ${m->name} !</h1>
+     <h1>Welcome $@name !</h1>
      #for(i := 0; i < 3; i++)
      #{
         <h4>abc${i}line</h4>
@@ -56,6 +56,17 @@ Fantom code start with '#'(escape '#' with '##').
 Other code will be output directly.
 In fact it be compile to fantom string,so we can embedded '$ interpolation'
 
+Pass Arguments [#passArguments]
+--------------
 'm->name' is short cut of 'req.stash'.It be used to pass params from controller to view.
+'@name' is shortcut of 'm->name'.
 
+Localization [#localization]
+-----------
+$<@greet.hello> is shortcut of $<pod::hello>
+
+Other [other]
+==========
 subclass your controller from 'SlanWeblet' will be convenience.
+override the method 'SlanWeblet#invoke' to insert your logic.
+

@@ -8,12 +8,4 @@
 
 internal class StrToolTest : Test
 {
-  Void testEncrypt()
-  {
-    secret :=  StrTool.encrypt("hello world")
-    echo(secret)
-
-    secret2 :=  StrTool.encrypt("hello world")
-    verifyEq(secret, secret2)
-  }
 }

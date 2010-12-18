@@ -15,7 +15,7 @@ class Build : build::BuildPod
   {
     podName = "slanSample"
     summary = "it's demo for slanweb"
-    srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/special/`, `fan/util/`]
+    srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/boot/`, `fan/util/`]
     depends =
     [
       "sys 1.0",
@@ -32,6 +32,7 @@ class Build : build::BuildPod
     ]
     resDirs =
     [
+      `locale/`,
       `public/`,
       `public/image/`,
       `public/javascript/`,
@@ -40,6 +41,7 @@ class Build : build::BuildPod
       `res/view/`,
       `res/view/WelcomeCtrl/`,
       `res/view/ToolCtrl/`,
+      `res/view/LocaleCtrl/`,
     ]
   }
 }

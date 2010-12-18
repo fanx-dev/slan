@@ -19,6 +19,11 @@ mixin SlanWeblet
   **
   internal SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
 
+  **
+  ** invoke
+  **
+  virtual Void invoke(Str name, Obj?[]? args) { trap(name, args) }
+
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
 //////////////////////////////////////////////////////////////////////////
@@ -54,10 +59,27 @@ mixin SlanWeblet
   **
   ** render the template
   **
-  Void render(Uri html, |->|? lay := null, WebOutStream? out := null)
+  Void render(Uri? view := null, |->|? lay := null, WebOutStream? out := null)
   {
-    file := slanApp.resourceHelper.getUri(`res/view/` + html).get
+    if (view == null)
+    {
+      renderDefaultView
+      return
+    }
+    ext := (req.stash["_contentType"] as Str) ?: "html"
+    if (!res.isCommitted) writeContentType(ext)
+    file := slanApp.resourceHelper.getUri(`res/view/${view}.$ext`).get
     slanApp.templateCompiler.render(file, lay, out)
+  }
+
+  ** render default view
+  private Void renderDefaultView()
+  {
+    // this condition prevent from endless loop
+    if (req.stash["_defaultView"] != null)
+    {
+      render((Uri)req.stash["_defaultView"])
+    }
   }
 
   **
@@ -88,15 +110,6 @@ mixin SlanWeblet
     {
       res.headers["Content-Type"] = MimeType.forExt(ext).toStr
     }
-  }
-
-  **
-  ** go back to referer uri
-  **
-  Void goback()
-  {
-    Str uri := req.headers["Referer"]
-    res.redirect(uri.toUri)
   }
 
   **

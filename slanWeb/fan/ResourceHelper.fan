@@ -64,7 +64,11 @@ const class ResourceHelper
     {
       file := (typeRes as Uri).get(null, checked)
       if (file == null) return null
-      return slanApp.scriptCompiler.getType(file)
+      type := slanApp.scriptCompiler.getType(file)
+
+      if (type.name != typeName)
+        throw UnknownTypeErr("The file name not match the type name: $type.name != $file")
+      return type
     }
   }
 }
