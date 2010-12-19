@@ -11,6 +11,7 @@ using compiler
 
 **
 ** build pod on CompilerOutputMode.transientPod
+** this must be public
 **
 class TransientBuild : BuildPod
 {

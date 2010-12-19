@@ -12,7 +12,7 @@ using compiler
 **
 ** cache for script by
 **
-const class ScriptCache
+internal const class ScriptCache
 {
   protected const SingletonMap cache := SingletonMap()
   private const Log log := Pod.of(this).log

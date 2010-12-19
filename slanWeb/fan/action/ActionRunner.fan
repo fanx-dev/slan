@@ -56,7 +56,10 @@ internal const class ActionRunner : Weblet
   **
   Locale? locale()
   {
-    localeStr := req.headers["Accept-Language"].split(';').first
+    acceptLang := req.headers["Accept-Language"]
+    if (acceptLang == null || acceptLang == "") return null
+
+    localeStr := acceptLang.split(';').first
     localeStr = localeStr.split(',').first
     list := localeStr.split('-')
 
@@ -64,9 +67,6 @@ internal const class ActionRunner : Weblet
     country := list.last.upper
     locale := "$lang-$country"
 
-    try
-      return Locale(locale)
-    catch
-      return null
+    return Locale.fromStr(locale, false)
   }
 }

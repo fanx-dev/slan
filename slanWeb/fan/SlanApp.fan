@@ -61,9 +61,22 @@ const class SlanApp
 
     if (podNameRef.val == null)
     {
-      modelKeeper.rebuild
+      //on service started
+      podName := directlyRunBuildScript
+      podNameRef.getAndSet(podName)
     }
     return podNameRef.val
+  }
+
+  **
+  ** run build script directly
+  **
+  private Str directlyRunBuildScript()
+  {
+    type := Env.cur.compileScript(`${appHome}build.fan`.toFile)
+    BuildPod build := type.make
+    build.compile
+    return build.podName
   }
 
   **
@@ -74,6 +87,7 @@ const class SlanApp
     if (isProductMode) return productPodName
     name := podName
     i := name.index("_")
+    if (i == null) return name
     return name[0..<i]
   }
 

@@ -43,9 +43,17 @@ const class ModelKeeper : Weblet
     rebuild
   }
 
-  internal Void rebuild()
+  private Void rebuild()
   {
     DateTime? lastTime :=  lastNoted.val
+
+    //now not need rebuid it, because we build the pod on service started
+    if(lastTime == null)
+    {
+      lastNoted.getAndSet(DateTime.now)
+      return
+    }
+
     appHome := slanApp.appHome
     if (modelChanged(appHome, lastTime))
     {
@@ -56,7 +64,7 @@ const class ModelKeeper : Weblet
     }
   }
 
-  private Bool modelChanged(Uri appHome, DateTime? lastNoted){
+  private Bool modelChanged(Uri appHome, DateTime lastNoted){
     return isFolderChanged(File(appHome + `fan/model/`), lastNoted) ||
            isFolderChanged(File(appHome + `fan/util/`), lastNoted)
   }
@@ -64,14 +72,8 @@ const class ModelKeeper : Weblet
   **
   ** these code from tales
   **
-  private Bool isFolderChanged(File folder, DateTime? lastNoted)
+  private Bool isFolderChanged(File folder, DateTime lastNoted)
   {
-    if (lastNoted == null)
-    {
-      //we can return true here, but if there are no files, we should return false
-      lastNoted = DateTime.now + (- 5000day)
-    }
-
     File[] toReturn := File[,]
     folder.walk |File f|{
       if( (!f.isDir) && (f.ext == "fan")){
