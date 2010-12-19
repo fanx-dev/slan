@@ -16,19 +16,6 @@ const class HttpTool : Weblet
     return agent.contains("MSIE 6") || agent.contains("MSIE 7")
   }
 
-  Locale locale()
-  {
-    localeStr := req.headers["Accept-Language"].split(';').first
-    localeStr = localeStr.split(',').first
-    list := localeStr.split('-')
-
-    lang := list.first.lower
-    country := list.last.upper
-    locale := "$lang-$country"
-
-    return Locale(locale)
-  }
-
   Void goback()
   {
     Str uri := req.headers["Referer"]

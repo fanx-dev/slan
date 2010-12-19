@@ -36,6 +36,37 @@ internal const class ActionRunner : Weblet
   private Void invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
     weblet := type.make(constructorParams)
-    weblet->invoke(method.name, methodParams)
+
+    //localization
+    loc := locale
+    if (loc == null)
+    {
+      weblet->invoke(method.name, methodParams)
+      return
+    }
+
+    loc.use
+    {
+      weblet->invoke(method.name, methodParams)
+    }
+  }
+
+  **
+  ** build-in locale
+  **
+  Locale? locale()
+  {
+    localeStr := req.headers["Accept-Language"].split(';').first
+    localeStr = localeStr.split(',').first
+    list := localeStr.split('-')
+
+    lang := list.first.lower
+    country := list.last.upper
+    locale := "$lang-$country"
+
+    try
+      return Locale(locale)
+    catch
+      return null
   }
 }

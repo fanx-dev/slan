@@ -22,13 +22,10 @@ class LocaleCtrl : SlanWeblet
 
   override Void invoke(Str name, Obj?[]? args)
   {
-    HttpTool().locale.use
+    this.trap(name, args)
+    if (HttpTool().isOldIE)
     {
-      this.trap(name, args)
-      if (HttpTool().isOldIE)
-      {
-        res.out.w("You have an old browser")
-      }
+      res.out.w("You have an old browser")
     }
   }
 }
