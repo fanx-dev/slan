@@ -29,12 +29,17 @@ const class SlanCompilerErr : Err
     colorSource := dumpSource(source, err.line, err.col)
 
     s:="""<html>
-            <head><title>Compiler Error</title></head>
+            <head>
+              <title>Compiler Error</title>
+              <style type="text/css">
+                $style
+              </style>
+            </head>
             <body>
-              <h1>Message: $err.msg</h1>
-              <h2>$file.toStr ($err.line,$err.col)
-              </h2>
-              <p>$colorSource</p>
+              <p id="msg"><a href="#error">Compiler Error: $err.msg</a></p>
+              <p id="path"><a href="$file.toStr">$file.toStr ($err.line,$err.col)</a></p>
+              <div id="code">$colorSource</div>
+              <p id="author">by slanweb</p>
             </body>
           </html>"""
     return s
@@ -46,23 +51,31 @@ const class SlanCompilerErr : Err
     line -= 1//to base 0
     lines := source.splitLines
 
-    errorLine := """<span style="background-color:red; font-weight:bold;">${replace(lines[line])}</span>"""
-    errorCursor := """<span style="color:blue;">${Str.spaces(col)}^ $err.msg</span>"""
-    above := replace(lines[0..<line].join("\n"))
-    below := replace(lines[line+1..-1].join("\n"))
-    code := """<div style="background-color:#aaa">
-               <code><pre>
+    errorLine := """<span id="errorLine">${lines[line].toXml}</span>"""
+    errorCursor := """<span id="errorCursor">${Str.spaces(col)}^ $err.msg</span>"""
+    above := lines[0..<line].join("\n").toXml
+    below := lines[line+1..-1].join("\n").toXml
+
+    code := """<pre>
+                 <code>
                $above
-               $errorLine
+               <a id="error">$errorLine</a>
                $errorCursor
                $below
-               </pre></code>
-               </div>"""
-    return code + "<p>by slanweb</p>"
+                 </code>
+               </pre>"""
+    return code
   }
 
-  private Str replace(Str s)
+  private Str style()
   {
-    s.replace("<","&lt;").replace(">","&gt;")
+    """body { background-color:#7F89BF}
+       #errorLine { background-color:red; font-weight:bold; }
+       #code { background-color:#ccc; }
+       #errorCursor { color:blue; }
+       #msg { font:150% "Trebuchet MS",Helvetica,Verdana,sans-serif; color:#FF6A00;}
+       #msg a { color:#FF6A00; }
+       #author { text-align:right; font-family:Arial; }
+       """
   }
 }

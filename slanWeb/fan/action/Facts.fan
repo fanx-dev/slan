@@ -12,8 +12,23 @@
 **************************************************************************
 
 ** http request method 'GET'
-facet class WebMethod
-{
-  const Str name := "GET"
-}
+facet class WebGet {}
+
+** http request method 'POST'
+facet class WebPost {}
+
+** http request method 'DELETE'
+facet class WebDelete {}
+
+** http request method 'PUT'
+facet class WebPut {}
+
+** http request method 'HEAD'
+facet class WebHead {}
+
+** http request method 'OPTIONS'
+facet class WebOptions {}
+
+** http request method 'TRACE'
+facet class WebTrace {}
 

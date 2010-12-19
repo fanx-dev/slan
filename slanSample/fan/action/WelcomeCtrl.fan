@@ -21,7 +21,7 @@ class WelcomeCtrl : SlanWeblet
     render
   }
 
-  @WebMethod
+  @WebGet
   Void welcome()
   {
     m->name = stashId
@@ -33,7 +33,7 @@ class WelcomeCtrl : SlanWeblet
     res.out.w("$i,$m")
   }
 
-  @WebMethod{ name = "POST" }
+  @WebPost
   Void printInfo3(Int i, Str m){
     writeContentType
     res.out.w("$i,$m")

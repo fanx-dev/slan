@@ -66,8 +66,11 @@ mixin SlanWeblet
       renderDefaultView
       return
     }
+
+    //writeContentType
     ext := (req.stash["_contentType"] as Str) ?: "html"
     if (!res.isCommitted) writeContentType(ext)
+
     file := slanApp.resourceHelper.getUri(`res/view/${view}.$ext`).get
     slanApp.templateCompiler.render(file, lay, out)
   }
@@ -115,13 +118,9 @@ mixin SlanWeblet
   **
   ** convert method to uri
   **
-  Uri getUri(Type type, Method? method := null, Str? id := null)
+  Uri toUri(Method method, Str? id := null)
   {
-    uri := "/action/$type.name"
-    if (method != null)
-    {
-      uri += "/$method.name"
-    }
+    uri := "/action/$method.parent.name/$method.name"
     if (id != null)
     {
       uri += "/$id"
@@ -135,6 +134,15 @@ mixin SlanWeblet
   Str? stashId()
   {
     req.stash["_stashId"]
+  }
+
+  **
+  ** escape the xml control characters
+  **
+  Str? esc(Obj? obj)
+  {
+    if (obj == null) return null
+    return obj.toStr.toXml
   }
 
   **
@@ -159,10 +167,12 @@ const class ReqStash : SlanWeblet
     if (args.size == 0)
     {
       if (!req.stash.containsKey(name)) throw ArgErr("not find arg $name")
-      return req.stash.get(name)
+      Obj? obj := req.stash.get(name)
+      if (obj is Str) return (obj as Str)?.toXml
+      return obj
     }
 
-    if (args.size == 1) { req.stash.set(name, args.first); return null }
+    if (args.size == 1) { req.stash.set(name, args.first); return this }
     return super.trap(name, args)
   }
 }

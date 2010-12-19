@@ -35,7 +35,13 @@ abstract class CommandLine : AbstractMain
       s := Env.cur.in.readLine
       if (s == "quit")
       {
-        services.each{ it.stop }
+        services.each
+        {
+         try
+           it.stop
+         catch(Err e)
+           e.trace
+        }
         services.each{ it.uninstall }
         Env.cur.exit
       }

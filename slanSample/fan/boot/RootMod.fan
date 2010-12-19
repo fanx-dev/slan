@@ -33,7 +33,7 @@ const class RootMod : PipelineMod
 
   private Uri logDir()
   {
-    Uri logDir := `log/`
+    Uri logDir := `/log/`
     try
       logDir = Main#.pod.config("log").toUri
     catch{}

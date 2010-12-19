@@ -15,7 +15,7 @@ class Build : build::BuildPod
   {
     podName = "slanSample"
     summary = "it's demo for slanweb"
-    srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/boot/`, `fan/util/`]
+    srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/boot/`, `fan/util/`, `test/`]
     depends =
     [
       "sys 1.0",

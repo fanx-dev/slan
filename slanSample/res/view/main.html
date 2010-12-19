@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Welcome</title>
-    ${m->compileJs}
+    ${req.stash["compileJs"]}
   </head>
   <body>
     <h1>Hello ${m->name} !</h1>

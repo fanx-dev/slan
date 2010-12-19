@@ -155,11 +155,41 @@ internal class ActionLocation : Weblet
   private Bool checkWebMethod(Method m)
   {
     if (!m.isPublic) return false
-    if (m.hasFacet(WebMethod#))
-    {
-      WebMethod f := m.facet(WebMethod#)
-      return req.method == f.name
-    }
-    return true
+    if (!hasLimitFacet(m)) return true
+    return allow(m)
   }
+
+  private Bool allow(Method m)
+  {
+    Bool allow := false
+    switch(req.method)
+    {
+      case "GET":
+        allow = m.hasFacet(WebGet#)
+      case "POST":
+        allow = m.hasFacet(WebPost#)
+      case "PUT":
+        allow = m.hasFacet(WebPut#)
+      case "DELETE":
+        allow = m.hasFacet(WebDelete#)
+      case "HEAD":
+        allow = m.hasFacet(WebHead#)
+      case "TRACE":
+        allow = m.hasFacet(WebTrace#)
+      case "OPTIONS":
+        allow = m.hasFacet(WebOptions#)
+      default:
+        allow = false
+    }
+    return allow
+  }
+
+  private Bool hasLimitFacet(Method m)
+  {
+    firstLimit := facets.find{ m.hasFacet(it) }
+    return firstLimit != null
+  }
+
+  private const static Type[] facets :=
+    [WebGet#, WebPost#, WebPut#, WebDelete#, WebHead#, WebTrace#, WebOptions#]
 }
