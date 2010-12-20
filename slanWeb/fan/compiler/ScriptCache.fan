@@ -14,7 +14,7 @@ using compiler
 **
 internal const class ScriptCache
 {
-  protected const SingletonMap cache := SingletonMap()
+  protected const StoreMap cache := StoreMap()
   private const Log log := Pod.of(this).log
 
   Obj getOrAdd(File file, |File->Obj| f)

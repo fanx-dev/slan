@@ -10,21 +10,15 @@ using web
 
 const class UploadHelper : Weblet
 {
-  const Uri dir := `./`
-  const Bool rename := false
+  const |Str,handler| handler
 
-  new make(|This|? f := null)
+  new make(|Str,handler| handler)
   {
-    f?.call(this)
+    this.handler = handler
   }
 
   override Void onPost()
   {
-    // dump headers
-    //echo("###### UploadMod.onPost ######")
-    //req.headers.each |v, n| { echo("$n: $v") }
-    //echo("")
-
     // get boundary string
     mime := MimeType(req.headers["Content-Type"])
     boundary := mime.params["boundary"] ?: throw IOErr("Missing boundary param: $mime")
@@ -50,25 +44,24 @@ const class UploadHelper : Weblet
       return
     }
 
-    newName := newName(name)
-    f := `$dir$newName`.toFile.normalize
-    echo("## savePart: $f")
-    out := f.out
-    try
-      in.pipe(out)
-    finally
-      out.close
+    echo("## savePart: $name")
+    handler(name, in)
   }
 
-  private Str newName(Str oldName)
+  static Str newName(Str oldName)
   {
-    if (!rename)
-    {
-      return oldName
-    }
     ext := oldName.toUri.ext
     snap := DateTime.nowUnique.toStr
     name := (ext == null) ? snap : snap + "." + ext
     return name
+  }
+
+  static Void saveToFile(InStream in, File file)
+  {
+    out := file.out
+    try
+      in.pipe(out)
+    finally
+      out.close
   }
 }

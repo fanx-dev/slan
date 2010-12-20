@@ -11,14 +11,14 @@ internal class CacheTest : Test
 
   Void testGet()
   {
-    cache := SingletonMap()
+    cache := StoreMap()
     cache["key"] = "obj"
     this.verify(cache["key"] == "obj")
   }
 
   Void testRemove()
   {
-    cache := SingletonMap()
+    cache := StoreMap()
     cache["key"] = "obj"
     cache.remove("key")
     this.verify(cache["key"] == null)

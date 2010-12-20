@@ -6,7 +6,7 @@
 //   2010-11-20  Jed Young  Creation
 //
 
-const class StrTool
+mixin StrTool
 {
   static Str BufToStr(Buf buf)
   {

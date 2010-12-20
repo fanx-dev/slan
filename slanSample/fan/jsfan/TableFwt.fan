@@ -57,7 +57,7 @@ class TableFwt : Window
       {
         try
         {
-          HttpReq { uri = `/action/tableView/data`; headers["foo"] = "bar!" }.get |res|
+          HttpReq { uri = `/action/Ajax/data`; headers["foo"] = "bar!" }.get |res|
           {
             c := res.content.in.readObj
             //Win.cur.alert(c)

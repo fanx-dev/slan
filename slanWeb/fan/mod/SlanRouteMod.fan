@@ -118,7 +118,12 @@ const class SlanRouteMod : WebMod
     else if (req.uri.relToAuth == errorPage)
     {
       //error page not found
-      if (!res.isCommitted){ res.headers["Content-Type"] = "text/html; charset=utf-8" }
+      if (!res.isCommitted)
+      {
+        res.statusCode = 404
+        res.headers.clear
+        res.headers["Content-Type"] = "text/plain; charset=utf-8"
+      }
       res.out.w("sorry! don't find error page $errorPage .by slanweb")
     }
     else
@@ -131,17 +136,18 @@ const class SlanRouteMod : WebMod
 
   private Void showErr(Err err)
   {
-    if (err is SlanCompilerErr)
-    {
-      res.headers["Content-Type"] = "text/html; charset=utf-8"
-      res.out.print(err->dump)
-      return
-    }
-
     if (res.isCommitted && !res.isDone)
     {
       res.out.print("<p>ERROR: $req.uri</p>")
       res.out.w(err.traceToStr.replace("\n","<br/>"))
+    }
+    else if (err is SlanCompilerErr)
+    {
+      res.statusCode = 500
+      res.headers.clear
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+      res.out.print(err->dump)
+      return
     }
     throw err
   }

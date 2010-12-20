@@ -11,7 +11,7 @@ using concurrent
 **
 ** singleton map
 **
-const class SingletonMap
+const class StoreMap
 {
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| {return receive(arg)}
 

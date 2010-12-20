@@ -12,7 +12,7 @@ using slanWeb
 **
 ** route and template
 **
-class WelcomeCtrl : SlanWeblet
+class Base : SlanWeblet
 {
   Void index()
   {
@@ -34,13 +34,14 @@ class WelcomeCtrl : SlanWeblet
   }
 
   @WebPost
-  Void printInfo3(Int i, Str m){
+  Void post(Int i, Str m){
     writeContentType
     res.out.w("$i,$m")
   }
 
   override Void invoke(Str name, Obj?[]? args)
   {
+    //you can open and close database connection at here
     echo("before")
     try
       trap(name, args)

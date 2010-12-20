@@ -11,11 +11,11 @@ using slanWeb
 **
 ** code hot change
 **
-class HotChangeCtrl : SlanWeblet
+class HotSwap : SlanWeblet
 {
   Void index()
   {
     writeContentType
-    res.out.w(HotChangeModel.s)
+    res.out.w(HotSwapTest.s)
   }
 }

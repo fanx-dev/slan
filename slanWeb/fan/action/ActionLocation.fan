@@ -64,7 +64,7 @@ internal class ActionLocation : Weblet
       return
     }
 
-    type = slanApp.resourceHelper.getType(getTypeName(name), dir, false)
+    type = slanApp.resourceHelper.getType(name, dir, false)
     if (type != null)
     {
       consumeResPath
@@ -77,20 +77,7 @@ internal class ActionLocation : Weblet
 
   private Void useIndexCtrl()
   {
-    type = slanApp.resourceHelper.getType("IndexCtrl", dir)
-  }
-
-  private Str getTypeName(Str name)
-  {
-    if (name.endsWith("Ctrl"))
-    {
-      return name.capitalize
-    }
-    else
-    {
-      //suffix Ctrl
-      return "${name}Ctrl".capitalize
-    }
+    type = slanApp.resourceHelper.getType("Index", dir)
   }
 
   **

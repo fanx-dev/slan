@@ -8,14 +8,13 @@
 //
 
 using build
-using slanWeb
 
 class Build : build::BuildPod
 {
   new make()
   {
-    podName = "slanSample"
-    summary = "it's demo for slanweb"
+    podName = "emptyTemplate"
+    summary = "it's template for slanweb"
     srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/boot/`,
        `fan/util/`, `test/`]
     depends =
@@ -41,7 +40,9 @@ class Build : build::BuildPod
       `public/image/`,
       `public/javascript/`,
       `public/stylesheet/`,
-      `res/fwt/`
-    ].addAll(Util.allDir(scriptDir.uri, `res/view/`))
+      `res/fwt/`,
+      `res/view/`,
+      `res/view/HelloCtrl/`,
+    ]
   }
 }

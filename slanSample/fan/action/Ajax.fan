@@ -11,9 +11,9 @@ using slanWeb
 **
 ** ajax example
 **
-class TableViewCtrl : SlanWeblet
+class Ajax : SlanWeblet
 {
-  ** ajax for `fwt/TableFwt.fan`
+  ** ajax for `jsfan/TableFwt.fan`
   Void data()
   {
     writeContentType

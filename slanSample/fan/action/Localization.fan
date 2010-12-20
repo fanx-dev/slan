@@ -13,7 +13,7 @@ using slanUtil
 **
 ** route and template
 **
-class LocaleCtrl : SlanWeblet
+class Localization : SlanWeblet
 {
   Void index()
   {
