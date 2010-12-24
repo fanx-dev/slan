@@ -9,34 +9,32 @@
 Overview [#overview]
 ********************
 
-mywebDemo is a good base to start.
-
+slanSample is a good base to start.
 
 Run Mode[#runMode]
-==========
+=============
 
-There are two way to run service. script mode/pod mode
-script is instant for change,pod is easy to deploy.
+There are two way to run service. scriptMode/podMode(debug mode/product mode)
+- scriptMode is instant for change,
+- podMode is easy to deploy.
 
-add 'Config.cur.toProductMode(Main#.pod.name)' before runing service,
-it will run as pod mode.
+- The debug mode by 'slanWeb::main'.
+- The product mode by 'appHome/fan/boot/Main.fan'.
 
 Route [#route]
-============
+=============
 
 see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
-    it will route to 'action'(dir) and compile 'WelcomeCtrl.fan'(class),
-    then newInstance 'WelecomeCtrl' with 'ad'(params).
+    it will route to 'action'(dir) and compile 'Welcome.fan'(class),
+    then newInstance 'Welecome' with 'ad'(params).
     call 'printInfo'(method) with 'i=123,m=bac'(named params)
-    dan set req.stash["id"]=115
 
 Most of the time, you should just use 'http://localhost:8080/Welcome/print'
-    it will route to 'action' and call WelcomeCtrl's print method.
+    it will route to 'action' and call Welcome's print method.
     if no method be provide ,will to 'index' method.
 
-
 Html Template [#htmlTemplate]
-==============
+=============
 the template code like this:
 
    <html>
@@ -44,7 +42,7 @@ the template code like this:
       <title>Welcome</title>
     </head>
     <body>
-     <h1>Welcome $@name !</h1>
+     <h1>Welcome @name !</h1>
      #for(i := 0; i < 3; i++)
      #{
         <h4>abc${i}line</h4>
@@ -54,19 +52,39 @@ the template code like this:
 
 Fantom code start with '#'(escape '#' with '##').
 Other code will be output directly.
-In fact it be compile to fantom string,so we can embedded '$ interpolation'
+In fact the string be compile to fantom string, so we can embedded '$ interpolation'
 
 Pass Arguments [#passArguments]
---------------
-'m->name' is short cut of 'req.stash'.It be used to pass params from controller to view.
-'@name' is shortcut of 'm->name'.
+-----------
+'m->name' is short cut of 'req.stash'. It be used to pass params from controller to view.
+'@name' is shortcut of '${m->name.toStr.toXml}'.
 
 Localization [#localization]
 -----------
-$<@greet.hello> is shortcut of $<pod::hello>
+$<greet.hello> is shortcut of $<podName::greet.hello>
 
-Other [other]
-==========
+Render [#render]
+-----------
+call the 'SlanWeblet#render' to render the template. Default template by the action name.
+
+Controller [controller]
+=============
 subclass your controller from 'SlanWeblet' will be convenience.
-override the method 'SlanWeblet#invoke' to insert your logic.
+
+You can override the method 'SlanWeblet#invoke' to insert your logic, like this:
+
+  const class Controller : SlanWeblet
+  {
+    override Void invoke(Str name, Obj?[]? args)
+    {
+      if (!checkAuthority) res.sendErr(401)
+      //open connection
+      connection.use
+      {
+        this.trap(name, args)
+      }
+    }
+  }
+
+'SlanWeblet' has some util method, such as stashId, setContentType, toUri, esc...
 

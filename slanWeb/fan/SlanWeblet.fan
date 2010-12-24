@@ -167,9 +167,7 @@ const class ReqStash : SlanWeblet
     if (args.size == 0)
     {
       if (!req.stash.containsKey(name)) throw ArgErr("not find arg $name")
-      Obj? obj := req.stash.get(name)
-      if (obj is Str) return (obj as Str)?.toXml
-      return obj
+      return req.stash.get(name)
     }
 
     if (args.size == 1) { req.stash.set(name, args.first); return this }
