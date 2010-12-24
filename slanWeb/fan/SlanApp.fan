@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-12-10  Jed.Y  Creation
+//   2010-12-10  Jed Young  Creation
 //
 
 using build
