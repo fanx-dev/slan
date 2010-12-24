@@ -118,13 +118,11 @@ const class SlanRouteMod : WebMod
     else if (req.uri.relToAuth == errorPage)
     {
       //error page not found
+      msg := "sorry! don't find error page $errorPage .by slanweb"
       if (!res.isCommitted)
-      {
-        res.statusCode = 404
-        res.headers.clear
-        res.headers["Content-Type"] = "text/plain; charset=utf-8"
-      }
-      res.out.w("sorry! don't find error page $errorPage .by slanweb")
+        res.sendErr(500, msg)
+      else
+        res.out.w(msg)
     }
     else
     {

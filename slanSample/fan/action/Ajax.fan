@@ -16,7 +16,7 @@ class Ajax : SlanWeblet
   ** ajax for `jsfan/TableFwt.fan`
   Void data()
   {
-    writeContentType
+    setContentType
 
     s := """
             [

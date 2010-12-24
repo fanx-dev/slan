@@ -38,6 +38,8 @@ const class ActionMod : WebMod
 
   override Void onService()
   {
+    checkReferer
+
     //load model change
     slanApp.modelKeeper.loadChange
 
@@ -47,6 +49,21 @@ const class ActionMod : WebMod
     if (action.parse(path))
     {
       run(action)
+    }
+  }
+
+  **
+  ** check Http Referer for safe
+  **
+  private Void checkReferer()
+  {
+    //GET is always allow
+    if (req.method == "GET") return
+
+    refHost := req.headers["Referer"]?.toUri?.host
+    if (refHost == null || refHost != req.absUri.host)
+    {
+      res.sendErr(403);
     }
   }
 

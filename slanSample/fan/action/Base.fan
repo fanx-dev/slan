@@ -12,7 +12,7 @@ using slanWeb
 **
 ** route and template
 **
-class Base : SlanWeblet
+const class Base : Controller
 {
   Void index()
   {
@@ -29,23 +29,13 @@ class Base : SlanWeblet
   }
 
   Void printInfo(Int i, Str? m){
-    writeContentType
+    setContentType
     res.out.w("$i,$m")
   }
 
   @WebPost
   Void post(Int i, Str m){
-    writeContentType
+    setContentType
     res.out.w("$i,$m")
-  }
-
-  override Void invoke(Str name, Obj?[]? args)
-  {
-    //you can open and close database connection at here
-    echo("before")
-    try
-      trap(name, args)
-    finally
-      echo("finally")
   }
 }

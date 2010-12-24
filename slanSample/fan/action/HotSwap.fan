@@ -15,7 +15,7 @@ class HotSwap : SlanWeblet
 {
   Void index()
   {
-    writeContentType
+    setContentType
     res.out.w(HotSwapTest.s)
   }
 }

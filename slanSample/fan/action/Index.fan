@@ -20,7 +20,7 @@ class Index : SlanWeblet
     //error uri may be route to here
     if (req.stash["_stashId"] != null) { res.sendErr(404); return }
 
-    writeContentType("html")
+    setContentType("html")
 
     res.out.html.
       head.title.w("slan sample").titleEnd.headEnd.

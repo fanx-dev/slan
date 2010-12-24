@@ -33,7 +33,7 @@ abstract class CommandLine : AbstractMain
     while(true)
     {
       s := Env.cur.in.readLine
-      if (s == "quit")
+      if (s == "quit" || s == "exit")
       {
         services.each
         {

@@ -22,4 +22,13 @@ internal class ValidateTest : Test
     email4 := "chunquedong at gmail"
     verifyFalse(Validate.isEmail(email4))
   }
+
+  Void testIsUri()
+  {
+    t0 := "http://www.163.com"
+    verify(Validate.isUri(t0))
+
+    t1 := "http://163.com"
+    verify(Validate.isUri(t1))
+  }
 }

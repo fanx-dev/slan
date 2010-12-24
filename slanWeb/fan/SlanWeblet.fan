@@ -20,7 +20,7 @@ mixin SlanWeblet
   internal SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
 
   **
-  ** invoke
+  ** This is an entrance point, will be called by framework
   **
   virtual Void invoke(Str name, Obj?[]? args) { trap(name, args) }
 
@@ -69,7 +69,7 @@ mixin SlanWeblet
 
     //writeContentType
     ext := (req.stash["_contentType"] as Str) ?: "html"
-    if (!res.isCommitted) writeContentType(ext)
+    if (!res.isCommitted) setContentType(ext)
 
     file := slanApp.resourceHelper.getUri(`res/view/${view}.$ext`).get
     slanApp.templateCompiler.render(file, lay, out)
@@ -103,7 +103,7 @@ mixin SlanWeblet
   **
   ** default is 'text/html; charset=utf-8'
   **
-  Void writeContentType(Str? ext := null)
+  Void setContentType(Str? ext := null)
   {
     if (ext == null)
     {

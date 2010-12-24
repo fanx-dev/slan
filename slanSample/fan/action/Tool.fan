@@ -37,7 +37,7 @@ class Tool : SlanWeblet
   {
     ocode := req.session["code"]
     message := code.equalsIgnoreCase(ocode) ? "right" : "wrong"
-    writeContentType
+    setContentType
     res.out.w(message)
   }
 
@@ -73,7 +73,7 @@ class Tool : SlanWeblet
       UploadHelper.saveToFile(in, uri.toFile)
       res.out.w("$uri\n")
     }
-    writeContentType
+    setContentType
     res.out.w("save at:\n")
     helper.onService
   }

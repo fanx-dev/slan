@@ -52,7 +52,7 @@ const class UploadHelper : Weblet
   {
     ext := oldName.toUri.ext
     snap := DateTime.nowUnique.toStr
-    name := (ext == null) ? snap : snap + "." + ext
+    name := (ext == null) ? snap : "${snap}.$ext"
     return name
   }
 

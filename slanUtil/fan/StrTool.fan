@@ -8,7 +8,7 @@
 
 mixin StrTool
 {
-  static Str BufToStr(Buf buf)
+  static Str bufToHex(Buf buf)
   {
     s := StrBuf()
     while (buf.more)

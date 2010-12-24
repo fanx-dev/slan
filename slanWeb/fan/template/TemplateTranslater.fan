@@ -7,7 +7,6 @@
 //
 
 using web
-using compiler
 using concurrent
 
 **
@@ -54,8 +53,7 @@ internal const class TemplateTranslater
     all := StrBuf()
     file.in.eachLine
     {
-      line := this.replace(it, "@", 0)
-      all.add(parse(line,"#"))
+      all.add(parse(it,"#"))
     }
     return all.toStr
   }
@@ -105,83 +103,7 @@ internal const class TemplateTranslater
 
   private Str getHtmlStr(Str line)
   {
-    //TODO
-    gap + Str<|out.printLine("""|> + line + Str<| """)|>
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// replace $@message to ${m->message}
-//////////////////////////////////////////////////////////////////////////
-
-  private Str replace(Str line, Str m, Int position)
-  {
-    //echo(line)//?
-    for (i := position; i < line.size; i++)
-    {
-      c := line[i].toChar
-      if (c == m && i + 1 < line.size)
-      {
-        //escape by @@
-        if (line[i + 1].toChar == m)
-        {
-          nline := removeChar(line, i)
-          return replace(nline, m, i+1)
-        }
-
-        //following is space
-        if (line[i + 1].isSpace) continue
-
-        //previous
-        if (i - 1 > 0)
-        {
-          prev := line[i - 1].toChar
-          if(prev.isAlphaNum()) continue
-
-          //$@name => ${m->name}
-          if (prev == "\$")
-          {
-            end := endPosition(line, i+1)
-            nline := replateStr(line, i..end) { "{m->${it[1..-1]}}" }
-            return replace(nline, m, end)
-          }
-
-          //Localization
-          //$<@name> => $<pod::name>
-          if(i-2 > 0 && line[i-2..i-1] == "\$<")
-          {
-            nline := replateStr(line, i..-2) { "${slanApp.realPodName}::${it[1..-1]}" }
-            return replace(nline, m, i+1)
-          }
-        }
-
-        //@name => m->name
-        end := endPosition(line, i+1)
-        nline := replateStr(line, i..end) { "m->${it[1..-1]}" }
-        return replace(nline, m, end)
-      }
-    }
-    return line
-  }
-
-  ** Range r ~ [start..end]
-  private Str replateStr(Str oldStr, Range r, |Str->Str| f)
-  {
-    //echo("$oldStr,$r")//?
-    return oldStr[0..<r.start] + f(oldStr[r.start..r.end]) + oldStr[r.end+1..-1]
-  }
-
-  private Int endPosition(Str line, Int i)
-  {
-    while (i < line.size)
-    {
-      c := line[i].toChar
-      if (c.isAlphaNum() || c == "_")
-      {
-        ++i
-        continue
-      }
-      else{ return i - 1 }
-    }
-    return line.size -1
+    code := Tokenizer.convert(line, slanApp.realPodName)
+    return gap + Str<|out.writeChars("""|> + code + Str<|\n""")|>
   }
 }
