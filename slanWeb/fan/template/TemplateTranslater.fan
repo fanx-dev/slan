@@ -50,12 +50,13 @@ internal const class TemplateTranslater
   ** Tokenize
   private Str convertTemplate(File file)
   {
-    all := StrBuf()
+    all := Buf()
     file.in.eachLine
     {
-      all.add(parse(it,"#"))
+      all.writeChars(parse(it,"#"))
     }
-    return all.toStr
+    all.flip
+    return all.readAllStr
   }
 
 //////////////////////////////////////////////////////////////////////////

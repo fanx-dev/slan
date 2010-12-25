@@ -17,7 +17,7 @@ class Build : BuildPod
   new make()
   {
     podName = "slanWeb"
-    summary = "slan web"
+    summary = "slan web framework"
     depends =
     [
         "sys 1.0",

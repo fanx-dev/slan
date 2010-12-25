@@ -91,9 +91,10 @@ mixin SlanWeblet
   Str compileJs(Uri fwt, Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     file := slanApp.resourceHelper.getUri(`res/fwt/` + fwt).get
-    strBuf := StrBuf()
-    slanApp.jsCompiler.render(WebOutStream(strBuf.out), file, env)
-    return strBuf.toStr
+    buf := Buf()
+    slanApp.jsCompiler.render(WebOutStream(buf.out), file, env)
+    buf.flip
+    return buf.readAllStr
   }
 
 //////////////////////////////////////////////////////////////////////////

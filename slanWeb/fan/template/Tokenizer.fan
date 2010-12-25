@@ -75,8 +75,12 @@ internal class Tokenizer
           code = s
       case localeMode:
         if (tok.valid)
-          code = """\$<$podName::$s>"""
-        else
+        {
+          if (s.contains("::"))
+            code = "\$<$s>"
+          else
+            code = "\$<$podName::$s>"
+        }else
           code = s
     }
     return code

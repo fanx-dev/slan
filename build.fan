@@ -26,6 +26,7 @@ class Build : BuildGroup
 
       `isql/build.fan`,
       `slanDao/build.fan`,
+      `slanData/build.fan`,
     ]
   }
 

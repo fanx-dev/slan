@@ -65,7 +65,7 @@ const class Column
     if (field.type.isEnum) return smallInteger
 
     //it will be a serialization string type
-    return getStringType(1024)
+    return getStringType(m ?: 1024)
   }
 
   **

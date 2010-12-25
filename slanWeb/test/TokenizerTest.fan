@@ -62,4 +62,10 @@ internal class TokenizerTest : Test
     r := Tokenizer.convert(Str<|<html><asdf>->name</html>$|>, "slanSample")
     verifyEq(r, Str<|<html><asdf>->name</html>$|>)
   }
+
+  Void test10()
+  {
+    r := Tokenizer.convert(Str<|<html>$<pod::asdf></html>|>, "slanSample")
+    verifyEq(r, Str<|<html>$<pod::asdf></html>|>)
+  }
 }
