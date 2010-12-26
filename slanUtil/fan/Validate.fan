@@ -35,6 +35,10 @@ mixin Validate
     return r.matches(text)
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // check
+  ////////////////////////////////////////////////////////////////////////
+
   This verifyEmail(Str text)
   {
     if (!isEmail(text)) throw ValidateErr("bad email format: $text")
@@ -68,6 +72,12 @@ mixin Validate
   This verifyLength(Str text, Range r)
   {
     if (!r.contains(text.size)) throw ValidateErr("the $text length out of $r")
+    return this
+  }
+
+  This verifyNotEmpty(Str? text)
+  {
+    if (text == null || text.isEmpty) throw ValidateErr("the text is empty")
     return this
   }
 }

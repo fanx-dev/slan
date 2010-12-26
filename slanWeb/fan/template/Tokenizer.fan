@@ -177,7 +177,7 @@ internal class Tokenizer
 
   private Str bracketParam()
   {
-    while (hasMore)
+    while (moveNext)
     {
       if (char == "}")
       {
@@ -185,7 +185,6 @@ internal class Tokenizer
         switchMode
         return str[start+2..<current-1]
       }
-      moveNext
     }
     throw SlanTokenErr("expected '}'")
   }

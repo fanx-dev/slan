@@ -85,6 +85,11 @@ mixin SlanWeblet
     }
   }
 
+  Void setDefaultView(Uri view)
+  {
+    req.stash["_defaultView"] = view
+  }
+
   **
   ** compile js file.
   **
