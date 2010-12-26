@@ -181,7 +181,11 @@ internal class Tokenizer
     {
       if (char == "}")
       {
-        moveNext
+        if(!moveNext)
+        {
+          mode = endMode
+          return str[start+2..<current]
+        }
         switchMode
         return str[start+2..<current-1]
       }
@@ -221,7 +225,11 @@ internal class Tokenizer
     {
       if (char == ">")
       {
-        moveNext
+        if (!moveNext)
+        {
+          mode = endMode
+          return str[start+2..<current]
+        }
         switchMode
         return str[start+2..<current-1]
       }
