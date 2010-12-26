@@ -189,7 +189,7 @@ const class Table
     table := Table
     {
       it.type = type
-      name = type.pod.name + "_" + type.name
+      name = type.name
       columns = cs
       it.idIndex = id
       if (generateId)

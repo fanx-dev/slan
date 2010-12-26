@@ -57,7 +57,11 @@ const class ModelKeeper : Weblet
     appHome := slanApp.appHome
     if (modelChanged(appHome, lastTime))
     {
+       //clearCache
        slanApp.scriptCompiler.clearCache
+       slanApp.templateCompiler.clearCache
+       slanApp.jsCompiler.clearCache
+
        podName := buildCompiler.runBuild(`${appHome}build.fan`.toFile)
        lastNoted.getAndSet(DateTime.now)
        slanApp.setPodName(podName)

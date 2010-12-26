@@ -90,6 +90,11 @@ const class JsCompiler
     }
   }
 
+  Void clearCache()
+  {
+    cache.clear
+  }
+
   ** compile script into js
   private JsScript compile(Str source, File file)
   {
