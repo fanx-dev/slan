@@ -17,7 +17,7 @@ mixin SlanWeblet
   **
   ** current slanApp
   **
-  internal SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
+  SlanApp slanApp() { Actor.locals[ActionMod.slanAppId] }
 
   **
   ** This is an entrance point, will be called by framework

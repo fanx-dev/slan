@@ -39,43 +39,48 @@ mixin Validate
   // check
   ////////////////////////////////////////////////////////////////////////
 
-  This verifyEmail(Str text)
+  This email(Str text)
   {
+    if (text.isEmpty) return this
     if (!isEmail(text)) throw ValidateErr("bad email format: $text")
     return this
   }
 
-  This verifyDigit(Str text)
+  This digit(Str text)
   {
+    if (text.isEmpty) return this
     if (!isDigit(text)) throw ValidateErr("bad digit format: $text")
     return this
   }
 
-  This verifyUri(Str text)
+  This uri(Str text)
   {
+    if (text.isEmpty) return this
     if (!isUri(text)) throw ValidateErr("bad uri format: $text")
     return this
   }
 
-  This verifyIdentifier(Str text)
+  This identifier(Str text)
   {
+    if (text.isEmpty) return this
     if (!isIdentifier(text)) throw ValidateErr("bad identifier format: $text")
     return this
   }
 
-  This verifyInRange(Int i, Range r)
+  This range(Int i, Range r)
   {
     if (!r.contains(i)) throw ValidateErr("$i out of $r")
     return this
   }
 
-  This verifyLength(Str text, Range r)
+  This length(Str text, Range r)
   {
+    if (text.isEmpty) return this
     if (!r.contains(text.size)) throw ValidateErr("the $text length out of $r")
     return this
   }
 
-  This verifyNotEmpty(Str? text)
+  This required(Str? text)
   {
     if (text == null || text.isEmpty) throw ValidateErr("the text is empty")
     return this
