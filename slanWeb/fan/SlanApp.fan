@@ -82,7 +82,7 @@ const class SlanApp
   **
   ** js using need this
   **
-  internal Str realPodName()
+  Str realPodName()
   {
     if (isProductMode) return productPodName
     name := podName

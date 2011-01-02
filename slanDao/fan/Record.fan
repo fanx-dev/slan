@@ -8,78 +8,78 @@
 
 **
 ** super class for entity,convenient but not necessary
-** 
+**
 mixin Record
 {
   abstract Context context()
-  
+
   This insert()
   {
     context.insert(this)
     return this
   }
-  
+
   This update()
   {
     context.update(this)
     return this
   }
-  
+
   Void deleteByExample()
   {
     context.deleteByExample(this)
   }
-  
+
   ** delete by id
   Void delete()
   {
     context.deleteById(this.typeof, context.getId(this))
   }
-  
-  Record[] list(Str orderby := "", Int offset := 0, Int limit := 20)
+
+  Record[] list(Str orderby := "", Int offset := 0, Int limit := 50)
   {
     context.list(this, orderby, offset, limit)
   }
-  
+
   Record? one(Str orderby := "", Int offset := 0)
   {
     context.one(this, orderby, offset)
   }
-  
+
   ** no cache
   Bool exist()
   {
     context.exist(this)
   }
-  
+
   Int count()
   {
     context.count(this)
   }
-  
+
   ** insert or update
   This save()
   {
     context.save(this)
     return this
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   // static method
   ////////////////////////////////////////////////////////////////////////
 
   ** static
-  Record[] select(Str where, Int offset := 0, Int limit := 20)
+  Record[] select(Str where, Int offset := 0, Int limit := 50)
   {
     context.select(this.typeof, where, offset)
   }
-  
+
   ** static
   Record? findById(Obj id)
   {
     context.findById(this.typeof, id)
   }
-  
+
   ** static
   Void deleteById(Obj id)
   {

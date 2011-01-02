@@ -29,9 +29,10 @@ mixin Validate
     return r.matches(text)
   }
 
+  ** length in [4...36]
   static Bool isIdentifier(Str text)
   {
-    r := Regex<|^[a-zA-Z][a-zA-Z0-9_]{4,15}$|>
+    r := Regex<|^[a-zA-Z][a-zA-Z0-9_]{3,35}$|>
     return r.matches(text)
   }
 
@@ -75,7 +76,6 @@ mixin Validate
 
   This length(Str text, Range r)
   {
-    if (text.isEmpty) return this
     if (!r.contains(text.size)) throw ValidateErr("the $text length out of $r")
     return this
   }

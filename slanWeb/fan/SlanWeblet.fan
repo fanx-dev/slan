@@ -79,9 +79,14 @@ mixin SlanWeblet
   private Void renderDefaultView()
   {
     // this condition prevent from endless loop
-    if (req.stash["_defaultView"] != null)
+    view := req.stash["_defaultView"]
+    if (view != null)
     {
-      render((Uri)req.stash["_defaultView"])
+      render((Uri)view)
+    }
+    else
+    {
+      throw Err("Not find defaultView")
     }
   }
 

@@ -149,7 +149,7 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
 
   ** select by example
-  Obj[] list(Obj obj, Str orderby := "", Int offset := 0, Int limit := 20)
+  Obj[] list(Obj obj, Str orderby := "", Int offset := 0, Int limit := 50)
   {
     Obj[] ids := getIdList(obj, orderby, offset, limit)
     return idToObj(obj.typeof, ids)
@@ -193,7 +193,7 @@ const class Context
   ////////////////////////////////////////////////////////////////////////
 
   ** query by condition
-  Obj[] select(Type type, Str condition, Int offset := 0, Int limit := 20)
+  Obj[] select(Type type, Str condition, Int offset := 0, Int limit := 50)
   {
     Obj[]? ids := getWhereIdList(type, condition, offset, limit)
     return idToObj(type, ids)
