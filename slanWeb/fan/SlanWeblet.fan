@@ -184,4 +184,9 @@ const class ReqStash : SlanWeblet
     if (args.size == 1) { req.stash.set(name, args.first); return this }
     return super.trap(name, args)
   }
+
+  Bool has(Str name)
+  {
+    return req.stash.containsKey(name)
+  }
 }
