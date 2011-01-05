@@ -25,11 +25,18 @@ mixin Validate
 
   static Bool isUri(Str text)
   {
-    r := Regex<|^[a-zA-z]+://(\w+(-\w+)*)(\.(\w+(-\w+)*))*(\?\S*)?$|>
+    r := Regex<|(\w+):\/\/([^\/:]+)(:\d*)?([^#]*)|>
     return r.matches(text)
   }
 
-  ** length in [4...36]
+  ** YYYY-MM-DD
+  static Bool isDate(Str text)
+  {
+    r := Regex<|^(\d{4})\-(\d{2})\-(\d{2})$|>
+    return r.matches(text)
+  }
+
+  ** length in [4...36], start with char
   static Bool isIdentifier(Str text)
   {
     r := Regex<|^[a-zA-Z][a-zA-Z0-9_]{3,35}$|>
@@ -43,28 +50,35 @@ mixin Validate
   This email(Str text)
   {
     if (text.isEmpty) return this
-    if (!isEmail(text)) throw ValidateErr("bad email format: $text")
+    if (!isEmail(text)) throw ValidateErr("Not a valid email: $text")
     return this
   }
 
   This digit(Str text)
   {
     if (text.isEmpty) return this
-    if (!isDigit(text)) throw ValidateErr("bad digit format: $text")
+    if (!isDigit(text)) throw ValidateErr("Not a valid digit: $text")
+    return this
+  }
+
+  This date(Str text)
+  {
+    if (text.isEmpty) return this
+    if (!isDate(text)) throw ValidateErr("Not a valid date: $text")
     return this
   }
 
   This uri(Str text)
   {
     if (text.isEmpty) return this
-    if (!isUri(text)) throw ValidateErr("bad uri format: $text")
+    if (!isUri(text)) throw ValidateErr("Not a valid uri: $text")
     return this
   }
 
   This identifier(Str text)
   {
     if (text.isEmpty) return this
-    if (!isIdentifier(text)) throw ValidateErr("bad identifier format: $text")
+    if (!isIdentifier(text)) throw ValidateErr("Not a valid identifier: $text")
     return this
   }
 
@@ -82,7 +96,7 @@ mixin Validate
 
   This required(Str? text)
   {
-    if (text == null || text.isEmpty) throw ValidateErr("the text is empty")
+    if (text == null || text.isEmpty) throw ValidateErr("the text is required")
     return this
   }
 }
