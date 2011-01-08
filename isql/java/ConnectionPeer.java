@@ -287,7 +287,7 @@ public class ConnectionPeer
   {
     try
     {
-      rowType = Type.find("sql::Row", true);
+      rowType = Type.find("isql::Row", true);
       listOfRow = new List(Sys.TypeType, new Type[] { rowType });
     }
     catch (Exception e)

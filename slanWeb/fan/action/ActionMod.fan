@@ -86,15 +86,15 @@ const class ActionMod : WebMod
     {
       actionRunner.execute(action)
     }
-    catch(SlanCompilerErr e)
-    {
-      throw e
-    }
-    catch(Err e)
-    {
-      throw Err("Action error : name $action.type.name#$action.method.name,
-                  on $action.constructorParams,with $action.methodParams", e)
-    }
+    //catch(SlanCompilerErr e)
+    //{
+    //  throw e
+    //}
+    //catch(Err e)
+    //{
+      //throw Err("Action error : name $action.type.name#$action.method.name,
+       //           on $action.constructorParams,with $action.methodParams", e)
+    //}
     finally
     {
       Actor.locals.remove(slanAppId)
