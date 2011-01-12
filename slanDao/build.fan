@@ -15,7 +15,7 @@ class Build : build::BuildPod
     podName = "slanDao"
     summary = "slan ORM"
     srcDirs = [`test/`, `test/sql/`, `test/cache/`, `test/base/`,
-      `fan/`, `fan/sql/`, `fan/model/`, `fan/model/dialect/`, `fan/cache/`]
-    depends = ["sys 1.0","isql 1.0","concurrent 1.0"]
+      `fan/`, `fan/sql/`, `fan/model/`, `fan/dialect/`, `fan/cache/`, `fan/dataSource/`]
+    depends = ["sys 1.0","sql 1.0","concurrent 1.0"]
   }
 }

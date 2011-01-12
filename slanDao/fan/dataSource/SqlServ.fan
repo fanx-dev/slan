@@ -5,14 +5,14 @@
 // History:
 //   12 Jan 08  John Sublett  Creation
 //
-
+using sql
 using concurrent
 
 **
 ** SqlService is the interface to a relational database.  It is const
 ** and all state is stored as thread local variables.
 **
-const class SqlService : Service
+const class SqlServ : Service
 {
   **
   ** Make a new SqlService.
@@ -21,14 +21,12 @@ const class SqlService : Service
   **   this is the connection string.
   ** - 'username' is the username for the database login.
   ** - 'password' is the password for the database login.
-  ** - 'driver' is the database specific dialect class path.
   **
   new make(Str connection  := "",
            Str? username   := "",
-           Str? password   := "",
-           Str driver      := "")
+           Str? password   := "")
   {
-    pool = ConnectionPool(connection, username, password, driver)
+    pool = ConnectionPool(connection, username, password)
   }
 
   override Void onStart()
@@ -46,7 +44,7 @@ const class SqlService : Service
   **
   This open()
   {
-    Connection? conn := Actor.locals[id]
+    SqlConn? conn := Actor.locals[id]
     if (conn == null)
     {
       conn = pool.open()
@@ -54,7 +52,7 @@ const class SqlService : Service
     }
     else
     {
-      conn.increment
+      //conn.increment
     }
 
     return this
@@ -63,9 +61,9 @@ const class SqlService : Service
   **
   ** Get the connection to this database for the current thread.
   **
-  private Connection? threadConnection(Bool checked := true)
+  private SqlConn? threadConnection(Bool checked := true)
   {
-    Connection? conn := Actor.locals[id]
+    SqlConn? conn := Actor.locals[id]
     if (conn == null)
     {
       if (checked)
@@ -98,14 +96,14 @@ const class SqlService : Service
   **
   Void close()
   {
-    Connection? conn := Actor.locals[id]
+    SqlConn? conn := Actor.locals[id]
     if (conn != null)
     {
-      if (conn.decrement == 0)
-      {
+      //if (conn.decrement == 0)
+      //{
         Actor.locals.remove(id)
         pool.close(conn)
-      }
+      //}
     }
   }
 
@@ -135,7 +133,7 @@ const class SqlService : Service
   **
   Bool tableExists(Str tableName)
   {
-    return threadConnection.tableExists(tableName)
+    return threadConnection.meta.tableExists(tableName)
   }
 
   **
@@ -144,7 +142,7 @@ const class SqlService : Service
   **
   Str[] tables()
   {
-    return threadConnection.tables();
+    return threadConnection.meta.tables();
   }
 
   **
@@ -153,7 +151,7 @@ const class SqlService : Service
   **
   Row tableRow(Str tableName)
   {
-    return threadConnection.tableRow(tableName)
+    return threadConnection.meta.tableRow(tableName)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -204,12 +202,12 @@ const class SqlService : Service
 //////////////////////////////////////////////////////////////////////////
 
   ** Standard log for the sql service
-  static const Log log := Log.get("isql")
+  static const Log log := SqlServ#.pod.log
 
   **
   ** Unique identifier for VM used to key thread locals
   **
-  const ConnectionPool pool
+  private const ConnectionPool pool
 
-  const Str id := "isql::SqlService.conn"
+  const Str id := SqlServ#.qname + ".conn"
 }

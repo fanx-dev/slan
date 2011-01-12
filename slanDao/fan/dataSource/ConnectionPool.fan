@@ -7,17 +7,13 @@
 //
 
 using concurrent
+using sql
 
 **
 ** cache connection
 **
-const class ConnectionPool
+internal const class ConnectionPool
 {
-  **
-  ** The database driver for classLoader.
-  **
-  const Str driver
-
   **
   ** The username used to connect to this database.
   **
@@ -34,13 +30,13 @@ const class ConnectionPool
   const Str connectionStr
 
   ** Standard log for the sql service
-  static const Log log := Log.get("isql")
+  static const Log log := ConnectionPool#.pod.log
 
   ** actor
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| { return receive(arg) }
 
   ** id for locals var
-  private const Str listId := "isql::ConnectionPool.listId"
+  private const Str listId := ConnectionPool#.qname + ".listId"
 
   ** receive msg
   private Obj? receive(Obj?[] arg)
@@ -60,11 +56,10 @@ const class ConnectionPool
     return null;
   }
 
-  new make(Str connStr, Str? username, Str? password, Str driver){
+  new make(Str connStr, Str? username, Str? password){
     this.connectionStr = connStr
     this.username = username
     this.password = password
-    this.driver = driver
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,35 +69,35 @@ const class ConnectionPool
   **
   ** pop from pool or open
   **
-  Connection open(){
+  SqlConn open(){
     Unsafe? obj := actor.send(["pop"].toImmutable).get
     if (obj != null)
     {
-      Connection conn :=  obj.val
-      conn.increment
+      SqlConn conn :=  obj.val
+      //conn.increment
       return conn
     }
     else
     {
       if (log.isDebug) log.debug("open a new connection")
-      return Connection.open(connectionStr, username, password, driver)
+      return SqlConn.open(connectionStr, username, password)
     }
   }
 
   **
   ** not actually close ,just push into pool
   **
-  Void close(Connection conn)
+  Void close(SqlConn conn)
   {
     if (conn.autoCommit == false)
     {
       conn.rollback
       conn.autoCommit = true
     }
-    if (conn.getCount != 0)
-    {
-      throw SqlErr("connection can't be closed.")
-    }
+    //if (conn.getCount != 0)
+    //{
+    //  throw SqlErr("connection can't be closed.")
+    //}
     actor.send(["insert", Unsafe(conn)].toImmutable)
   }
 
@@ -131,8 +126,9 @@ const class ConnectionPool
     if (!list.isEmpty)
     {
       Unsafe obj := list.pop
-      Connection conn := obj.val
-      if (conn.isValid) return obj
+      SqlConn conn := obj.val
+      //isValid vs isClosed
+      if (!conn.isClosed) return obj
     }
     return null
   }
@@ -146,7 +142,7 @@ const class ConnectionPool
   {
     list.each
     {
-      Connection conn := it.val
+      SqlConn conn := it.val
       conn.close
     }
     list.clear

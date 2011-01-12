@@ -13,6 +13,7 @@ internal class CacheTest : NewTestBase
 {
   override Void setup()
   {
+    c.db.open
     c.refreshDatabase
     log.level = LogLevel.debug
   }

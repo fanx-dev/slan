@@ -22,9 +22,10 @@ internal class CacheTransaction : NewTestBase
         throw Err("test transaction")
       }
     }catch{}
+
     verify(Student{ sid = 1 }.exist)
   }
-  
+
   Void testSuccessTransaction()
   {
     c.trans

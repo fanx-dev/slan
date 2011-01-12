@@ -6,11 +6,11 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using isql
+using sql
 
 **
 ** important class for execute sql.
-** 
+**
 internal const class Executor
 {
   const static InsertMaker inserMaker := InsertMaker()
@@ -19,8 +19,8 @@ internal const class Executor
   const static WhereMaker whereMaker := WhereMaker()
   const static IdWhereMaker idWhereMaker := IdWhereMaker()
   const Log log := Pod.of(this).log
-  
-  Void insert(Table table, SqlService db, Obj obj)
+
+  Void insert(Table table, SqlServ db, Obj obj)
   {
     sql := inserMaker.getSql(table)
     param := inserMaker.getParam(table,obj)
@@ -35,8 +35,8 @@ internal const class Executor
       table.id.field.set(obj,r->get(0))
     }
   }
-  
-  Void update(Table table, SqlService db, Obj obj)
+
+  Void update(Table table, SqlServ db, Obj obj)
   {
     sql := updateMaker.getSql(table,obj)
     param := updateMaker.getParam(table,obj)
@@ -47,13 +47,13 @@ internal const class Executor
     }
     db.sql(sql).prepare.execute(param)
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   //do where
   ////////////////////////////////////////////////////////////////////////
-  
+
   ** select data list
-  Obj[] select(Table table, SqlService db, Obj obj, Str orderby)
+  Obj[] select(Table table, SqlServ db, Obj obj, Str orderby)
   {
     sql := "select * " + whereMaker.getSql(table,obj)
     if (orderby != "") sql += " " + orderby
@@ -70,9 +70,9 @@ internal const class Executor
     }
     return list
   }
-  
+
   ** select id list
-  Obj[] selectId(Table table, SqlService db, Obj obj, Str orderby, Int start, Int num)
+  Obj[] selectId(Table table, SqlServ db, Obj obj, Str orderby, Int start, Int num)
   {
     sql := "select $table.id.name " + whereMaker.getSql(table,obj)
     if (orderby != "") sql += " " + orderby
@@ -97,13 +97,13 @@ internal const class Executor
     }
     return list
   }
-  
+
   ** select by condition and get id list
-  Obj[] selectWhere(Table table, SqlService db, Str condition, Int start, Int num)
+  Obj[] selectWhere(Table table, SqlServ db, Str condition, Int start, Int num)
   {
     sql := "select $table.id.name from $table.name"
     if (condition != "") sql += " " + condition
-    
+
     if (log.isDebug)
     {
       log.debug(sql)
@@ -123,8 +123,8 @@ internal const class Executor
     }
     return list
   }
-  
-  Void delete(Table table, SqlService db, Obj obj)
+
+  Void delete(Table table, SqlServ db, Obj obj)
   {
     sql := "delete " + whereMaker.getSql(table, obj)
     param := whereMaker.getParam(table, obj)
@@ -135,17 +135,17 @@ internal const class Executor
     }
     db.sql(sql).prepare.execute(param)
   }
-  
-  Int count(Table table, SqlService db, Obj obj)
+
+  Int count(Table table, SqlServ db, Obj obj)
   {
     rows := queryWhere(table, db, obj, "select count(*)","")
     r := rows[0]
     n := r[r.cols[0]]
     return n
   }
-  
+
   ** query by example condition
-  Row[] queryWhere(Table table, SqlService db, Obj obj, Str before, Str after)
+  Row[] queryWhere(Table table, SqlServ db, Obj obj, Str before, Str after)
   {
     sql := before + " " + whereMaker.getSql(table, obj);
     if (after != "") sql += " " + after
@@ -157,12 +157,12 @@ internal const class Executor
     }
     return db.sql(sql).prepare.query(param)
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   //by ID
   ////////////////////////////////////////////////////////////////////////
-  
-  Void removeById(Table table, SqlService db, Obj id)
+
+  Void removeById(Table table, SqlServ db, Obj id)
   {
     sql := "delete " + idWhereMaker.getSql(table)
     param := idWhereMaker.getParam(table, id)
@@ -173,23 +173,23 @@ internal const class Executor
     }
     db.sql(sql).prepare.execute(param)
   }
-  
-  Obj? findById(Table table, SqlService db, Obj id)
+
+  Obj? findById(Table table, SqlServ db, Obj id)
   {
     rows := queryById(table, db, id, "select *")
     if (rows.size == 0) return null
     return table.getInstance(rows.first)
   }
-  
-  Bool existById(Table table, SqlService db, Obj id)
+
+  Bool existById(Table table, SqlServ db, Obj id)
   {
     rows := queryById(table, db, id, "select count(*)")
     r := rows[0]
     n := r[r.cols[0]]
     return n > 0
   }
-  
-  private Row[] queryById(Table table, SqlService db, Obj id, Str before)
+
+  private Row[] queryById(Table table, SqlServ db, Obj id, Str before)
   {
     sql := before + " " + idWhereMaker.getSql(table)
     param := idWhereMaker.getParam(table, id)
@@ -200,12 +200,12 @@ internal const class Executor
     }
     return db.sql(sql).prepare.query(param)
   }
-  
+
   ////////////////////////////////////////////////////////////////////////
   //table op
   ////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Table table, SqlService db)
+  Void createTable(Table table, SqlServ db)
   {
     sql := tableMaker.createTable(table)
     if (log.isDebug)
@@ -214,8 +214,8 @@ internal const class Executor
     }
     db.sql(sql).execute()
   }
-  
-  Void dropTable(Table table, SqlService db)
+
+  Void dropTable(Table table, SqlServ db)
   {
     sql := tableMaker.dropTable(table)
     if (log.isDebug)
@@ -224,12 +224,12 @@ internal const class Executor
     }
     db.sql(sql).execute()
   }
-  
+
   ** drop all table in database
-  Void clearDatabase(SqlService db)
+  Void clearDatabase(SqlServ db)
   {
     Str[] tables := db.tables.dup
-    
+
     Int dropped := 0
     tables.each |Str tableName|
     {

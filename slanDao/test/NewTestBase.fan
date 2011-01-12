@@ -16,13 +16,17 @@ internal class NewTestBase : Test, TestConnection
 
   override Void setup()
   {
+    c.db.open
     c.refreshDatabase
     DataFixture.init
     log.level = LogLevel.debug
+
+    verify(!c.db.isClosed)
   }
 
   override Void teardown()
   {
     log.level = defaultLevel
+    c.db.close
   }
 }

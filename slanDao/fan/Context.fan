@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using isql
+using sql
 using concurrent
 
 **
@@ -15,7 +15,7 @@ using concurrent
 const class Context
 {
   ** current sqlService
-  const SqlService db
+  const SqlServ db
 
   ** mapping table model
   const Type:Table tables
@@ -24,7 +24,7 @@ const class Context
   private const Executor executor := Executor()
   private static const Log log := Context#.typeof.pod.log
 
-  new make(SqlService db, Type:Table tables)
+  new make(SqlServ db, Type:Table tables)
   {
     this.db = db
     this.tables = tables
@@ -108,40 +108,28 @@ const class Context
   virtual Void insert(Obj obj)
   {
     table := getTable(obj.typeof)
-    use
-    {
-      this.executor.insert(table, this.db, obj)
-    }
+    this.executor.insert(table, this.db, obj)
   }
 
   ** update by id
   virtual Void update(Obj obj)
   {
     table := getTable(obj.typeof)
-    use
-    {
-      this.executor.update(table, this.db, obj)
-    }
+    this.executor.update(table, this.db, obj)
   }
 
   ** delete by example
   virtual Void deleteByExample(Obj obj)
   {
     table := getTable(obj.typeof)
-    use
-    {
-      this.executor.delete(table, this.db, obj)
-    }
+    this.executor.delete(table, this.db, obj)
   }
 
   ** delete by id
   virtual Void deleteById(Type type, Obj id)
   {
     table := getTable(type)
-    use
-    {
-      this.executor.removeById(table, this.db, id)
-    }
+    this.executor.removeById(table, this.db, id)
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -167,10 +155,7 @@ const class Context
   protected virtual Obj[] getIdList(Obj obj, Str orderby, Int offset, Int limit)
   {
     table := getTable(obj.typeof)
-    return ret(false)
-    {
-      this.executor.selectId(table, this.db, obj, orderby, offset, limit)
-    }
+    return this.executor.selectId(table, this.db, obj, orderby, offset, limit)
   }
 
   ** convert id list to object list
@@ -203,10 +188,7 @@ const class Context
   protected virtual Obj[] getWhereIdList(Type type, Str condition, Int offset, Int limit)
   {
     table := getTable(type)
-    return ret(false)
-    {
-      this.executor.selectWhere(table, this.db, condition, offset, limit)
-    }
+    return this.executor.selectWhere(table, this.db, condition, offset, limit)
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -215,10 +197,7 @@ const class Context
 
   virtual Obj? findById(Type type, Obj id){
     table := getTable(type)
-    return ret(false)
-    {
-      this.executor.findById(table, this.db, id)
-    }
+    return this.executor.findById(table, this.db, id)
   }
 
   ** get object id value by mapping table
@@ -236,17 +215,14 @@ const class Context
   virtual Int count(Obj obj)
   {
     table := getTable(obj.typeof)
-    return ret(false)
-    {
-      this.executor.count(table, this.db, obj)
-    }
+    return this.executor.count(table, this.db, obj)
   }
 
   ** exist by example,this operate noCache
   Bool exist(Obj obj)
   {
     table := getTable(obj.typeof)
-    n := ret(false) { this.executor.count(table, this.db, obj) }
+    n := this.executor.count(table, this.db, obj)
     return n > 0
   }
 
@@ -280,38 +256,26 @@ const class Context
   Void createTable(Type type)
   {
     table := getTable(type)
-    use
-    {
-      this.executor.createTable(table, this.db)
-    }
+    this.executor.createTable(table, this.db)
   }
 
   Void dropTable(Type type)
   {
     table := getTable(type)
-    use
-    {
-      this.executor.dropTable(table, this.db)
-    }
+    this.executor.dropTable(table, this.db)
   }
 
   Bool tableExists(Type type)
   {
     table := getTable(type)
-    return ret(false)
-    {
-      this.db.tableExists(table.name)
-    }
+    return this.db.tableExists(table.name)
   }
 
   ** check the object table is fit to database table
   Bool checkTable(Table table)
   {
-    return ret(false) |c -> Obj?|
-    {
-      trow := this.db.tableRow(table.name)
-      return table.checkMatchDb(trow.cols)
-    }
+    trow := this.db.tableRow(table.name)
+    return table.checkMatchDb(trow.cols)
   }
 
   **
@@ -319,21 +283,18 @@ const class Context
   **
   Void tryCreateAllTable()
   {
-    use
+    this.tables.vals.each |Table t|
     {
-      this.tables.vals.each |Table t|
+      if (this.db.tableExists(t.name))
       {
-        if (this.db.tableExists(t.name))
+        if (!checkTable(t))
         {
-          if (!checkTable(t))
-          {
-            throw MappingErr("table $t.name not match the database")
-          }
+          throw MappingErr("table $t.name not match the database")
         }
-        else
-        {
-          this.executor.createTable(t, this.db)
-        }
+      }
+      else
+      {
+        this.executor.createTable(t, this.db)
       }
     }
   }
@@ -341,14 +302,11 @@ const class Context
   **drop all table with in appliction
   Void dropAllTable()
   {
-    use
+    this.tables.vals.each |Table t|
     {
-      this.tables.vals.each |Table t|
+      if(this.db.tableExists(t.name))
       {
-        if(this.db.tableExists(t.name))
-        {
-          this.executor.dropTable(t, this.db)
-        }
+        this.executor.dropTable(t, this.db)
       }
     }
   }
@@ -356,10 +314,7 @@ const class Context
   **drop all tables in the database
   Void clearDatabase()
   {
-    use
-    {
-      this.executor.clearDatabase(this.db)
-    }
+    this.executor.clearDatabase(this.db)
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -369,25 +324,22 @@ const class Context
   ** transaction , if error will auto roolback
   virtual Void trans(|This| f)
   {
-    use
+    oauto := this.db.autoCommit
+    try
     {
-      oauto := this.db.autoCommit
-      try
-      {
-        this.db.autoCommit = false
+      this.db.autoCommit = false
 
-        f(this)
-        this.db.commit
-      }
-      catch (Err e)
-      {
-        this.db.rollback
-        throw e
-      }
-      finally
-      {
-        this.db.autoCommit = oauto
-      }
+      f(this)
+      this.db.commit
+    }
+    catch (Err e)
+    {
+      this.db.rollback
+      throw e
+    }
+    finally
+    {
+      this.db.autoCommit = oauto
     }
   }
 }

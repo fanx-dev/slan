@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using isql
+using sql
 using concurrent
 
 **
@@ -27,7 +27,7 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache()
 
-  new make(SqlService db, Type:Table tables) : super(db, tables){}
+  new make(SqlServ db, Type:Table tables) : super(db, tables){}
 
   ////////////////////////////////////////////////////////////////////////
   //tools
@@ -250,8 +250,6 @@ const class CacheableContext : Context
   ** transaction
   override Void trans(|This| f)
   {
-    use
-    {
       oauto := this.db.autoCommit
       isNull := Actor.locals[tcache] == null
       try
@@ -266,7 +264,6 @@ const class CacheableContext : Context
 
         this.db.commit
         this.commitCaheTrans
-
       }
       catch (Err e)
       {
@@ -281,7 +278,6 @@ const class CacheableContext : Context
           Actor.locals[tcache] = null
         }
       }
-    }
   }
 
   **

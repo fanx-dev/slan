@@ -23,6 +23,7 @@ internal class TransactionTest : NewTestBase
       }
     }
     catch{}
+
     verify(Student{ sid = 1 }.exist)
   }
 }

@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using isql
+using sql
 
 **
 ** as a database column.

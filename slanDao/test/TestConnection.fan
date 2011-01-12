@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using isql
+using sql
 
 **
 **
@@ -16,12 +16,11 @@ internal mixin TestConnection
   const static CacheableContext c
   static
   {
-    pod := Pod.find("isql")
-    db := SqlService(
-      pod.config("test.connection"),
+    pod := Pod.find("sql")
+    db := SqlServ(
+      pod.config("test.uri"),
       pod.config("test.username"),
-      pod.config("test.password"),
-      pod.config("test.driver"))
+      pod.config("test.password"))
 
     tables := CacheableContext.mappingTables([:], TestConnection#.pod)
     c = CacheableContext(db, tables)

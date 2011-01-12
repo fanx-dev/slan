@@ -14,9 +14,10 @@ internal class EnumAndSerializatTest : NewTestBase
   override Void setup()
   {
     log.level = LogLevel.debug
+    c.db.open
     c.refreshDatabase
   }
-  
+
   Void testEnum()
   {
     id := Student
@@ -28,12 +29,12 @@ internal class EnumAndSerializatTest : NewTestBase
       dt = DateTime.now
       loveWeek = Weekday.sat
     }.insert.sid
-  
+
     c.clearCache
     Student stu2 := Student{ sid = id }.one
     verifyEq(stu2.loveWeek, Weekday.sat)
   }
-  
+
   Void testSerialization()
   {
     id := Student
@@ -45,7 +46,7 @@ internal class EnumAndSerializatTest : NewTestBase
       dt = DateTime.now
       uri = [`http://slandao`]
     }.insert.sid
-  
+
     c.clearCache
     Student stu2 := Student{ sid = id }.one
     verifyEq(stu2.uri, [`http://slandao`])
