@@ -22,11 +22,9 @@ class Build : BuildGroup
     [
       `slanUtil/build.fan`,
       `slanWeb/build.fan`,
-      `mywebDemo/build.fan`,
+      `slanSample/build.fan`,
 
-      `isql/build.fan`,
       `slanDao/build.fan`,
-      `slanData/build.fan`,
     ]
   }
 

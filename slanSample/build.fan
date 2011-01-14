@@ -31,7 +31,7 @@ class Build : build::BuildPod
       "dom 1.0",
       "gfx 1.0",
       "fwt 1.0",
-      "isql 1.0",
+      "sql 1.0",
       "slanDao 1.0"
     ]
     resDirs =

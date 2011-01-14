@@ -175,7 +175,7 @@ const class ReqStash : SlanWeblet
   ** call req.stash[name]
   override Obj? trap(Str name, Obj?[]? args)
   {
-    if (args.size == 0)
+    if (args == null || args.size == 0)
     {
       if (!req.stash.containsKey(name)) throw ArgErr("not find arg $name")
       return req.stash.get(name)

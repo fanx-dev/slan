@@ -84,7 +84,7 @@ internal const class TemplateTranslater
         }
 
         //it's fantom code
-        return codeGap + removeChar(line, i)
+        return getFantomStr(removeChar(line, i))
       }
       else
       {
@@ -100,6 +100,12 @@ internal const class TemplateTranslater
     s := StrBuf()
     s.add(old)
     return s.remove(i).toStr
+  }
+
+  private Str getFantomStr(Str line)
+  {
+    code := codeGap + line
+    return code.replace("@", "m->")
   }
 
   private Str getHtmlStr(Str line)
