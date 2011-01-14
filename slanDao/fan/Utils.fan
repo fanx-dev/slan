@@ -44,6 +44,8 @@ class Utils
         return true
       case Decimal#:
         return true
+      case Buf#:
+        return true
       default:
         return false
     }

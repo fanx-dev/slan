@@ -36,4 +36,9 @@ const abstract class SlanDialect
       return "text"
     }
   }
+
+  virtual Str binary()
+  {
+    return "LONGVARBINARY"
+  }
 }

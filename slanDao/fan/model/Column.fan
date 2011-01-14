@@ -94,6 +94,8 @@ const class Column
         t = dialect.time
       case Decimal#:
         t = dialect.decimal
+      case Buf#:
+        t = dialect.binary
       default:
         throw MappingErr("unknown sql type $type,
                           please using @Transient for Ignore")
