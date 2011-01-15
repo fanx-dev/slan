@@ -10,14 +10,14 @@ using slanWeb
 
 const class Controller : SlanWeblet
 {
-  override Void invoke(Str name, Obj?[]? args)
+  override Obj? invoke(Str name, Obj?[]? args)
   {
     //you can open and close database connection at here
     //and check Http Referer
     //or check user authority
     echo("before")
     try
-      trap(name, args)
+      return trap(name, args)
     finally
       echo("finally")
   }

@@ -14,17 +14,12 @@ using slanWeb
 class Ajax : SlanWeblet
 {
   ** ajax for `jsfan/TableFwt.fan`
-  Void data()
+  Obj data()
   {
-    setContentType
-
-    s := """
-            [
-              ["key","value"],
-              ["1","yjd"],
-              ["2","yqq"]
-            ]
-            """
-    res.out.w(s)
+     [
+        ["key","value"],
+        ["1","yjd"],
+        ["2","yqq"]
+     ]
   }
 }

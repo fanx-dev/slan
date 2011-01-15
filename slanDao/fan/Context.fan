@@ -62,25 +62,14 @@ const class Context
   }
 
   **
-  ** using connection finally will close.
-  ** return a result than #use
+  ** using connection finally will close
   **
-  Obj? ret(Bool transaction, |Context -> Obj?| f)
+  Void use(|This| f)
   {
     try
     {
       db.open
-
-      Obj? result
-      if (transaction)
-      {
-        this.trans
-        {
-          result = f(this)
-        }
-        return result
-      }
-      return f(this)
+      f(this)
     }
     catch (Err e)
     {
@@ -90,14 +79,6 @@ const class Context
     {
       db.close
     }
-  }
-
-  **
-  ** using connection finally will close,no transaction
-  **
-  Void use(|This| f)
-  {
-    ret(false, f)
   }
 
   ////////////////////////////////////////////////////////////////////////

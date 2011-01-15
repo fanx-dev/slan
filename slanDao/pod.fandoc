@@ -9,9 +9,6 @@
 Overview [#overview]
 ********************
 
-restrict,limit,related,check... all thing maintain by application.
-database is only for persistent no business logic.
-
 Mapping [#mapping]
 ================
 

@@ -28,14 +28,12 @@ const class Base : Controller
     render
   }
 
-  Void printInfo(Int i, Str? m){
-    setContentType
-    res.out.w("$i,$m")
+  Str printInfo(Int i, Str? m){
+    "$i,$m"
   }
 
   @WebPost
-  Void post(Int i, Str m){
-    setContentType
-    res.out.w("$i,$m")
+  Str post(Int i, Str m){
+    "$i,$m"
   }
 }

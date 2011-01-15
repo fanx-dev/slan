@@ -20,12 +20,8 @@ class Localization : SlanWeblet
     render
   }
 
-  override Void invoke(Str name, Obj?[]? args)
+  override Obj? invoke(Str name, Obj?[]? args)
   {
-    this.trap(name, args)
-    if (HttpTool().isOldIE)
-    {
-      res.out.w("You have an old browser")
-    }
+    return this.trap(name, args)
   }
 }

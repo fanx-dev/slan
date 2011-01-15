@@ -27,34 +27,52 @@ internal const class ActionRunner : Weblet
     req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}`
 
     //call
-    invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
+    result := invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
+    sendResult(result)
   }
 
   **
   ** call method.
   **
-  private Void invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
+  private Obj? invoke(Type type, Method method, Obj[] constructorParams, Obj[] methodParams)
   {
     weblet := type.make(constructorParams)
 
+    Obj? result := null
+
     //localization
     loc := locale
-    if (loc == null)
+    if (loc != null)
     {
-      weblet->invoke(method.name, methodParams)
-      return
+      loc.use
+      {
+        result = weblet->invoke(method.name, methodParams)
+      }
     }
-
-    loc.use
+    else
     {
-      weblet->invoke(method.name, methodParams)
+      result = weblet->invoke(method.name, methodParams)
+    }
+    return result
+  }
+
+  private Void sendResult(Obj? result)
+  {
+    if (result != null && !res.isCommitted)
+    {
+      res.headers["Content-Type"] = "text/plain; charset=utf-8"
+
+      if(result.typeof.hasFacet(Serializable#))
+        res.out.writeObj(result)
+      else
+        res.out.w(result)
     }
   }
 
   **
   ** build-in locale
   **
-  Locale? locale()
+  private Locale? locale()
   {
     acceptLang := req.headers["Accept-Language"]
     if (acceptLang == null || acceptLang == "") return null

@@ -25,6 +25,20 @@ abstract class CommandLine : AbstractMain
       services.each{ it.start }
       return null
     }.send(null)
+
+    Env.cur.addShutdownHook( |->|{ uninstallService(services) }.toImmutable )
+  }
+
+  private static Void uninstallService(Service[] services)
+  {
+    services.each
+    {
+      try
+        it.stop
+      catch(Err e)
+        e.trace
+    }
+    services.each{ it.uninstall }
   }
 
   ** read command line input
@@ -35,14 +49,7 @@ abstract class CommandLine : AbstractMain
       s := Env.cur.in.readLine
       if (s == "quit" || s == "exit")
       {
-        services.each
-        {
-         try
-           it.stop
-         catch(Err e)
-           e.trace
-        }
-        services.each{ it.uninstall }
+        uninstallService(services)
         Env.cur.exit
       }
       else if(f != null)

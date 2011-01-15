@@ -59,8 +59,9 @@ class TableFwt : Window
         {
           HttpReq { uri = `/action/Ajax/data`; headers["foo"] = "bar!" }.get |res|
           {
+            Win.cur.alert(res.content.in.readAllStr)
             c := res.content.in.readObj
-            //Win.cur.alert(c)
+
 
             table.model=ListModel(c)
             table.refreshAll

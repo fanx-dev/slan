@@ -24,10 +24,9 @@ There are two way to run service. scriptMode/podMode(debug mode/product mode)
 Route [#route]
 =============
 
-see the uri 'http://localhost:8080/action/Welcome/ad/print/115?i=123&m=bac'
+See the uri 'http://localhost:8080/action/Welcome/print/115?i=123&m=bac'
     it will route to 'action'(dir) and compile 'Welcome.fan'(class),
-    then newInstance 'Welecome' with 'ad'(params).
-    call 'printInfo'(method) with 'i=123,m=bac'(named params)
+    then newInstance 'Welecome' and call 'printInfo'(method) with 'i=123,m=bac'(named params)
 
 Most of the time, you should just use 'http://localhost:8080/Welcome/print'
     it will route to 'action' and call Welcome's print method.
@@ -35,7 +34,7 @@ Most of the time, you should just use 'http://localhost:8080/Welcome/print'
 
 Html Template [#htmlTemplate]
 =============
-the template code like this:
+The template code like this:
 
    <html>
     <head>
@@ -56,33 +55,33 @@ In fact the string be compile to fantom string, so we can embedded '$ interpolat
 
 Pass Arguments [#passArguments]
 -----------
-'m->name' is short cut of 'req.stash'. It be used to pass params from controller to view.
-'@name' is shortcut of '${m->name.toStr.toXml}'.
-
-Localization [#localization]
------------
-$<greet.hello> is shortcut of $<podName::greet.hello>
+'m->name' is short cut of 'req.stash'. It be used to pass args from controller to view.
+we get the args in template code by '@name'.
+'@' is more shortcut of 'm->', but in the html '@name' equals '${m->name.toStr.toXml}'.
 
 Render [#render]
 -----------
-call the 'SlanWeblet#render' to render the template. Default template by the action name.
+Call the 'SlanWeblet#render' to render the template. Default template by the action name.
+If res is not commited and has no null retruning value, the result will be serialized and render as plan text.
 
 Controller [controller]
 =============
-subclass your controller from 'SlanWeblet' will be convenience.
+Subclass your controller from 'SlanWeblet' will be convenience.
 
 You can override the method 'SlanWeblet#invoke' to insert your logic, like this:
 
   const class Controller : SlanWeblet
   {
-    override Void invoke(Str name, Obj?[]? args)
+    override Obj? invoke(Str name, Obj?[]? args)
     {
       if (!checkAuthority) res.sendErr(401)
+      Obj? result
       //open connection
       connection.use
       {
-        this.trap(name, args)
+        result = this.trap(name, args)
       }
+      return result
     }
   }
 

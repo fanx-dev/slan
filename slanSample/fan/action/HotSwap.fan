@@ -13,9 +13,8 @@ using slanWeb
 **
 class HotSwap : SlanWeblet
 {
-  Void index()
+  Str index()
   {
-    setContentType
-    res.out.w(HotSwapTest.s)
+    HotSwapTest.s
   }
 }

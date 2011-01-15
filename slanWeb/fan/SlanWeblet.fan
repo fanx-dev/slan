@@ -22,7 +22,7 @@ mixin SlanWeblet
   **
   ** This is an entrance point, will be called by framework
   **
-  virtual Void invoke(Str name, Obj?[]? args) { trap(name, args) }
+  virtual Obj? invoke(Str name, Obj?[]? args) { trap(name, args) }
 
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
@@ -129,7 +129,7 @@ mixin SlanWeblet
   **
   ** convert method to uri
   **
-  Uri toUri(Method method, Str? id := null)
+  Uri toUri(Method method, Obj? id := null)
   {
     uri := "/action/$method.parent.name/$method.name"
     if (id != null)
