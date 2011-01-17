@@ -17,7 +17,7 @@ internal class ActionLocation : Weblet
   private const SlanApp slanApp
   private Uri dir //action directory
 
-  private Str[]? restPath
+  private Str[]? remainderPath
 
   Type? type
   Method? method
@@ -38,7 +38,7 @@ internal class ActionLocation : Weblet
   Bool parse(Str[] path)
   {
     //this.path = path
-    this.restPath = path
+    this.remainderPath = path
 
     findType
     findConstructor
@@ -57,7 +57,7 @@ internal class ActionLocation : Weblet
   **
   private Void findType()
   {
-    name := restPath.first
+    name := remainderPath.first
     if(name == null)
     {
       useIndexCtrl
@@ -66,13 +66,9 @@ internal class ActionLocation : Weblet
 
     type = slanApp.resourceHelper.getType(name, dir, false)
     if (type != null)
-    {
-      consumeResPath
-    }
+      consumePath
     else
-    {
       useIndexCtrl
-    }
   }
 
   private Void useIndexCtrl()
@@ -87,10 +83,10 @@ internal class ActionLocation : Weblet
   {
     //constructor parameter
     cparams := type.method("make").params
-    constructorParams=ParameterHelper.getParams(restPath, cparams, 0)
+    constructorParams=ParameterHelper.getParams(remainderPath, cparams, 0)
 
-    //rest path
-    consumeResPath(cparams.size)
+    //remainder path
+    consumePath(cparams.size)
   }
 
   **
@@ -99,21 +95,39 @@ internal class ActionLocation : Weblet
   private Void findMethod()
   {
     //find method
-    methodName := restPath.first
+    methodName := remainderPath.first
+
+    //index or create
     if (methodName == null)
     {
-      method = type.method("index")
+      if(req.method == "GET")
+        method = type.method("index")
+      else if(req.method == "POST")
+        method = type.method("post")//create
+      else
+        method = type.method("index")
       return
     }
 
     method = type.method(methodName, false)
+    //named op
     if (method != null)
     {
-      consumeResPath
+      consumePath
+      return
     }
-    else
+
+    //resource op
+    switch(req.method)
     {
-      method = type.method("index")
+      case "GET":
+        method = type.method("get")//show
+      case "DELETE":
+        method = type.method("delete")//destroy
+      case "PUT":
+        method = type.method("put")//update
+      default:
+        method = type.method("get")
     }
   }
 
@@ -122,20 +136,20 @@ internal class ActionLocation : Weblet
     methodParams = ParameterHelper.getParamsByName(req.uri.query, method.params, req.form)
   }
 
-  ** put id on req.stash["id"]
+  ** put id on req.stash
   private Void setStashId()
   {
-    if (restPath.size > 0)
+    if (remainderPath.size > 0)
     {
-      req.stash["_stashId"] = restPath[0]
-      consumeResPath
+      req.stash["_stashId"] = remainderPath[0]
+      consumePath
     }
   }
 
   ** consume
-  private Void consumeResPath(Int n := 1)
+  private Void consumePath(Int n := 1)
   {
-    restPath = restPath[n..-1]
+    remainderPath = remainderPath[n..-1]
   }
 
   ** check for WebMethod facet

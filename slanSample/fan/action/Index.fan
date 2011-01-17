@@ -35,8 +35,11 @@ class Index : SlanWeblet
       a(`/jsfan/TableFwt.fan`).w("/jsfan/TableFwt.fan").aEnd.br.
 
       h2.w("XML").h2End.
-      a(`/action/Xml/data.xml`).w("/action/Xml/data.xml").aEnd.br.
-      a(`/action/Xml/data.html`).w("/action/Xml/data.html").aEnd.br.
+      a(`/Xml/data.xml`).w("/Xml/data.xml").aEnd.br.
+      a(`/Xml/data.html`).w("/Xml/data.html").aEnd.br.
+
+      h2.w("REST").h2End.
+      a(`/Rest`).w("/Rest").aEnd.br.
 
       h2.w("i18n").h2End.
       a(`/Localization`).w("/Localization").aEnd.br.
@@ -62,4 +65,6 @@ class Index : SlanWeblet
     res.headers["Content-Type"] = "text/plain; charset=utf-8"
     req.headers.each |Str v, Str k| { res.out.printLine("$k: $v") }
   }
+
+  Void get(){ res.out.close }
 }
