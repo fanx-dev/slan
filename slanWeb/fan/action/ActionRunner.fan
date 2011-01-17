@@ -46,12 +46,12 @@ internal const class ActionRunner : Weblet
     {
       loc.use
       {
-        result = weblet->invoke(method.name, methodParams)
+        result = weblet->onInvoke(method.name, methodParams)
       }
     }
     else
     {
-      result = weblet->invoke(method.name, methodParams)
+      result = weblet->onInvoke(method.name, methodParams)
     }
     return result
   }

@@ -10,7 +10,7 @@ using slanWeb
 
 const class Controller : SlanWeblet
 {
-  override Obj? invoke(Str name, Obj?[]? args)
+  override Obj? onInvoke(Str name, Obj?[]? args)
   {
     //you can open and close database connection at here
     //and check Http Referer

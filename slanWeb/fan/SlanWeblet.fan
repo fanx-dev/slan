@@ -22,7 +22,7 @@ mixin SlanWeblet
   **
   ** This is an entrance point, will be called by framework
   **
-  virtual Obj? invoke(Str name, Obj?[]? args) { trap(name, args) }
+  virtual Obj? onInvoke(Str name, Obj?[]? args) { trap(name, args) }
 
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
