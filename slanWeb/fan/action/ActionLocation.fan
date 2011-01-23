@@ -193,4 +193,9 @@ internal class ActionLocation : Weblet
 
   private const static Type[] facets :=
     [WebGet#, WebPost#, WebPut#, WebDelete#, WebHead#, WebTrace#, WebOptions#]
+
+  override Str toStr()
+  {
+    "$type.name#$method.name"
+  }
 }

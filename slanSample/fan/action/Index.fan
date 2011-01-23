@@ -17,9 +17,6 @@ class Index : SlanWeblet
   ** home page
   Void index()
   {
-    //error uri may be route to here
-    if (req.stash["_stashId"] != null) { res.sendErr(404); return }
-
     setContentType("html")
 
     res.out.html.
@@ -54,8 +51,6 @@ class Index : SlanWeblet
       h2.w("Other").h2End.
       a(`/doc`).w("FanDocs").aEnd.br.
       a(`/Index/dump`).w("RequestHeaders").aEnd.br.
-      a(`/log/sys.log`).w("SysLog").aEnd.br.
-      a(`/log/web.log`).w("WebLog").aEnd.br.
 
     htmlEnd
   }
@@ -66,5 +61,5 @@ class Index : SlanWeblet
     req.headers.each |Str v, Str k| { res.out.printLine("$k: $v") }
   }
 
-  Void get(){ res.out.close }
+  Void get(){ res.sendErr(404) }
 }

@@ -27,6 +27,7 @@ internal const class ActionRunner : Weblet
     //req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}`
 
     //call
+    //echo(loc)
     result := invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
     sendResult(result)
   }

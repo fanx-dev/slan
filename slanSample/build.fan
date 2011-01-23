@@ -37,11 +37,8 @@ class Build : build::BuildPod
     resDirs =
     [
       `locale/`,
-      `public/`,
-      `public/image/`,
-      `public/javascript/`,
-      `public/stylesheet/`,
       `res/fwt/`
-    ].addAll(Util.allDir(scriptDir.uri, `res/view/`))
+    ].addAll(Util.allDir(scriptDir.uri, `res/view/`)).
+      addAll(Util.allDir(scriptDir.uri, `public/`))
   }
 }

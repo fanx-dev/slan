@@ -33,12 +33,12 @@ class Tool : SlanWeblet
   }
 
   @WebPost
-  Void validate(Str code)
+  Str validate(Str code)
   {
     ocode := req.session["code"]
+    if (ocode == null || ocode == "") return "wrong"
     message := code.equalsIgnoreCase(ocode) ? "right" : "wrong"
-    setContentType
-    res.out.w(message)
+    return message
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ class Tool : SlanWeblet
   @WebPost
   Void saveFile()
   {
-    Uri dir := `file:/D:/Temp/`
+    Uri dir := `./`
     UploadHelper helper := UploadHelper()|Str name, InStream in|
     {
       uri := dir.plusName(UploadHelper.newName(name))

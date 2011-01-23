@@ -24,20 +24,10 @@ const class RootMod : PipelineMod
       {
         //you can add your mod at here
         it["doc"] = FileMod { file = Env.cur.homeDir + `doc/` }
-        it["log"] = FileMod { file = logDir.toFile }
+        //it["log"] = FileMod { file = logDir.toFile }
       }
     ]
-    pp.after = [ SlanLogMod(logDir) ]
+    //pp.after = [ SlanLogMod(logDir) ]
 
   }){}
-
-  private Uri logDir()
-  {
-    Uri logDir := `/log/`
-    try
-      logDir = Main#.pod.config("log").toUri
-    catch{}
-
-    return logDir
-  }
 }
