@@ -57,12 +57,12 @@ class Index : SlanWeblet
       a(`/log/sys.log`).w("SysLog").aEnd.br.
       a(`/log/web.log`).w("WebLog").aEnd.br.
 
-      htmlEnd
+    htmlEnd
   }
 
   Void dump()
   {
-    res.headers["Content-Type"] = "text/plain; charset=utf-8"
+    setContentType
     req.headers.each |Str v, Str k| { res.out.printLine("$k: $v") }
   }
 

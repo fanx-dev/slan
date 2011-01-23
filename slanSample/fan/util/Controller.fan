@@ -17,7 +17,7 @@ const class Controller : SlanWeblet
     //or check user authority
     echo("before")
     try
-      return trap(name, args)
+      return SlanWeblet.super.onInvoke(name, args)
     finally
       echo("finally")
   }

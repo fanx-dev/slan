@@ -22,7 +22,11 @@ mixin SlanWeblet
   **
   ** This is an entrance point, will be called by framework
   **
-  virtual Obj? onInvoke(Str name, Obj?[]? args) { trap(name, args) }
+  virtual Obj? onInvoke(Str name, Obj?[]? args)
+  {
+    req.stash["_defaultView"] = `$typeof.name/$name`
+    return trap(name, args)
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Request/Response
@@ -78,21 +82,12 @@ mixin SlanWeblet
   ** render default view
   private Void renderDefaultView()
   {
-    // this condition prevent from endless loop
     view := req.stash["_defaultView"]
+    // this condition prevent from endless loop
     if (view != null)
-    {
       render((Uri)view)
-    }
     else
-    {
       throw Err("Not find defaultView")
-    }
-  }
-
-  Void setDefaultView(Uri view)
-  {
-    req.stash["_defaultView"] = view
   }
 
   **

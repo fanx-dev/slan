@@ -19,9 +19,4 @@ class Localization : SlanWeblet
   {
     render
   }
-
-  override Obj? onInvoke(Str name, Obj?[]? args)
-  {
-    return this.trap(name, args)
-  }
 }

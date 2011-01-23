@@ -28,7 +28,7 @@ class Main : CommandLine
     asyRunService([wisp])
 
     //read command line input
-    processInput([wisp])
+    processInput()
 
     return -1
   }

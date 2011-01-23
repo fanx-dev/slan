@@ -42,14 +42,13 @@ abstract class CommandLine : AbstractMain
   }
 
   ** read command line input
-  Void processInput(Service[] services, |Str->Bool|? f := null)
+  Void processInput(|Str->Bool|? f := null)
   {
     while(true)
     {
       s := Env.cur.in.readLine
       if (s == "quit" || s == "exit")
       {
-        uninstallService(services)
         Env.cur.exit
       }
       else if(f != null)

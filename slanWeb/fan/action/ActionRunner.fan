@@ -24,7 +24,7 @@ internal const class ActionRunner : Weblet
     //m->defaultView is typename/method.
     //put into stash in order to uer can overwrite it
     req.stash["_contentType"] = req.uri.ext
-    req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}`
+    //req.stash["_defaultView"] = `$loc.type.name/${loc.method.name}`
 
     //call
     result := invoke(loc.type, loc.method, loc.constructorParams, loc.methodParams)
