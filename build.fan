@@ -22,8 +22,6 @@ class Build : BuildGroup
     [
       `slanUtil/build.fan`,
       `slanWeb/build.fan`,
-      `slanSample/build.fan`,
-
       `slanDao/build.fan`,
     ]
   }
