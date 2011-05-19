@@ -44,7 +44,7 @@ class TransientBuild : BuildPod
     ci.log         = log
     ci.includeDoc  = docApi
     ci.mode        = CompilerInputMode.file
-    ci.outDir      = outDir.toFile
+    ci.outDir      = outPodDir.toFile
     ci.output      = CompilerOutputMode.transientPod
 
     if (dependsDir != null)

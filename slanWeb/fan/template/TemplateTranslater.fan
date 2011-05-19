@@ -105,7 +105,7 @@ internal const class TemplateTranslater
   private Str getFantomStr(Str line)
   {
     code := codeGap + line
-    return code.replace("@", "m->")
+    return code//.replace("@", "m->")
   }
 
   private Str getHtmlStr(Str line)
