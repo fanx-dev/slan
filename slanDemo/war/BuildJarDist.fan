@@ -17,9 +17,9 @@ class Build : BuildScript
     dist := JarDist(this)
     //dist.outFile = `./ROOT/WEB-INF/lib/myapp_deploy.jar`.toFile.normalize
     dist.outFile = `file:/D:/Develop/java/Tomcat/apache-tomcat-6.0.20-2/apache-tomcat-6.0.20/webapps/ROOT/WEB-INF/lib/slanSample.jar`.toFile.normalize
-    dist.podNames = Str["slanSample", "servlet", "web", "webmod", "util", "build", "dom", "gfx", "fwt",
+    dist.podNames = Str["slanDemo", "servlet", "web", "webmod", "util", "build", "dom", "gfx", "fwt",
                         "inet", "concurrent", "compiler", "wisp", "slanWeb", "slanUtil", "compilerJs"]
-    dist.mainMethod = "slanSample::Main.init"
+    dist.mainMethod = "slanDemo::Main.init"
     dist.run
   }
 }

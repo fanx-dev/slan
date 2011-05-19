@@ -14,7 +14,7 @@ class Build : build::BuildPod
 {
   new make()
   {
-    podName = "slanSample"
+    podName = "slanDemo"
     summary = "it's demo for slanweb"
     srcDirs = [`fan/`, `fan/model/`, `fan/action/`, `fan/jsfan/`, `fan/boot/`,
        `fan/util/`, `test/`]
