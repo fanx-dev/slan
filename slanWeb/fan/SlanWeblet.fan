@@ -168,7 +168,7 @@ mixin SlanWeblet
 const class ReqStash : SlanWeblet
 {
   ** call req.stash[name]
-  override Obj? trap(Str name, Obj?[]? args)
+  override Obj? trap(Str name, Obj?[]? args := null)
   {
     if (args == null || args.size == 0)
     {

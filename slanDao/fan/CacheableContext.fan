@@ -208,7 +208,7 @@ const class CacheableContext : Context
     return ids
   }
 
-  override Obj[] getWhereIdList(Type type, Str condition, Int offset := 0, Int limit := 50)
+  override Obj[] getWhereIdList(Type type, Str condition, Int offset, Int limit)
   {
     if (!usingQueryCache) return super.getWhereIdList(type, condition, offset, limit)
 
