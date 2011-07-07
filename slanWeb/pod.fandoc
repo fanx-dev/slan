@@ -10,7 +10,7 @@ Overview [#overview]
 ********************
 
 
-Run Mode[#runMode]
+Run Mode [#runMode]
 =============
 
 There are two way to run service. scriptMode/podMode(debug mode/product mode)
@@ -63,7 +63,7 @@ Render [#render]
 Call the 'SlanWeblet#render' to render the template. Default template by the action name.
 If res is not commited and has no null retruning value, the result will be serialized and render as plan text.
 
-Controller [controller]
+Controller [#controller]
 =============
 Subclass your controller from 'SlanWeblet' will be convenience.
 

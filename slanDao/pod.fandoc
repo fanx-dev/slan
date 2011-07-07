@@ -12,26 +12,26 @@ Overview [#overview]
 Mapping [#mapping]
 ================
 
-    @Persistent
-    @Serializable
-    internal class Student : Record
-    {
-      @Id{ auto = true }
-      Int? sid
+  @Persistent
+  @Serializable
+  internal class Student : Record
+  {
+    @Id{ auto = true }
+    Int? sid
 
-      Str? name
-      Bool? married
-      Int? age
-      Float? weight
-      DateTime? dt
-      @Transient Bool? large
+    Str? name
+    Bool? married
+    Int? age
+    Float? weight
+    DateTime? dt
+    @Transient Bool? large
 
-      @Text
-      Str? description//text
+    @Text
+    Str? description//text
 
-      Weekday? loveWeek//enum
-      Uri? uri//obj
-    }
+    Weekday? loveWeek//enum
+    Uri? uri//obj
+  }
 
 rule:
 - must @Persistent and @Serializable
@@ -66,18 +66,18 @@ select:
   stu := Student{ sid = 1 }.one
 
 update:
-    Student stu := Student{ sid = 1 }.one
-    stu.married = true
-    stu.update
+  Student stu := Student{ sid = 1 }.one
+  stu.married = true
+  stu.update
 
 delete:
-    Student stu := Student{ sid = 1 }.select.first
-    stu.delete
+  Student stu := Student{ sid = 1 }.select.first
+  stu.delete
 
 transaction:
-    c.trans
-    {
-        Student{ sid = 1 }.one->delete
-        verifyFalse(Student{ sid = 1 }.exist)
-        throw Err("test transaction")//it will aotu rollback
-    }
+  c.trans
+  {
+      Student{ sid = 1 }.one->delete
+      verifyFalse(Student{ sid = 1 }.exist)
+      throw Err("test transaction")//it will aotu rollback
+  }
