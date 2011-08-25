@@ -17,7 +17,7 @@ const class PodJsMod : WebMod
   override Void onService()
   {
     //this is only valid for javascript file
-    if(req.modRel.ext != "js")
+    if(req.modRel.ext == "apidoc" || req.modRel.ext == "def")
     {
       res.sendErr(403)
       return
