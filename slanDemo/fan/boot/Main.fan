@@ -6,35 +6,28 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using slanWeb::CommandLine
+using util
 using wisp
 
 **
 ** Main
 **
-class Main : CommandLine
+class Main : AbstractMain
 {
   override Int run()
   {
-    init
-    //init service
-    wisp := WispService
-    {
-      it.port = Main#.pod.config("port", "8081").toInt
-      it.root = RootMod()
-    }
-
-    //run service
-    asyRunService([wisp])
-
-    //read command line input
-    processInput()
-
-    return -1
+    runServices(
+    [
+      WispService
+      {
+        it.port = Main#.pod.config("port", "8081").toInt
+        it.root = RootMod()
+      }
+    ])
   }
 
   **
-  ** for jsDist to init classPath
+  ** dummay method for jsDist to init classPath
   **
   static Void init() {}
 }

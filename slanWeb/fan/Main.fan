@@ -14,7 +14,7 @@ using concurrent
 **
 ** comment line tool to run web app
 **
-class Main : CommandLine
+class Main : AbstractMain
 {
 
   @Arg { help = "your app path" }
@@ -25,19 +25,14 @@ class Main : CommandLine
 
   override Int run()
   {
-    //init service
-    wisp := WispService
-    {
-      it.port = this.port
-      it.root = RootModWrapper(appHome)
-    }
-
-    //run service
-    asyRunService([wisp])
-
-    //read command line input
-    processInput()
-
-    return -1
+    //the runService will auto stop all services on shutodwn.
+    runServices(
+    [
+      WispService
+      {
+        it.port = this.port
+        it.root = RootModWrapper(appHome)
+      }
+    ])
   }
 }
