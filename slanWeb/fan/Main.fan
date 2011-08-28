@@ -10,6 +10,7 @@ using util
 using wisp
 using web
 using concurrent
+using draft
 
 **
 ** comment line tool to run web app
@@ -25,14 +26,16 @@ class Main : AbstractMain
 
   override Int run()
   {
-    //the runService will auto stop all services on shutodwn.
-    runServices(
-    [
-      WispService
-      {
-        it.port = this.port
-        it.root = RootModWrapper(appHome)
-      }
-    ])
+    SlanApp slanApp := SlanApp.makeDebug(appHome)
+    Actor.locals["slanWeb.slanApp"] = slanApp
+    type := Pod.find(slanApp.podName).type("RootMod")
+
+    // start restarter actor
+    pool := ActorPool()
+    restarter := DevRestarter(pool, type, port+1)
+    WebMod mod := DevMod(restarter)
+
+    // start proxy server
+    return runServices([WispService { it.port=this.port; it.root=mod }])
   }
 }

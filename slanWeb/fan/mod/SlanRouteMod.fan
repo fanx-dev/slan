@@ -8,6 +8,7 @@
 
 using webmod
 using web
+using concurrent
 
 **
 ** Route for all Mod
@@ -20,20 +21,18 @@ const class SlanRouteMod : WebMod
   private const SlanApp slanApp
 
   ** Map of URI path names to sub-WebMods.
-  const Str:WebMod routes := Str:WebMod[:]
+  const Str:WebMod routes
 
-  new make(SlanApp slanApp, |[Str:WebMod]|? f := null)
+  new make()
   {
-    this.slanApp = slanApp
-    Str:WebMod map :=
+    this.slanApp = Actor.locals["slanWeb.slanApp"]
+    routes =
     [
       actions : ActionMod(slanApp, `fan/$actions/`),
       "pod" : PodJsMod(),
       "jsfan" : JsfanMod(slanApp, `fan/jsfan/`),
       publics : StaticFileMod(slanApp, `$publics/`),
     ]
-    f?.call(map)
-    routes = map
   }
 
   override Void onService()

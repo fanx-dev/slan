@@ -40,9 +40,6 @@ const class ActionMod : WebMod
   {
     checkReferer
 
-    //load model change
-    slanApp.modelKeeper.loadChange
-
     //locate action
     action := ActionLocation(slanApp, dir)
     path := pathArray(req.modRel)

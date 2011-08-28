@@ -113,15 +113,6 @@ const class SlanApp
     Pod.find(name)
   }
 
-  **
-  ** only for debug mode, called by modelKeeper
-  **
-  internal Void setPodName(Str name)
-  {
-    if (isProductMode) throw Err("producteMode do not change podName")
-    podNameRef.getAndSet(name)
-  }
-
 //////////////////////////////////////////////////////////////////////////
 // Application tools
 //////////////////////////////////////////////////////////////////////////
@@ -142,9 +133,4 @@ const class SlanApp
   ** html template to fantome class compiler
   **
   const TemplateCompiler templateCompiler := TemplateCompiler(this)
-
-  **
-  ** detect model change and rebuild pod
-  **
-  internal const ModelKeeper modelKeeper := ModelKeeper(this)
 }
