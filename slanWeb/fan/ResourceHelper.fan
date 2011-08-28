@@ -17,7 +17,7 @@ const class ResourceHelper
   new make(SlanApp slanApp) { this.slanApp = slanApp }
 
   **
-  ** switch podFile or file
+  ** res path. switch podFile or file
   **
   Uri getUri(Uri path)
   {

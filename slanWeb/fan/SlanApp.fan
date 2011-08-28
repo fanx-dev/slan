@@ -15,14 +15,9 @@ using concurrent
 const class SlanApp
 {
   **
-  ** store podName
+  ** podName
   **
-  private const AtomicRef podNameRef := AtomicRef()
-
-  **
-  ** podName on productMode
-  **
-  private const Str? productPodName
+  const Str? podName
 
   **
   ** parent folder
@@ -41,6 +36,10 @@ const class SlanApp
 
     isProductMode = false
     this.appHome = appHome
+
+    type := Env.cur.compileScript(`${appHome}build.fan`.toFile)
+    BuildPod build := type.make
+    podName = build.podName
   }
 
   ** new Product Mode
@@ -49,51 +48,12 @@ const class SlanApp
     checkPodName(podName)
 
     isProductMode = true
-    productPodName = podName
+    this.podName = podName
   }
 
-  **
-  ** get current podName
-  **
-  Str podName()
-  {
-    if (isProductMode) return productPodName
-
-    if (podNameRef.val == null)
-    {
-      //on service started
-      podName := directlyRunBuildScript
-      podNameRef.getAndSet(podName)
-    }
-    return podNameRef.val
-  }
-
-  **
-  ** run build script directly
-  **
-  private Str directlyRunBuildScript()
-  {
-    type := Env.cur.compileScript(`${appHome}build.fan`.toFile)
-    BuildPod build := type.make
-    build.compile
-    return build.podName
-  }
-
-  **
-  ** js using need this
-  **
-  Str realPodName()
-  {
-    if (isProductMode) return productPodName
-    name := podName
-    i := name.index("_")
-    if (i == null) return name
-    return name[0..<i]
-  }
-
+  ** just pod names
   Str[] depends()
   {
-    podName := realPodName
     Str[] depends := [,]
     Pod.find(podName).depends.each
     {

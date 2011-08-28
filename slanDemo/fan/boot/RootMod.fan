@@ -19,7 +19,8 @@ const class RootMod : PipelineMod
 {
   new make() : super(|PipelineMod pp|
   {
-    Actor.locals["slanWeb.slanApp"] = SlanApp.makeProduct(Main#.pod.name)
+    Actor.locals["slanWeb.slanApp"] = SlanApp.makeProduct(this.typeof.pod.name)
+
     pp.steps =
     [
       SlanRouteMod()

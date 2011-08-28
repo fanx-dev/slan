@@ -9,5 +9,5 @@
 ** for test
 class HotSwapTest
 {
-  static const Str s := "hello world - 23"
+  static const Str s := "hello world - 24"
 }

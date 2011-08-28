@@ -28,14 +28,14 @@ const class JsCompiler
   {
     script := getJsScript(file)
 
-    includeAllJs(out, slanApp.depends, slanApp.realPodName)
+    includeAllJs(out, slanApp.depends, slanApp.podName)
     out.script.w(script.js).scriptEnd
     WebUtil.jsMain(out, script.main, env)
   }
 
   Void renderByType(WebOutStream out, Str qname, [Str:Str]? env := null)
   {
-    includeAllJs(out, slanApp.depends, slanApp.realPodName)
+    includeAllJs(out, slanApp.depends, slanApp.podName)
     WebUtil.jsMain(out, qname, env)
   }
 

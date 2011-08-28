@@ -10,7 +10,7 @@ using util
 using wisp
 
 **
-** Main
+** run services. This is optional, you may like `wisp::Main`
 **
 class Main : AbstractMain
 {

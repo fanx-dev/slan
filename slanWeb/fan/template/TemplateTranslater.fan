@@ -110,7 +110,7 @@ internal const class TemplateTranslater
 
   private Str getHtmlStr(Str line)
   {
-    code := Tokenizer.convert(line, slanApp.realPodName)
+    code := Tokenizer.convert(line, slanApp.podName)
     return gap + Str<|out.writeChars("""|> + code + Str<|\n""")|>
   }
 }
