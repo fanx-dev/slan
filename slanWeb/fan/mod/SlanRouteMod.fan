@@ -23,9 +23,9 @@ const class SlanRouteMod : WebMod
   ** Map of URI path names to sub-WebMods.
   const Str:WebMod routes
 
-  new make()
+  new make(SlanApp slanApp)
   {
-    this.slanApp = Actor.locals["slanWeb.slanApp"]
+    this.slanApp = slanApp
     routes =
     [
       actions : ActionMod(slanApp, `fan/$actions/`),

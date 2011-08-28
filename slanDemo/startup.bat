@@ -1,1 +1,1 @@
-fan slanWeb /D:/code/Hg/slan2/slanDemo/
+fan draft slanDemo::RootMod
