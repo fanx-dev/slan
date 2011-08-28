@@ -29,6 +29,11 @@ const class SlanApp
   **
   const Bool isProductMode
 
+  **
+  ** depends javascript pod names
+  **
+  const Str[] jsDepends
+
   ** new Debug Mode
   new makeDebug(Uri appHome)
   {
@@ -40,6 +45,10 @@ const class SlanApp
     type := Env.cur.compileScript(`${appHome}build.fan`.toFile)
     BuildPod build := type.make
     podName = build.podName
+
+    Str[] depends := [,]
+    addJsDepends(depends, podName)
+    jsDepends = depends
   }
 
   ** new Product Mode
@@ -49,17 +58,25 @@ const class SlanApp
 
     isProductMode = true
     this.podName = podName
+
+    Str[] depends := [,]
+    addJsDepends(depends, podName)
+    jsDepends = depends
   }
 
-  ** just pod names
-  Str[] depends()
+  **
+  ** depends javascript pod names
+  **
+  private Void addJsDepends(Str[] depends, Str podName)
   {
-    Str[] depends := [,]
     Pod.find(podName).depends.each
     {
-      depends.add(it.name)
+      pod := Pod.find(it.name)
+      if (pod.file(`/${it.name}.js`, false) != null)
+        depends.add(it.name)
+
+      addJsDepends(depends, it.name)
     }
-    return depends
   }
 
   private Void checkAppHome(Uri appPath)
