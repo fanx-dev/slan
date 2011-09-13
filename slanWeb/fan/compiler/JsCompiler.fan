@@ -16,26 +16,29 @@ using compiler
 **
 const class JsCompiler
 {
-  protected const SlanApp slanApp
   private const ScriptCache cache := ScriptCache()
 
-  new make(SlanApp slanApp)
+  private const Str[] jsDepends
+  private const Str? podName
+
+  new make(Str[] jsDepends, Str? podName := null)
   {
-    this.slanApp = slanApp
+    this.jsDepends = jsDepends
+    this.podName = podName
   }
 
   Void render(WebOutStream out, File file, [Str:Str]? env := null)
   {
     script := getJsScript(file)
 
-    includeAllJs(out, slanApp.jsDepends, slanApp.podName)
+    includeAllJs(out, jsDepends, podName)
     out.script.w(script.js).scriptEnd
     WebUtil.jsMain(out, script.main, env)
   }
 
   Void renderByType(WebOutStream out, Str qname, [Str:Str]? env := null)
   {
-    includeAllJs(out, slanApp.jsDepends, slanApp.podName)
+    includeAllJs(out, jsDepends, podName)
     WebUtil.jsMain(out, qname, env)
   }
 
@@ -48,7 +51,7 @@ const class JsCompiler
     out.includeJs(`/pod/$podName/${podName}.js`)
   }
 
-  private Void includeAllJs(WebOutStream out, Str[] usings, Str curPod)
+  private Void includeAllJs(WebOutStream out, Str[] usings, Str? curPod)
   {
     //add system class path
     out.includeJs(`/pod/sys/sys.js`)
@@ -64,7 +67,7 @@ const class JsCompiler
     {
       includeJs(out, it)
     }
-    includeJs(out, curPod)
+    if (curPod != null) includeJs(out, curPod)
   }
 
 //////////////////////////////////////////////////////////////////////////

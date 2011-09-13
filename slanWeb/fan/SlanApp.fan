@@ -49,6 +49,10 @@ const class SlanApp
     Str[] depends := [,]
     addJsDepends(depends, podName)
     jsDepends = depends
+
+    resourceHelper = ResourceHelper(this)
+    jsCompiler = JsCompiler(this.jsDepends, this.podName)
+    templateCompiler = TemplateCompiler(this.podName)
   }
 
   ** new Product Mode
@@ -62,6 +66,10 @@ const class SlanApp
     Str[] depends := [,]
     addJsDepends(depends, podName)
     jsDepends = depends
+
+    resourceHelper = ResourceHelper(this)
+    jsCompiler = JsCompiler(this.jsDepends, this.podName)
+    templateCompiler = TemplateCompiler(this.podName)
   }
 
   **
@@ -94,20 +102,15 @@ const class SlanApp
 // Application tools
 //////////////////////////////////////////////////////////////////////////
 
-  const ResourceHelper resourceHelper := ResourceHelper(this)
-
-  **
-  ** fantom script compiler
-  **
-  const ScriptCompiler scriptCompiler := ScriptCompiler(this)//internal cache
+  const ResourceHelper resourceHelper
 
   **
   ** fantom to javascript compiler
   **
-  const JsCompiler jsCompiler := JsCompiler(this)
+  const JsCompiler jsCompiler
 
   **
   ** html template to fantome class compiler
   **
-  const TemplateCompiler templateCompiler := TemplateCompiler(this)
+  const TemplateCompiler templateCompiler
 }

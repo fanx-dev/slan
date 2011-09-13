@@ -14,12 +14,12 @@ using compiler
 **
 const class ScriptCompiler
 {
-  protected const SlanApp slanApp
+  private const Str? podName
   private const ScriptCache cache := ScriptCache()
 
-  new make(SlanApp slanApp)
+  new make(Str? podName := null)
   {
-    this.slanApp = slanApp
+    this.podName = podName
   }
 
   ** from cache or compile
@@ -53,7 +53,7 @@ const class ScriptCompiler
   protected virtual Str codeTranslate(File file)
   {
     source := file.readAllStr
-    podName := slanApp.podName
+    if (podName == null) return source
     return "using $podName
             $source"
   }

@@ -14,7 +14,13 @@ using build
 const class ResourceHelper
 {
   private const SlanApp slanApp
-  new make(SlanApp slanApp) { this.slanApp = slanApp }
+  private const ScriptCompiler scriptCompiler
+
+  new make(SlanApp slanApp)
+  {
+    this.slanApp = slanApp
+    scriptCompiler = ScriptCompiler(slanApp.podName)
+  }
 
   **
   ** res path. switch podFile or file
@@ -64,7 +70,7 @@ const class ResourceHelper
     {
       file := (typeRes as Uri).get(null, checked)
       if (file == null) return null
-      type := slanApp.scriptCompiler.getType(file)
+      type := scriptCompiler.getType(file)
 
       if (type.name != typeName)
         throw UnknownTypeErr("The file name not match the type name: $type.name != $file")

@@ -16,9 +16,9 @@ const class TemplateCompiler : ScriptCompiler
 {
   private const TemplateTranslater codeTrans
 
-  new make(SlanApp slanApp) : super(slanApp)
+  new make(Str? podName := null) : super(podName)
   {
-    codeTrans = TemplateTranslater(slanApp)
+    codeTrans = TemplateTranslater(podName)
   }
 
   Void render(File file, |->|? lay := null, WebOutStream? out := null)

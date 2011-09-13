@@ -19,19 +19,18 @@ internal const class TemplateTranslater
   private const Str codeGap := gap + Str.spaces(19)
   private const Log log := Pod.of(this).log
 
-  private const SlanApp slanApp
+  private const Str? podName
 
-  new make(SlanApp slanApp)
+  new make(Str? podName := null)
   {
-    this.slanApp = slanApp
+    this.podName = podName
   }
 
   Str translate(File file)
   {
     all := convertTemplate(file)
 
-    s := "using $slanApp.podName
-          using web
+    s := "using web
           using slanWeb
 
           const class HtmlTemplet : ${SlanWeblet#.name}
@@ -42,6 +41,11 @@ internal const class TemplateTranslater
               $all
             }
           }"
+
+    if (podName != null)
+    {
+      s = "using $podName\n" + s
+    }
 
     log.debug(s)
     return s
@@ -110,7 +114,7 @@ internal const class TemplateTranslater
 
   private Str getHtmlStr(Str line)
   {
-    code := Tokenizer.convert(line, slanApp.podName)
+    code := Tokenizer.convert(line, podName)
     return gap + Str<|out.writeChars("""|> + code + Str<|\n""")|>
   }
 }
