@@ -53,16 +53,6 @@ const class JsCompiler
 
   private Void includeAllJs(WebOutStream out, Str[] usings, Str? curPod)
   {
-    //add system class path
-    out.includeJs(`/pod/sys/sys.js`)
-    out.includeJs(`/pod/concurrent/concurrent.js`)
-    out.includeJs(`/pod/web/web.js`)
-    out.includeJs(`/pod/gfx/gfx.js`)
-    out.includeJs(`/pod/dom/dom.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-    out.includeJs(`/pod/fwt/fwt.js`)
-
-    //add user's class path
     usings.each
     {
       includeJs(out, it)

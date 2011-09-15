@@ -47,7 +47,7 @@ const class SlanApp
     podName = build.podName
 
     Str[] depends := [,]
-    addJsDepends(depends, podName)
+    addJsDepends(depends, Pod.find(podName))
     jsDepends = depends
 
     resourceHelper = ResourceHelper(this)
@@ -64,7 +64,7 @@ const class SlanApp
     this.podName = podName
 
     Str[] depends := [,]
-    addJsDepends(depends, podName)
+    addJsDepends(depends, Pod.find(podName))
     jsDepends = depends
 
     resourceHelper = ResourceHelper(this)
@@ -75,15 +75,17 @@ const class SlanApp
   **
   ** depends javascript pod names
   **
-  private Void addJsDepends(Str[] depends, Str podName)
+  private Void addJsDepends(Str[] depends, Pod pod)
   {
-    Pod.find(podName).depends.each
+    pod.depends.each
     {
-      pod := Pod.find(it.name)
-      if (pod.file(`/${it.name}.js`, false) != null)
-        depends.add(it.name)
+      p := Pod.find(it.name)
+      addJsDepends(depends, p)
 
-      addJsDepends(depends, it.name)
+      if (p.file(`/${it.name}.js`, false) != null)
+      {
+        if (!depends.contains(it.name)) depends.add(it.name)
+      }
     }
   }
 
