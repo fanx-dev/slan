@@ -70,6 +70,7 @@ public class SqlUtil
         return Sys.StrType;
 
       case Types.BIT:
+      case Types.BOOLEAN:
         return Sys.BoolType;
 
       case Types.TINYINT:
@@ -124,6 +125,7 @@ public class SqlUtil
         return rs.getString(col);
 
       case Types.BIT:
+      case Types.BOOLEAN:
         boolean b = rs.getBoolean(col);
         if (rs.wasNull()) return null;
         return Boolean.valueOf(b);
@@ -173,6 +175,7 @@ public class SqlUtil
         return new ToFanStr();
 
       case Types.BIT:
+      case Types.BOOLEAN:
         return new ToFanBool();
 
       case Types.TINYINT:
