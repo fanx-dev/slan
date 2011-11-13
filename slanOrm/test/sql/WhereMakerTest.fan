@@ -9,7 +9,7 @@
 internal class WhereMakerTest : Test
 {
   WhereMaker maker := WhereMaker()
-  
+
   Void testGetSql()
   {
     Table table := StudentTable.getTable
@@ -23,7 +23,7 @@ internal class WhereMakerTest : Test
     sql := maker.getSql(table,stu)
     echo(sql)
   }
-  
+
   Void testGetParam()
   {
     Table table := StudentTable.getTable
@@ -37,8 +37,7 @@ internal class WhereMakerTest : Test
     param := maker.getParam(table, stu)
     echo(param)
     verify(param.size == 4)
-    verify(param["name"] == "yjd")
-    verify(param["age"] == 23)
-    verifyEq(param["sid"], null)
+    verify(param[0] == "yjd")
+    verify(param[2] == 23)
   }
 }

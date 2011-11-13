@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
 
 **
 ** as a database column.
@@ -161,7 +161,7 @@ const class Column
   ** check the column is match the database
   Bool checkMatchDb(Col c)
   {
-    if (c.name != name) return false
+    if (!c.name.equalsIgnoreCase(name)) return false
     if (isPrimitive)
     {
       return c.type.qname == field.type.qname

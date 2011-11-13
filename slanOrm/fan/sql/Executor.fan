@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
 
 **
 ** important class for execute sql.
@@ -18,90 +18,115 @@ internal const class Executor
   const static UpdateMaker updateMaker := UpdateMaker()
   const static WhereMaker whereMaker := WhereMaker()
   const static IdWhereMaker idWhereMaker := IdWhereMaker()
+  const static SelectMaker selectMaker := SelectMaker()
+
   const Log log := Pod.of(this).log
 
-  Void insert(Table table, SqlServ db, Obj obj)
+  Void insert(Table table, SqlConn db, Obj obj)
   {
     sql := inserMaker.getSql(table)
-    param := inserMaker.getParam(table,obj)
+    params := inserMaker.getParam(table, obj)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(params.toStr)
     }
-    r := db.sql(sql).prepare.execute(param)
-    if (table.autoGenerateId == true)
+    stmt := db.prepare(sql)
+    params.each |p, i|{ stmt.set(i, p) }
+    stmt.use
     {
-      table.id.field.set(obj,r->get(0))
+      it.execute
+      if (table.autoGenerateId == true)
+      {
+        set := it.getGeneratedKeys
+        if (set.next)
+        {
+          table.id.field.set(obj, set.get(0))
+        }
+      }
     }
   }
 
-  Void update(Table table, SqlServ db, Obj obj)
+  Void update(Table table, SqlConn db, Obj obj)
   {
-    sql := updateMaker.getSql(table,obj)
-    param := updateMaker.getParam(table,obj)
+    sql := updateMaker.getSql(table, obj)
+    params := updateMaker.getParam(table, obj)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(params.toStr)
     }
-    db.sql(sql).prepare.execute(param)
+    stmt := db.prepare(sql)
+    params.each |p, i|{ stmt.set(i, p) }
+    stmt.use { it.execute }
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //do where
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// select
+//////////////////////////////////////////////////////////////////////////
 
   ** select data list
-  Obj[] select(Table table, SqlServ db, Obj obj, Str orderby)
+  Obj[] select(Table table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
   {
-    sql := "select * " + whereMaker.getSql(table,obj)
+    sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
-    param := whereMaker.getParam(table,obj)
+    params := whereMaker.getParam(table,obj)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(params.toStr)
     }
     Obj[] list := [,]
-    db.sql(sql).prepare.queryEach(param) |Row r|
+    stmt := db.prepare(sql)
+    stmt.limit = offset + limit
+    params.each |p, i|{ stmt.set(i, p) }
+    stmt.use |s|
     {
-      list.add(table.getInstance(r))
-    }
-    return list
-  }
-
-  ** select id list
-  Obj[] selectId(Table table, SqlServ db, Obj obj, Str orderby, Int start, Int num)
-  {
-    sql := "select $table.id.name " + whereMaker.getSql(table,obj)
-    if (orderby != "") sql += " " + orderby
-    param := whereMaker.getParam(table,obj)
-    if (log.isDebug)
-    {
-      log.debug(sql)
-      log.debug(param.toStr)
-    }
-    Obj[] list := [,]
-    i := 0
-    s := db.sql(sql)
-    s.limit = start + num
-    s.prepare.queryEach(param) |Row r|
-    {
-      if ( i< start)
+      s.query |set|
       {
-        i++
-        return
+        set.moveTo(offset)
+        while(set.next)
+        {
+          list.add(table.getInstance(set))
+        }
       }
-      list.add(r[r.cols[0]])
     }
     return list
   }
 
-  ** select by condition and get id list
-  Obj[] selectWhere(Table table, SqlServ db, Str condition, Int start, Int num)
+  ** select data list
+  Obj? selectOne(Table table, SqlConn db, Obj obj, Str orderby, Int offset)
   {
-    sql := "select $table.id.name from $table.name"
+    sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
+    if (orderby != "") sql += " " + orderby
+    params := whereMaker.getParam(table,obj)
+    if (log.isDebug)
+    {
+      log.debug(sql)
+      log.debug(params.toStr)
+    }
+    Obj? one := null
+    stmt := db.prepare(sql)
+    stmt.limit = offset + 1
+    params.each |p, i|{ stmt.set(i, p) }
+    stmt.use |s|
+    {
+      s.query |set|
+      {
+        set.moveTo(offset)
+        if (set.next)
+        {
+          one = (table.getInstance(set))
+        }
+      }
+    }
+    return one
+  }
+
+  ** select by condition
+  Obj[] selectWhere(Table table, SqlConn db, Str condition, Int offset, Int limit)
+  {
+    sql := selectMaker.getSql(table) + " from $table.name"
     if (condition != "") sql += " " + condition
 
     if (log.isDebug)
@@ -110,140 +135,135 @@ internal const class Executor
     }
     Obj[] list := [,]
     i := 0
-    s := db.sql(sql)
-    s.limit=start + num
-    s.queryEach(null) |Row r|
+    stmt := db.prepare(sql)
+    stmt.limit = offset + limit
+    stmt.use |s|
     {
-      if (i < start)
+      s.query |set|
       {
-        i++
-        return
+        set.moveTo(offset)
+        while(set.next)
+        {
+          list.add(table.getInstance(set))
+        }
       }
-      list.add(r[r.cols[0]])
     }
     return list
   }
 
-  Void delete(Table table, SqlServ db, Obj obj)
+  Void delete(Table table, SqlConn db, Obj obj)
   {
     sql := "delete " + whereMaker.getSql(table, obj)
-    param := whereMaker.getParam(table, obj)
+    paramss := whereMaker.getParam(table, obj)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(paramss.toStr)
     }
-    db.sql(sql).prepare.execute(param)
+    stmt := db.prepare(sql)
+    paramss.each |p, i|{ stmt.set(i, p) }
+    stmt.use { it.execute }
   }
 
-  Int count(Table table, SqlServ db, Obj obj)
+  Int count(Table table, SqlConn db, Obj obj)
   {
-    rows := queryWhere(table, db, obj, "select count(*)","")
-    r := rows[0]
-    n := r[r.cols[0]]
-    return n
-  }
-
-  ** query by example condition
-  Row[] queryWhere(Table table, SqlServ db, Obj obj, Str before, Str after)
-  {
-    sql := before + " " + whereMaker.getSql(table, obj);
-    if (after != "") sql += " " + after
-    param := whereMaker.getParam(table, obj)
+    sql := "select count(*)" + whereMaker.getSql(table, obj);
+    params := whereMaker.getParam(table, obj)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(params.toStr)
     }
-    return db.sql(sql).prepare.query(param)
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  //by ID
-  ////////////////////////////////////////////////////////////////////////
-
-  Void removeById(Table table, SqlServ db, Obj id)
-  {
-    sql := "delete " + idWhereMaker.getSql(table)
-    param := idWhereMaker.getParam(table, id)
-    if (log.isDebug)
+    stmt := db.prepare(sql)
+    params.each |p, i|{ stmt.set(i, p) }
+    Int i := 0
+    stmt.use |s|
     {
-      log.debug(sql)
-      log.debug(param.toStr)
+      s.query |set|
+      {
+        set.next
+        i = set.get(0)
+      }
     }
-    db.sql(sql).prepare.execute(param)
+    return i
   }
 
-  Obj? findById(Table table, SqlServ db, Obj id)
+//////////////////////////////////////////////////////////////////////////
+// by ID
+//////////////////////////////////////////////////////////////////////////
+
+  Void removeById(Table table, SqlConn db, Obj id)
   {
-    rows := queryById(table, db, id, "select *")
-    if (rows.size == 0) return null
-    return table.getInstance(rows.first)
+    stmt := byIdStmt(table, db, id, "delete ")
+    stmt.use { it.execute }
   }
 
-  Bool existById(Table table, SqlServ db, Obj id)
+  Obj? findById(Table table, SqlConn db, Obj id)
   {
-    rows := queryById(table, db, id, "select count(*)")
-    r := rows[0]
-    n := r[r.cols[0]]
-    return n > 0
+    stmt := byIdStmt(table, db, id, "select *")
+
+    Obj? obj := null
+    stmt.use |s|
+    {
+      s.query |set|
+      {
+        set.next
+        obj = table.getInstance(set)
+      }
+    }
+    return obj
   }
 
-  private Row[] queryById(Table table, SqlServ db, Obj id, Str before)
+  Bool existById(Table table, SqlConn db, Obj id)
+  {
+    stmt := byIdStmt(table, db, id, "select count(*)")
+
+    Bool exist := false
+    stmt.use |s|
+    {
+      s.query |DataSet set|
+      {
+        exist = set.next
+      }
+    }
+    return exist
+  }
+
+  private Statement byIdStmt(Table table, SqlConn db, Obj id, Str before)
   {
     sql := before + " " + idWhereMaker.getSql(table)
-    param := idWhereMaker.getParam(table, id)
+    params := idWhereMaker.getParam(table, id)
     if (log.isDebug)
     {
       log.debug(sql)
-      log.debug(param.toStr)
+      log.debug(params.toStr)
     }
-    return db.sql(sql).prepare.query(param)
+    stmt := db.prepare(sql)
+    params.each |p, i|{ stmt.set(i, p) }
+    return stmt
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //table op
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Table op
+//////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Table table, SqlServ db)
+  Void createTable(Table table, SqlConn db)
   {
     sql := tableMaker.createTable(table)
     if (log.isDebug)
     {
       log.debug(sql)
     }
-    db.sql(sql).execute()
+    db.execute(sql)
   }
 
-  Void dropTable(Table table, SqlServ db)
+  Void dropTable(Table table, SqlConn db)
   {
     sql := tableMaker.dropTable(table)
     if (log.isDebug)
     {
       log.debug(sql)
     }
-    db.sql(sql).execute()
-  }
-
-  ** drop all table in database
-  Void clearDatabase(SqlServ db)
-  {
-    Str[] tables := db.tables.dup
-
-    Int dropped := 0
-    tables.each |Str tableName|
-    {
-      try
-      {
-        sql := "drop table $tableName"
-        log.debug(sql)
-        db.sql(sql).execute
-        dropped++
-      }
-      catch (Err e)
-      {
-        log.warn("drop table $tableName failed")
-      }
-    }
+    db.execute(sql)
   }
 }

@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
 using concurrent
 
 **
@@ -14,19 +14,18 @@ using concurrent
 **
 const class Context
 {
-  ** current sqlService
-  const SqlServ db
+  ** thread connection id
+  static const Str id := Context#.qname + ".conn"
 
   ** mapping table model
   const Type:Table tables
 
   ** power of sql
   private const Executor executor := Executor()
-  private static const Log log := Context#.typeof.pod.log
 
-  new make(SqlServ db, Type:Table tables)
+  ** constructor
+  new make(Type:Table tables)
   {
-    this.db = db
     this.tables = tables
   }
 
@@ -36,9 +35,20 @@ const class Context
     return tables[t]
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //tools
-  ////////////////////////////////////////////////////////////////////////
+  **
+  ** Get the connection to this database for the current thread.
+  **
+  SqlConn conn()
+  {
+    SqlConn? c := Actor.locals[id]
+    if (c == null) throw SqlErr("Database is not open.")
+    if (c.isClosed) throw SqlErr("Database has been closed.")
+    return c
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Tools
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** find the persistence object,@Ignore facet will ignore the type
@@ -68,7 +78,6 @@ const class Context
   {
     try
     {
-      db.open
       f(this)
     }
     catch (Err e)
@@ -77,108 +86,78 @@ const class Context
     }
     finally
     {
-      db.close
+      conn.close
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //execute write
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Execute write
+//////////////////////////////////////////////////////////////////////////
 
   ** insert this obj to database
   virtual Void insert(Obj obj)
   {
     table := getTable(obj.typeof)
-    this.executor.insert(table, this.db, obj)
+    this.executor.insert(table, this.conn, obj)
   }
 
   ** update by id
   virtual Void update(Obj obj)
   {
     table := getTable(obj.typeof)
-    this.executor.update(table, this.db, obj)
+    this.executor.update(table, this.conn, obj)
   }
 
   ** delete by example
   virtual Void deleteByExample(Obj obj)
   {
     table := getTable(obj.typeof)
-    this.executor.delete(table, this.db, obj)
+    this.executor.delete(table, this.conn, obj)
   }
 
   ** delete by id
   virtual Void deleteById(Type type, Obj id)
   {
     table := getTable(type)
-    this.executor.removeById(table, this.db, id)
+    this.executor.removeById(table, this.conn, id)
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //select id
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// select
+//////////////////////////////////////////////////////////////////////////
 
   ** select by example
   Obj[] list(Obj obj, Str orderby := "", Int offset := 0, Int limit := 50)
   {
-    Obj[] ids := getIdList(obj, orderby, offset, limit)
-    return idToObj(obj.typeof, ids)
+    table := getTable(obj.typeof)
+    return executor.select(table, this.conn, obj, orderby, offset, limit)
   }
 
   ** select by example and get the first one
   Obj? one(Obj obj, Str orderby := "", Int offset := 0)
   {
-    Obj[] ids := getIdList(obj, orderby, offset, 1)
-
-    if (ids.size == 0) return null
-    return findById(obj.typeof, ids[0])
-  }
-
-  protected virtual Obj[] getIdList(Obj obj, Str orderby, Int offset, Int limit)
-  {
     table := getTable(obj.typeof)
-    return this.executor.selectId(table, this.db, obj, orderby, offset, limit)
+    return executor.selectOne(table, this.conn, obj, orderby, offset)
   }
 
-  ** convert id list to object list
-  private Obj[] idToObj(Type type, Obj[] ids)
-  {
-    Obj[] list := [,]
-    ids.each
-    {
-      instance := findById(type, it)
-      if (instance != null)
-      {
-        list.add(instance)
-      }
-    }
-    return list
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  //select where
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Select where
+//////////////////////////////////////////////////////////////////////////
 
   ** query by condition
   Obj[] select(Type type, Str condition, Int offset := 0, Int limit := 50)
   {
-    Obj[]? ids := getWhereIdList(type, condition, offset, limit)
-    return idToObj(type, ids)
-  }
-
-  ** query id list by condition
-  protected virtual Obj[] getWhereIdList(Type type, Str condition, Int offset, Int limit)
-  {
     table := getTable(type)
-    return this.executor.selectWhere(table, this.db, condition, offset, limit)
+    return this.executor.selectWhere(table, this.conn, condition, offset, limit)
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //by ID
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// By ID
+//////////////////////////////////////////////////////////////////////////
 
   virtual Obj? findById(Type type, Obj id){
     table := getTable(type)
-    return this.executor.findById(table, this.db, id)
+    return this.executor.findById(table, this.conn, id)
   }
 
   ** get object id value by mapping table
@@ -188,22 +167,22 @@ const class Context
     return table.id.field.get(obj)
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //extend method
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Extend method
+//////////////////////////////////////////////////////////////////////////
 
   ** count by example
   virtual Int count(Obj obj)
   {
     table := getTable(obj.typeof)
-    return this.executor.count(table, this.db, obj)
+    return this.executor.count(table, this.conn, obj)
   }
 
   ** exist by example,this operate noCache
   Bool exist(Obj obj)
   {
     table := getTable(obj.typeof)
-    n := this.executor.count(table, this.db, obj)
+    n := this.executor.count(table, this.conn, obj)
     return n > 0
   }
 
@@ -219,6 +198,7 @@ const class Context
       insert(obj)
     }
   }
+
   private Bool existById(Obj obj)
   {
     table := getTable(obj.typeof)
@@ -230,33 +210,33 @@ const class Context
     return false
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //table operate
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Table operate
+//////////////////////////////////////////////////////////////////////////
 
   Void createTable(Type type)
   {
     table := getTable(type)
-    this.executor.createTable(table, this.db)
+    this.executor.createTable(table, this.conn)
   }
 
   Void dropTable(Type type)
   {
     table := getTable(type)
-    this.executor.dropTable(table, this.db)
+    this.executor.dropTable(table, this.conn)
   }
 
   Bool tableExists(Type type)
   {
     table := getTable(type)
-    return this.db.tableExists(table.name)
+    return this.conn.meta.tableExists(table.name)
   }
 
   ** check the object table is fit to database table
   Bool checkTable(Table table)
   {
-    trow := this.db.tableRow(table.name)
-    return table.checkMatchDb(trow.cols)
+    trow := this.conn.meta.tableMeta(table.name)
+    return table.checkMatchDb(trow)
   }
 
   **
@@ -266,7 +246,7 @@ const class Context
   {
     this.tables.vals.each |Table t|
     {
-      if (this.db.tableExists(t.name))
+      if (this.conn.meta.tableExists(t.name))
       {
         if (!checkTable(t))
         {
@@ -275,52 +255,46 @@ const class Context
       }
       else
       {
-        this.executor.createTable(t, this.db)
+        this.executor.createTable(t, this.conn)
       }
     }
   }
 
-  **drop all table with in appliction
+  ** drop all table with in appliction
   Void dropAllTable()
   {
     this.tables.vals.each |Table t|
     {
-      if(this.db.tableExists(t.name))
+      if(this.conn.meta.tableExists(t.name))
       {
-        this.executor.dropTable(t, this.db)
+        this.executor.dropTable(t, this.conn)
       }
     }
   }
 
-  **drop all tables in the database
-  Void clearDatabase()
-  {
-    this.executor.clearDatabase(this.db)
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  //transaction
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Transaction
+//////////////////////////////////////////////////////////////////////////
 
   ** transaction , if error will auto roolback
   virtual Void trans(|This| f)
   {
-    oauto := this.db.autoCommit
+    oauto := this.conn.autoCommit
     try
     {
-      this.db.autoCommit = false
+      this.conn.autoCommit = false
 
       f(this)
-      this.db.commit
+      this.conn.commit
     }
     catch (Err e)
     {
-      this.db.rollback
+      this.conn.rollback
       throw e
     }
     finally
     {
-      this.db.autoCommit = oauto
+      this.conn.autoCommit = oauto
     }
   }
 }

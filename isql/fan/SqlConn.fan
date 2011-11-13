@@ -53,7 +53,7 @@ class SqlConn
   **
   ** Create a statement for this database.
   **
-  Statement statement(Str sql, Bool prepare) { Statement.create(this, sql, prepare) }
+  Statement prepare(Str sql) { Statement.create(this, sql, true) }
 
   **
   ** Convenience for statement(sql).use { it.execute }

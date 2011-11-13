@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
 
 **
 ** mapping model for database table.
@@ -76,8 +76,7 @@ const class Table
     obj := type.make
     columns.each |Column c, Int i|
     {
-      cl := r.cols[i]
-      value := r[cl]
+      value := r[i]
       c.setValue(obj, value)
     }
     return obj

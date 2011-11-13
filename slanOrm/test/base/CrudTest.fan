@@ -13,9 +13,7 @@ internal class CrudTest : NewTestBase
 {
   override Void setup()
   {
-    c.db.open
-    c.refreshDatabase
-    log.level = LogLevel.debug
+    init
   }
 
   Void test()

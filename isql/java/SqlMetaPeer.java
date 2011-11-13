@@ -88,7 +88,7 @@ public class SqlMetaPeer
       ResultSet tables =
           jmeta.getTables(null,          // catalog
                           null,          // schema pattern
-                          tableName,     // table name pattern
+                          tableName.toUpperCase(),     // table name pattern
                           null);         // types
 
       boolean exists = tables.next();
@@ -132,7 +132,7 @@ public class SqlMetaPeer
   {
     try
     {
-      ResultSet columns = jmeta.getColumns(null, null, tableName, null);
+      ResultSet columns = jmeta.getColumns(null, null, tableName.toUpperCase(), null);
 
       // map the meta-data to a dynamic type
       List cols = new List(SqlUtil.colType);

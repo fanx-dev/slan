@@ -67,6 +67,7 @@ public class SqlUtil
       case Types.VARCHAR:
       case Types.NVARCHAR:
       case Types.LONGVARCHAR:
+      case Types.CLOB:
         return Sys.StrType;
 
       case Types.BIT:
@@ -122,6 +123,7 @@ public class SqlUtil
       case Types.CHAR:
       case Types.VARCHAR:
       case Types.LONGVARCHAR:
+      case Types.CLOB:
         return rs.getString(col);
 
       case Types.BIT:
@@ -172,6 +174,7 @@ public class SqlUtil
       case Types.CHAR:
       case Types.VARCHAR:
       case Types.LONGVARCHAR:
+      case Types.CLOB:
         return new ToFanStr();
 
       case Types.BIT:

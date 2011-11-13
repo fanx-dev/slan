@@ -12,10 +12,10 @@ class Build : build::BuildPod
 {
   new make()
   {
-    podName = "slanDao"
+    podName = "slanOrm"
     summary = "slan ORM"
     srcDirs = [`test/`, `test/sql/`, `test/cache/`, `test/base/`,
       `fan/`, `fan/sql/`, `fan/model/`, `fan/dialect/`, `fan/cache/`, `fan/dataSource/`]
-    depends = ["sys 1.0","sql 1.0","concurrent 1.0"]
+    depends = ["sys 1.0","isql 1.0","concurrent 1.0"]
   }
 }

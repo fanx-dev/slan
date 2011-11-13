@@ -6,23 +6,20 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
+using concurrent
+using [java]java.lang::Class
 
 **
-**
+** Connection for test
 **
 internal mixin TestConnection
 {
-  const static CacheableContext c
+  static CacheableContext c() { factory.context }
+  static const ConnFactory factory
+
   static
   {
-    pod := Pod.find("sql")
-    db := SqlServ(
-      pod.config("test.uri"),
-      pod.config("test.username"),
-      pod.config("test.password"))
-
-    tables := CacheableContext.mappingTables([:], TestConnection#.pod)
-    c = CacheableContext(db, tables)
+    factory = ConnFactory(TestConnection#.pod)
   }
 }

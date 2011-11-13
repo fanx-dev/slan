@@ -6,7 +6,7 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using sql
+using isql
 using concurrent
 
 **
@@ -27,18 +27,18 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache()
 
-  new make(SqlServ db, Type:Table tables) : super(db, tables){}
+  new make(Type:Table tables) : super(tables) {}
 
   ////////////////////////////////////////////////////////////////////////
-  //tools
+  // Tools
   ////////////////////////////////////////////////////////////////////////
 
   **
   ** clearDatabase,tryCreateAllTable,clearCache
   **
-  Void refreshDatabase()
+  Void rebuildDatabase()
   {
-    clearDatabase
+    dropAllTable
     tryCreateAllTable
     clearCache
   }
@@ -51,8 +51,9 @@ const class CacheableContext : Context
   }
 
   ////////////////////////////////////////////////////////////////////////
-  //object cache method
+  // Object cache method
   ////////////////////////////////////////////////////////////////////////
+
   **
   ** Transaction will using a temporary cache.
   ** It is named 'tcache' in Actor.locals
@@ -84,14 +85,14 @@ const class CacheableContext : Context
   Void removeCache(Str key){ currentObjCache.remove(key) }
 
   ////////////////////////////////////////////////////////////////////////
-  //query cache
+  // Query cache
   ////////////////////////////////////////////////////////////////////////
   **
   ** current will using query cache,
   **
   private Bool usingQueryCache()
   {
-    return Actor.locals[tcache] == null//not in transcation
+    return Actor.locals[tcache] == null //not in transcation
   }
 
   private Obj? queryGet(Str key)
@@ -107,6 +108,7 @@ const class CacheableContext : Context
   {
     queryCache.set(key, obj, 1min)
   }
+
   **
   ** clear the query cache which key satrts with typename + ','
   **
@@ -124,7 +126,7 @@ const class CacheableContext : Context
   }
 
   ////////////////////////////////////////////////////////////////////////
-  //execute write
+  // Execute write
   ////////////////////////////////////////////////////////////////////////
 
   override Void insert(Obj obj)
@@ -169,7 +171,7 @@ const class CacheableContext : Context
   }
 
   ////////////////////////////////////////////////////////////////////////
-  //by ID
+  // By ID
   ////////////////////////////////////////////////////////////////////////
 
   override Obj? findById(Type type, Obj id)
@@ -187,41 +189,8 @@ const class CacheableContext : Context
   }
 
   ////////////////////////////////////////////////////////////////////////
-  //Query Cache
+  // Query Cache
   ////////////////////////////////////////////////////////////////////////
-
-  protected override Obj[] getIdList(Obj obj, Str orderby, Int offset, Int limit)
-  {
-    if (!usingQueryCache) return super.getIdList(obj, orderby, offset, limit)
-
-    table := getTable(obj.typeof)
-    sb := table.makeKey(obj)
-    key := "${obj.typeof.qname},selectId,$sb,$orderby,$offset,$limit"
-
-    if (queryCache.containsKey(key))
-    {
-      return queryGet(key)
-    }
-
-    ids := super.getIdList(obj, orderby, offset, limit)
-    querySet(key, ids)
-    return ids
-  }
-
-  override Obj[] getWhereIdList(Type type, Str condition, Int offset, Int limit)
-  {
-    if (!usingQueryCache) return super.getWhereIdList(type, condition, offset, limit)
-
-    key := "$type.qname,selectWhere,$condition,$offset,$limit"
-    if (queryCache.containsKey(key))
-    {
-      return queryGet(key)
-    }
-
-    ids := super.getWhereIdList(type, condition, offset, limit)
-    querySet(key, ids)
-    return ids
-  }
 
   ** count by example
   override Int count(Obj obj)
@@ -250,11 +219,11 @@ const class CacheableContext : Context
   ** transaction
   override Void trans(|This| f)
   {
-      oauto := this.db.autoCommit
+      oauto := this.conn.autoCommit
       isNull := Actor.locals[tcache] == null
       try
       {
-        this.db.autoCommit = false
+        this.conn.autoCommit = false
         if (isNull)
         {
           Actor.locals[tcache] = Cache()
@@ -262,17 +231,17 @@ const class CacheableContext : Context
 
         f(this)
 
-        this.db.commit
+        this.conn.commit
         this.commitCaheTrans
       }
       catch (Err e)
       {
-        this.db.rollback
+        this.conn.rollback
         throw e
       }
       finally
       {
-        this.db.autoCommit = oauto
+        this.conn.autoCommit = oauto
         if (isNull)
         {
           Actor.locals[tcache] = null

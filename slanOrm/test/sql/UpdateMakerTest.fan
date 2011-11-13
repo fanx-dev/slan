@@ -6,10 +6,10 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-internal class UpdateMakerTest:Test
+internal class UpdateMakerTest : Test
 {
   UpdateMaker maker := UpdateMaker()
-  
+
   Void testGetSql()
   {
     Table table := StudentTable.getTable
@@ -23,7 +23,7 @@ internal class UpdateMakerTest:Test
     sql := maker.getSql(table, stu)
     echo(sql)
   }
-  
+
   Void testGetParam()
   {
     Table table := StudentTable.getTable
@@ -39,10 +39,10 @@ internal class UpdateMakerTest:Test
     stu.age = 23
     param = maker.getParam(table, stu)
     echo(param)
-    
+
     verify(param.size == 6)
-    verify(param["name"] == "yjd")
-    verify(param["age"] == 23)
-    verifyEq(param["sid"], 123)
+    verify(param[0] == "yjd")
+    verify(param[1] == false)
+    verifyEq(param[2], 23)
   }
 }

@@ -7,12 +7,12 @@
 //
 
 using concurrent
-using sql
+using isql
 
 **
 ** cache connection
 **
-internal const class ConnectionPool
+const class ConnectionPool
 {
   **
   ** The username used to connect to this database.
@@ -89,6 +89,8 @@ internal const class ConnectionPool
   **
   Void close(SqlConn conn)
   {
+    if (conn.isClosed) return
+
     if (conn.autoCommit == false)
     {
       conn.rollback

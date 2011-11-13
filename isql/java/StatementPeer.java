@@ -64,7 +64,7 @@ public class StatementPeer
    * Set the parameters for the underlying prepared statement
    * using the values specified in the map.
    */
-  public void set(Statement self, long i, Object val)
+  public Statement set(Statement self, long i, Object val)
   {
     if (!prepared)
       throw SqlErr.make("Statement has not been prepared.");
@@ -73,7 +73,8 @@ public class StatementPeer
 
     try
     {
-      pstmt.setObject((int)i, jobj);
+      pstmt.setObject((int)i+1, jobj);
+      return self;
     }
     catch (SQLException ex)
     {
@@ -190,18 +191,18 @@ public class StatementPeer
     }
   }
 
-  public DataSet getGeneratedKeys()
+  public DataSet getGeneratedKeys(Statement self)
   {
     DataSet set = DataSet.make();
     try
     {
       set.peer.init(stmt.getGeneratedKeys());
+      return set;
     }
     catch (SQLException ex)
     {
       throw SqlConnPeer.err(ex);
     }
-    return set;
   }
 
 ///////////////////////////////////////////////////////////

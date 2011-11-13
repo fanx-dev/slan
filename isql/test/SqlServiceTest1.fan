@@ -37,6 +37,7 @@ class SqlServiceTest1 : Test
     createTable
     insertTable
     query
+    prepare
 
     db.close
     verifyEq(db.isClosed, true)
@@ -72,7 +73,7 @@ class SqlServiceTest1 : Test
       primary key (farmer_id))
       ")
 
-    meta := db.meta.tableMeta("FARMERS")
+    meta := db.meta.tableMeta("farmers")
     verifyEq(meta.size, 15)
   }
 
@@ -115,7 +116,7 @@ class SqlServiceTest1 : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Insert
+// Query
 //////////////////////////////////////////////////////////////////////////
 
   private Void query()
@@ -128,6 +129,21 @@ class SqlServiceTest1 : Test
         echo("$c.name: $val, ${val?.typeof}")
       }
       echo("=======================")
+    }
+  }
+
+  private Void prepare()
+  {
+    db.prepare("select * from farmers where name=?").set(0, "Alice").query |set|
+    {
+      while(set.next)
+      {
+        set.cols.each |c|
+        {
+          val := set.get(c.index)
+          echo("$c.name: $val, ${val?.typeof}")
+        }
+      }
     }
   }
 }

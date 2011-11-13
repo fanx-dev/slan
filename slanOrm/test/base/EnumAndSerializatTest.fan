@@ -13,9 +13,7 @@ internal class EnumAndSerializatTest : NewTestBase
 {
   override Void setup()
   {
-    log.level = LogLevel.debug
-    c.db.open
-    c.refreshDatabase
+    init
   }
 
   Void testEnum()
