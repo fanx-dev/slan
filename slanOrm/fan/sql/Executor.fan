@@ -200,7 +200,7 @@ internal const class Executor
 
   Obj? findById(Table table, SqlConn db, Obj id)
   {
-    stmt := byIdStmt(table, db, id, "select *")
+    stmt := byIdStmt(table, db, id, selectMaker.getSql(table))
 
     Obj? obj := null
     stmt.use |s|
@@ -231,7 +231,7 @@ internal const class Executor
 
   private Statement byIdStmt(Table table, SqlConn db, Obj id, Str before)
   {
-    sql := before + " " + idWhereMaker.getSql(table)
+    sql := before + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
     if (log.isDebug)
     {

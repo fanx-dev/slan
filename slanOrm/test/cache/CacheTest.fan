@@ -18,13 +18,10 @@ internal class CacheTest : NewTestBase
 
   Void test()
   {
-    c.use
-    {
-      this.insert
-      this.select
-      this.selectWhere
-      this.count
-    }
+    this.insert
+    this.select
+    this.selectWhere
+    this.count
   }
 
   Void insert()

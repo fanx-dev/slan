@@ -71,25 +71,6 @@ const class Context
     return tables
   }
 
-  **
-  ** using connection finally will close
-  **
-  Void use(|This| f)
-  {
-    try
-    {
-      f(this)
-    }
-    catch (Err e)
-    {
-      throw e
-    }
-    finally
-    {
-      conn.close
-    }
-  }
-
 //////////////////////////////////////////////////////////////////////////
 // Execute write
 //////////////////////////////////////////////////////////////////////////

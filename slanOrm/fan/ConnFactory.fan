@@ -21,7 +21,7 @@ const class ConnFactory
   {
     Class.forName(pod.config("${configPrefix}.driver", "org.h2.Driver"))
     pool = ConnectionPool(
-      pod.config("${configPrefix}.uri", "jdbc:h2:test"),
+      pod.config("${configPrefix}.uri", "jdbc:h2:~/test"),
       pod.config("${configPrefix}.username"),
       pod.config("${configPrefix}.password"))
 

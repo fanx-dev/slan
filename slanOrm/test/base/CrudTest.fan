@@ -18,13 +18,10 @@ internal class CrudTest : NewTestBase
 
   Void test()
   {
-    c.use
-    {
-      this.insert
-      this.select
-      this.update
-      this.delete
-    }
+    this.insert
+    this.select
+    this.update
+    this.delete
   }
 
   Void insert()

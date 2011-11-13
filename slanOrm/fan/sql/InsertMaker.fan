@@ -153,7 +153,7 @@ internal const class IdWhereMaker
 {
   Str getSql(Table table)
   {
-    return " from $table.name $table.id.name=?"
+    return " from $table.name where $table.id.name=?"
   }
 
   Obj?[] getParam(Table table, Obj id)
