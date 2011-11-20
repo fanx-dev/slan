@@ -35,6 +35,13 @@ const class SlanRouteMod : WebMod
     ]
   }
 
+  static SlanRouteMod makeApp(Str podName)
+  {
+    Str? appHome := Actor.locals["idraft.appHome"]
+    app := appHome == null ? SlanApp.makeProduct(podName) : SlanApp.makeDebug(appHome.toUri)
+    return SlanRouteMod(app)
+  }
+
   override Void onService()
   {
     try

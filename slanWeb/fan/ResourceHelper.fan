@@ -33,7 +33,7 @@ const class ResourceHelper
     }
     else
     {
-      return `file:${slanApp.appHome}$path`
+      return `${slanApp.appHome}$path`
     }
   }
 
@@ -54,7 +54,7 @@ const class ResourceHelper
     {
       //find in file
       path := `${dir.toStr}${typeName}.fan`.toFile
-      file := `file:${slanApp.appHome}$path`
+      file := `${slanApp.appHome}$path`
       return file
     }
   }

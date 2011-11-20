@@ -13,7 +13,6 @@ using web
 using wisp
 using inet
 
-
 **
 ** Main entry-point for Draft CLI tools.
 **
@@ -22,8 +21,11 @@ class Main : AbstractMain
   @Arg { help = "qualified type name for WebMod to run" }
   Str? mod
 
-  @Opt { help = "other args" }
-  Str? args
+  @Opt { help = "application source directory" }
+  Str? appHome
+
+  @Opt { help = "no proxy" }
+  Bool noproxy := false
 
   @Opt { help = "IP address to bind to" }
   Str? addr
@@ -34,18 +36,26 @@ class Main : AbstractMain
   override Int run()
   {
     type := Type.find(this.mod)
+    WebMod? rootMod
+    if (!noproxy)
+    {
+      // start restarter actor
+      restarter := DevRestarter(ActorPool(), type, port+1, appHome)
 
-    // start restarter actor
-    restarter := DevRestarter(ActorPool(), type, port+1, args)
-
-    // start proxy server
-    devmod := DevMod(restarter)
+      // start proxy server
+      rootMod = DevMod(restarter)
+    }
+    else
+    {
+      Actor.locals["idraft.appHome"] = appHome
+      rootMod = type.make
+    }
 
     return runServices([WispService
     {
       it.addr = this.addr == null ? null : IpAddr(this.addr)
       it.port = this.port
-      it.root = devmod
+      it.root = rootMod
     }])
   }
 }

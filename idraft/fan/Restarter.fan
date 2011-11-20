@@ -16,15 +16,18 @@ using concurrent
 ** DevRestarter
 const class DevRestarter : Actor
 {
-  new make(ActorPool p, Type type, Int port, Str? args) : super(p)
+  new make(ActorPool p, Type type, Int port, Str? appHome) : super(p)
   {
     this.type = type
     this.port = port
-    this.args = args
+    this.appHome = appHome
   }
 
   ** Check if pods have been modified.
   Void checkPods() { send("verify").get(30sec) }
+
+  ** kill the process
+  Void stop() { send("stop") }
 
   override Obj? receive(Obj? msg)
   {
@@ -33,7 +36,7 @@ const class DevRestarter : Actor
       map := Actor.locals["ts"] as Pod:DateTime
       if (map == null)
       {
-        startProc
+        startProc; Actor.sleep(2sec)
         Actor.locals["ts"] = update
       }
       else if (podsModified(map))
@@ -42,6 +45,10 @@ const class DevRestarter : Actor
         stopProc; startProc; Actor.sleep(2sec)
         Actor.locals["ts"] = update
       }
+    }
+    else (msg == "stop")
+    {
+      stopProc
     }
     return null
   }
@@ -92,8 +99,12 @@ const class DevRestarter : Actor
   {
     home := Env.cur.homeDir.osPath
     argsAll := ["java", "-cp", "${home}/lib/java/sys.jar", "-Dfan.home=$home",
-             "fanx.tools.Fan", "wisp", "-port", "$port", type.qname]
-    if (args != null) argsAll.add(args)
+             "fanx.tools.Fan", "idraft", "-port", "$port", "-noproxy"]
+    if (appHome != null)
+    {
+      argsAll.add("-appHome").add(appHome)
+    }
+    argsAll.add(type.qname)
 
     proc := Process(argsAll).run
 
@@ -102,7 +113,7 @@ const class DevRestarter : Actor
   }
 
   ** Stop DraftMod process.
-  internal Void stopProc()
+  private Void stopProc()
   {
     proc := Actor.locals["proc"] as Process
     if (proc == null) return
@@ -112,7 +123,7 @@ const class DevRestarter : Actor
 
   const Type type
   const Int port
-  const Str? args
+  const Str? appHome
   const Log log := Log.get("idraft")
 }
 
@@ -134,5 +145,5 @@ const class DevMod : Proxy
 
   override Void beforeService() { restarter.checkPods }
 
-  override Void onStop() { restarter.stopProc }
+  override Void onStop() { restarter.stop }
 }
