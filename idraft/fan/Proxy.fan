@@ -51,7 +51,7 @@ const class Proxy : WebMod
     c.resHeaders.each |v,k| { res.headers[k] = v }
     if (c.resHeaders["Content-Type"]   != null ||
         c.resHeaders["Content-Length"] != null)
-      res.out.writeBuf(c.resIn.readAllBuf).flush
+      c.resIn.pipe(res.out)
     c.close
   }
 }
