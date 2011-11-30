@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Jed Young  Creation
+//   2011-11-27  Jed Young  Creation
 //
 
 using concurrent
@@ -22,17 +22,18 @@ const class Cache
     this.safe = safe
   }
 
+  @Operator
   Obj? get(Str key)
   {
-    CacheObj? obj := cache->get(key)
+    CacheObj? obj := (cache->get(key) as Future).get
     if(obj == null) return null
     return obj.value
   }
 
+  @Operator
   Void set(Str key, Obj? val)
   {
     CacheObj? obj
-    if (val == null)
     if (safe)
     {
       if (val == null)

@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Jed Young  Creation
+//   2011-11-27  Jed Young  Creation
 //
 
 using concurrent
@@ -25,8 +25,7 @@ const class AsyActor : Actor
     Str name := "_"+arg[0]
     Obj?[]? args := arg[1]
 
-    this->name(args)
-    return null;
+    return this.trap(name, args)
   }
 
   override Obj? trap(Str name, Obj?[]? args := null)

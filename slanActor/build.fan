@@ -15,7 +15,7 @@ class Build : build::BuildPod
   {
     podName = "slanActor"
     summary = "saln actor util"
-    srcDirs = [`fan/`, `fan/cache/`]
+    srcDirs = [`fan/`, `fan/cache/`, `test/`]
     depends = ["sys 1.0", "concurrent 1.0"]
   }
 }

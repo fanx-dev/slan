@@ -3,7 +3,7 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   2010-9-22  Jed Young  Creation
+//   2011-11-27  Jed Young  Creation
 //
 
 using concurrent
@@ -34,7 +34,7 @@ const class CacheActor : AsyActor
 
   Void _set(Str key, CacheObj? obj)
   {
-    clear
+    clean
     map.set(key, obj)
   }
 
@@ -68,11 +68,12 @@ const class CacheActor : AsyActor
   **
   ** clear half object if more than maxNum.
   **
-  private Void clear()
+  private Void clean()
   {
     map := this.map
     if (map.size < maxNum) return
 
+    log.debug("before clean: " + map.size)
     //sort
     CacheObj[] list := map.vals.sort |CacheObj a, CacheObj b->Int| { return a.lastAccess <=> b.lastAccess }
 
@@ -81,6 +82,8 @@ const class CacheActor : AsyActor
     {
       map.remove(list[i].key)
     }
+
+    log.debug("after clean: " + map.size)
     Env.cur.gc
   }
 }

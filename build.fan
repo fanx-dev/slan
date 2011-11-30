@@ -21,6 +21,8 @@ class Build : BuildGroup
     childrenScripts =
     [
       `idraft/build.fan`,
+      `slanActor/build.fan`,
+
       `slanUtil/build.fan`,
       `slanWeb/build.fan`,
 
