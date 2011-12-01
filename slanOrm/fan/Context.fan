@@ -145,7 +145,7 @@ const class Context
   Obj? getId(Obj obj)
   {
     table := getTable(obj.typeof)
-    return table.id.field.get(obj)
+    return table.id.get(obj)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ const class Context
   private Bool existById(Obj obj)
   {
     table := getTable(obj.typeof)
-    id := table.id.field.get(obj)
+    id := table.id.get(obj)
     if (findById(obj.typeof, id) != null)
     {
       return true

@@ -6,6 +6,9 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+using isql
+
 class Utils
 {
   static StrBuf removeLastChar(StrBuf s)
@@ -49,6 +52,24 @@ class Utils
       default:
         return false
     }
+  }
+
+  **
+  ** fetch data
+  **
+  static Obj getInstance(Schema s, Row r)
+  {
+    if (s is Table)
+    {
+      return (s as Table).getInstance(r)
+    }
+
+    values := [,]
+    s.each |CField c, Int i|
+    {
+      values.add(r[i])
+    }
+    return slanData::Record(s, values)
   }
 }
 

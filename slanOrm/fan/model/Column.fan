@@ -7,6 +7,7 @@
 //
 
 using isql
+using slanData
 
 **
 ** as a database column.
@@ -15,10 +16,12 @@ using isql
 **
 ** column name default is parent type name +  field name
 **
-const class Column
+const class Column : CField
 {
-  const Field field
-  const Str name
+  ** object field of the Entity
+  private const Field field
+
+  ** the database dialect of using
   const SlanDialect dialect
 
   //ext parameter
@@ -33,11 +36,15 @@ const class Column
 
   private static const Log log := Column#.typeof.pod.log
 
-  new make(Field field, SlanDialect dialect, Str? name := null, Int? m := null, Int? d := null)
+  **
+  ** if the name is null, will use field name
+  **
+  new make(Field field, SlanDialect dialect, Int index, Str? name := null, Int? m := null, Int? d := null)
+    : super(name ?: field.parent.name +"_"+ field.name, field.type, index)
   {
     this.field = field
     this.dialect = dialect
-    this.name = name ?: field.parent.name +"_"+ field.name
+    //this.name = name ?: field.parent.name +"_"+ field.name
     this.m = m
     this.d = d
 
@@ -52,6 +59,10 @@ const class Column
       }
     }
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Get SQL type string
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** get sql type for create table
@@ -103,19 +114,24 @@ const class Column
     return t
   }
 
-  private Str getStringType(Int? m){
+  private Str getStringType(Int? m)
+  {
     return m == null ? dialect.string() : dialect.string(m)
   }
-  private Str smallInteger(){ dialect.smallInt }
 
+  private Str smallInteger(){ dialect.smallInt }
 
   private Bool isPrimitiveType(Type type)
   {
     Utils.isPrimitiveType(type)
   }
 
+//////////////////////////////////////////////////////////////////////////
+// Get/Set value
+//////////////////////////////////////////////////////////////////////////
+
   ** to saveable primitive
-  Obj? getValue(Obj obj)
+  override Obj? get(Obj obj)
   {
     value := field.get(obj)
 
@@ -134,7 +150,7 @@ const class Column
   }
 
   ** restore object
-  Void setValue(Obj obj, Obj? value)
+  override Void set(Obj obj, Obj? value)
   {
     Obj? nvalue
     if (value == null)
@@ -157,6 +173,10 @@ const class Column
     //echo("Column#setValue $obj,${field.name},$nvalue")
     field.set(obj,nvalue)
   }
+
+//////////////////////////////////////////////////////////////////////////
+// MatchDb
+//////////////////////////////////////////////////////////////////////////
 
   ** check the column is match the database
   Bool checkMatchDb(Col c)

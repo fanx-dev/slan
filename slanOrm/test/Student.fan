@@ -43,20 +43,20 @@ internal class StudentTable
     dialect := MysqlDialect()
     cs := Column[,]
     {
-      Column(Student#sid, dialect, "sid"),
-      Column(Student#name, dialect, "name"),
-      Column(Student#married, dialect, "married"),
-      Column(Student#age, dialect, "age"),
-      Column(Student#weight, dialect, "weight"),
-      Column(Student#dt, dialect, "dt")
+      Column(Student#sid, dialect, 0, "sid"),
+      Column(Student#name, dialect, 1, "name"),
+      Column(Student#married, dialect, 2, "married"),
+      Column(Student#age, dialect, 3, "age"),
+      Column(Student#weight, dialect, 4, "weight"),
+      Column(Student#dt, dialect, 5, "dt")
     }
     t := Table
-    {
-      type = Student#
-      name = "Student"
-      columns = cs
-      it.idIndex = 0
-    }
+    (
+      Student#,
+      "Student",
+      cs,
+      0
+    )
     return t
   }
 }

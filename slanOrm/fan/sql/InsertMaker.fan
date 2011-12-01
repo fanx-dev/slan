@@ -6,9 +6,11 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 internal const class InsertMaker
 {
-  Str getSql(Table table)
+  Str getSql(Schema table)
   {
     sql := StrBuf()
     sql.add("insert into $table.name(")
@@ -28,12 +30,12 @@ internal const class InsertMaker
     return sql.toStr
   }
 
-  Obj?[] getParam(Table table, Obj obj)
+  Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
     table.nonAutoGenerate |Column c|
     {
-      param.add(c.getValue(obj))
+      param.add(c.get(obj))
     }
     return param
   }
@@ -45,7 +47,7 @@ internal const class InsertMaker
 
 internal const class UpdateMaker
 {
-  Str getSql(Table table,Obj obj)
+  Str getSql(Schema table,Obj obj)
   {
     sql := StrBuf()
     sql.add("update $table.name set ")
@@ -61,14 +63,14 @@ internal const class UpdateMaker
     return sql.toStr
   }
 
-  Obj?[] getParam(Table table, Obj obj)
+  Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
     table.nonIdColumn |Column c|
     {
-      param.add(c.getValue(obj))
+      param.add(c.get(obj))
     }
-    param.add(table.id.getValue(obj))
+    param.add(table.id.get(obj))
     return param
   }
 }
@@ -82,13 +84,13 @@ internal const class UpdateMaker
 **
 internal const class WhereMaker
 {
-  Str getSql(Table table, Obj obj)
+  Str getSql(Schema table, Obj obj)
   {
     from := " from $table.name"
     condition := StrBuf()
-    table.columns.each
+    table.each
     {
-      if (it.field.get(obj) != null)
+      if (it.get(obj) != null)
       {
         condition.add("$it.name=? and ")
       }
@@ -100,12 +102,12 @@ internal const class WhereMaker
     return "$from where $condition"
   }
 
-  Obj?[] getParam(Table table, Obj obj)
+  Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
-    table.columns.each |Column c|
+    table.each |Column c|
     {
-      value := c.getValue(obj)
+      value := c.get(obj)
       if (value != null)
       {
         param.add(value)
@@ -121,12 +123,12 @@ internal const class WhereMaker
 
 internal const class TableMaker
 {
-  Str createTable(Table table)
+  Str createTable(Schema table)
   {
     sql := StrBuf()
     sql.add("create table $table.name(")
 
-    table.columns.each |Column c|
+    table.each |Column c|
     {
       sqlType := c.getSqlType( table.autoGenerateId && table.id == c )
       sql.add("$c.name $sqlType,")
@@ -136,7 +138,7 @@ internal const class TableMaker
     return sql.toStr
   }
 
-  Str dropTable(Table table)
+  Str dropTable(Schema table)
   {
     return "drop table $table.name"
   }
@@ -151,7 +153,7 @@ internal const class TableMaker
 **
 internal const class IdWhereMaker
 {
-  Str getSql(Table table)
+  Str getSql(Schema table)
   {
     return " from $table.name where $table.id.name=?"
   }
@@ -168,12 +170,12 @@ internal const class IdWhereMaker
 
 internal const class SelectMaker
 {
-  Str getSql(Table table)
+  Str getSql(Schema table)
   {
     sql := StrBuf()
     sql.add("select ")
 
-    table.columns.each
+    table.each
     {
       sql.add("$it.name,")
     }

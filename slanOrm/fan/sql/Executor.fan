@@ -7,6 +7,7 @@
 //
 
 using isql
+using slanData
 
 **
 ** important class for execute sql.
@@ -22,7 +23,7 @@ internal const class Executor
 
   const Log log := Pod.of(this).log
 
-  Void insert(Table table, SqlConn db, Obj obj)
+  Void insert(Schema table, SqlConn db, Obj obj)
   {
     sql := inserMaker.getSql(table)
     params := inserMaker.getParam(table, obj)
@@ -41,13 +42,13 @@ internal const class Executor
         set := it.getGeneratedKeys
         if (set.next)
         {
-          table.id.field.set(obj, set.get(0))
+          table.id.set(obj, set.get(0))
         }
       }
     }
   }
 
-  Void update(Table table, SqlConn db, Obj obj)
+  Void update(Schema table, SqlConn db, Obj obj)
   {
     sql := updateMaker.getSql(table, obj)
     params := updateMaker.getParam(table, obj)
@@ -66,7 +67,7 @@ internal const class Executor
 //////////////////////////////////////////////////////////////////////////
 
   ** select data list
-  Obj[] select(Table table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
+  Obj[] select(Schema table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -87,7 +88,7 @@ internal const class Executor
         set.moveTo(offset)
         while(set.next)
         {
-          list.add(table.getInstance(set))
+          list.add(Utils.getInstance(table, set))
         }
       }
     }
@@ -95,7 +96,7 @@ internal const class Executor
   }
 
   ** select data list
-  Obj? selectOne(Table table, SqlConn db, Obj obj, Str orderby, Int offset)
+  Obj? selectOne(Schema table, SqlConn db, Obj obj, Str orderby, Int offset)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -116,7 +117,7 @@ internal const class Executor
         set.moveTo(offset)
         if (set.next)
         {
-          one = (table.getInstance(set))
+          one = (Utils.getInstance(table, set))
         }
       }
     }
@@ -124,7 +125,7 @@ internal const class Executor
   }
 
   ** select by condition
-  Obj[] selectWhere(Table table, SqlConn db, Str condition, Int offset, Int limit)
+  Obj[] selectWhere(Schema table, SqlConn db, Str condition, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + " from $table.name"
     if (condition != "") sql += " " + condition
@@ -144,14 +145,14 @@ internal const class Executor
         set.moveTo(offset)
         while(set.next)
         {
-          list.add(table.getInstance(set))
+          list.add(Utils.getInstance(table, set))
         }
       }
     }
     return list
   }
 
-  Void delete(Table table, SqlConn db, Obj obj)
+  Void delete(Schema table, SqlConn db, Obj obj)
   {
     sql := "delete " + whereMaker.getSql(table, obj)
     paramss := whereMaker.getParam(table, obj)
@@ -165,7 +166,7 @@ internal const class Executor
     stmt.use { it.execute }
   }
 
-  Int count(Table table, SqlConn db, Obj obj)
+  Int count(Schema table, SqlConn db, Obj obj)
   {
     sql := "select count(*)" + whereMaker.getSql(table, obj);
     params := whereMaker.getParam(table, obj)
@@ -192,13 +193,13 @@ internal const class Executor
 // by ID
 //////////////////////////////////////////////////////////////////////////
 
-  Void removeById(Table table, SqlConn db, Obj id)
+  Void removeById(Schema table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "delete ")
     stmt.use { it.execute }
   }
 
-  Obj? findById(Table table, SqlConn db, Obj id)
+  Obj? findById(Schema table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, selectMaker.getSql(table))
 
@@ -208,13 +209,13 @@ internal const class Executor
       s.query |set|
       {
         set.next
-        obj = table.getInstance(set)
+        obj = Utils.getInstance(table, set)
       }
     }
     return obj
   }
 
-  Bool existById(Table table, SqlConn db, Obj id)
+  Bool existById(Schema table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "select count(*)")
 
@@ -229,7 +230,7 @@ internal const class Executor
     return exist
   }
 
-  private Statement byIdStmt(Table table, SqlConn db, Obj id, Str before)
+  private Statement byIdStmt(Schema table, SqlConn db, Obj id, Str before)
   {
     sql := before + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
@@ -247,7 +248,7 @@ internal const class Executor
 // Table op
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Table table, SqlConn db)
+  Void createTable(Schema table, SqlConn db)
   {
     sql := tableMaker.createTable(table)
     if (log.isDebug)
@@ -257,7 +258,7 @@ internal const class Executor
     db.execute(sql)
   }
 
-  Void dropTable(Table table, SqlConn db)
+  Void dropTable(Schema table, SqlConn db)
   {
     sql := tableMaker.dropTable(table)
     if (log.isDebug)

@@ -12,6 +12,6 @@ internal class TableTest : Test
   {
     t := Table.mappingFromType(Student#, MysqlDialect())
     verify(t.id.name == "Student_sid")
-    verifyEq(t.columns.size, 9)
+    verifyEq(t.size, 9)
   }
 }

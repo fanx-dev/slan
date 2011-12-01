@@ -16,6 +16,6 @@ class Build : build::BuildPod
     summary = "slan ORM"
     srcDirs = [`test/`, `test/sql/`, `test/cache/`, `test/base/`,
       `fan/`, `fan/sql/`, `fan/model/`, `fan/dialect/`, `fan/cache/`, `fan/dataSource/`]
-    depends = ["sys 1.0","isql 1.0","concurrent 1.0"]
+    depends = ["sys 1.0","isql 1.0","concurrent 1.0", "slanData 1.0"]
   }
 }

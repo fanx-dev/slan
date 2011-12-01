@@ -7,24 +7,23 @@
 //
 
 using isql
+using slanData
 
 **
 ** mapping model for database table.
 ** must has a prime key.
 **
-const class Table
+const class Table : Schema
 {
+  ** Entity type
   const Type type
-  const Column[] columns
-  const Str name
-  const Int idIndex
-  const Bool autoGenerateId
 
   private const Log log := Pod.of(this).log
 
-  new make(|This| f)
+  new make(Type type, Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
+    : super(name, fields, idIndex, autoGenerateId)
   {
-    f(this)
+    this.type = type
     if (!type.hasFacet(Serializable#))
     {
         throw MappingErr("class $type.name must be Serializable.
@@ -32,41 +31,9 @@ const class Table
     }
   }
 
-  Column id()
-  {
-    return columns[idIndex]
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  //each
-  ////////////////////////////////////////////////////////////////////////
-
-  Void nonIdColumn(|Column| f)
-  {
-    columns.each
-    {
-      if (it != id)
-      {
-        f(it)
-      }
-    }
-  }
-
-  Void nonAutoGenerate(|Column| f)
-  {
-    if (autoGenerateId == true)
-    {
-      nonIdColumn(f)
-    }
-    else
-    {
-      columns.each(f)
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // method
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Mmethod
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** fetch data
@@ -77,7 +44,7 @@ const class Table
     columns.each |Column c, Int i|
     {
       value := r[i]
-      c.setValue(obj, value)
+      c.set(obj, value)
     }
     return obj
   }
@@ -90,7 +57,7 @@ const class Table
     condition := StrBuf()
     columns.each |Column c|
     {
-      value := c.getValue(obj)
+      value := c.get(obj)
       if (value != null)
       {
         condition.add("$c.name=$value&")
@@ -98,6 +65,10 @@ const class Table
     }
     return condition.toStr
   }
+
+//////////////////////////////////////////////////////////////////////////
+// MatchDb
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** check model is match the database
@@ -127,9 +98,9 @@ const class Table
     return true
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  // tools
-  ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// Tools
+//////////////////////////////////////////////////////////////////////////
 
   **
   ** auto mapping form type.
@@ -149,15 +120,15 @@ const class Table
         if (f.hasFacet(Colu#))
         {
           Colu c := f.facet(Colu#)
-          cs.add(Column(f, dialect, c.name, c.m, c.d))
+          cs.add(Column(f, dialect, cs.size, c.name, c.m, c.d))
         }
         else if (f.hasFacet(Text#))
         {
-          cs.add(Column(f, dialect, null, 1024))
+          cs.add(Column(f, dialect, cs.size, null, 1024))
         }
         else
         {
-          cs.add(Column(f, dialect))
+          cs.add(Column(f, dialect, cs.size))
         }
 
         if (f.hasFacet(Id#))
@@ -186,16 +157,13 @@ const class Table
     }
 
     table := Table
-    {
-      it.type = type
-      name = type.name
-      columns = cs
-      it.idIndex = id
-      if (generateId)
-      {
-        autoGenerateId = true
-      }
-    }
+    (
+      type,
+      type.name,
+      cs,
+      id,
+      generateId
+    )
 
     return table
   }
