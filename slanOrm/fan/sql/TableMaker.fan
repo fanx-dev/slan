@@ -29,7 +29,10 @@ internal const class TableMaker
       sqlType := column.getSqlType( c, table.autoGenerateId && table.id == c )
       sql.add("$c.name $sqlType,")
     }
-    sql.add("primary key ($table.id.name)")
+    if (table.id != null)
+    {
+      sql.add("primary key ($table.id.name)")
+    }
     sql.add(")")
     return sql.toStr
   }

@@ -49,30 +49,6 @@ const class Context
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Tools
-//////////////////////////////////////////////////////////////////////////
-
-  **
-  ** find the persistence object, @Ignore facet will ignore the type
-  **
-  static Schema[] mappingTables(Schema[] tables, Pod pod)
-  {
-    pod.types.each |Type t|
-    {
-      if (t.hasFacet(Persistent#))
-      {
-        if (!t.hasFacet(Serializable#))
-        {
-          throw MappingErr("entity $t.name must be @Serializable")
-        }
-        table := SqlUtil.mappingFromType(t)
-        tables.add(table)
-      }
-    }
-    return tables
-  }
-
-//////////////////////////////////////////////////////////////////////////
 // Execute write
 //////////////////////////////////////////////////////////////////////////
 

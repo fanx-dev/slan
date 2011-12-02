@@ -13,13 +13,10 @@ using [java]java.lang::Class
 **
 ** Connection for test
 **
-internal mixin TestConnection
+internal class ConnFactoryTest : Test
 {
-  static CacheableContext c() { factory.context }
-  static const ConnFactory factory
-
-  static
+  Void test()
   {
-    factory = ConnFactory.make(TestConnection#.pod)
+    factory := ConnFactory.makeDb(TestConnection#.pod, |Str name->Bool| { name.equalsIgnoreCase("STUDENT") })
   }
 }

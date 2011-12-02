@@ -179,4 +179,23 @@ const class SqlUtil
 
     return table
   }
+
+//////////////////////////////////////////////////////////////////////////
+// schema
+//////////////////////////////////////////////////////////////////////////
+
+  static Schema colsToSchema(Str name, Col[] cols)
+  {
+    list := CField[,]
+    cols.each |c, i|
+    {
+      list.add(fieldToCm(c, i))
+    }
+    return Schema(name, list)
+  }
+
+  static CField fieldToCm(Col col, Int index)
+  {
+    CField(col.name, col.type, index)
+  }
 }

@@ -47,4 +47,9 @@ const class CField
     Record r := obj
     r.set(index, value)
   }
+
+  override Str toStr()
+  {
+    "$name $type.name"
+  }
 }

@@ -56,6 +56,21 @@ const class Schema
     return columns[idIndex]
   }
 
+  override Str toStr()
+  {
+    s := StrBuf()
+    s.add(name)
+    s.join(idIndex)
+    s.add("(")
+    each |f|
+    {
+      s.add(f.toStr)
+      s.add(",")
+    }
+    s.add(")")
+    return s.toStr
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Each
 //////////////////////////////////////////////////////////////////////////

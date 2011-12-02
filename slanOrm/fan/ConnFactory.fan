@@ -25,8 +25,24 @@ const class ConnFactory
       pod.config("${configPrefix}.username"),
       pod.config("${configPrefix}.password"))
 
-    tables := CacheableContext.mappingTables([,], pod)
+    tables := Mapping.mappingTables(pod)
+    tables.each { echo(it) }
     context = CacheableContext(OMapping(tables))
+  }
+
+  new makeDb(Pod pod, |Str->Bool|? tableFilter := null, Str configPrefix := "test")
+  {
+    Class.forName(pod.config("${configPrefix}.driver", "org.h2.Driver"))
+    pool = ConnectionPool(
+      pod.config("${configPrefix}.uri", "jdbc:h2:~/test"),
+      pod.config("${configPrefix}.username"),
+      pod.config("${configPrefix}.password"))
+
+    conn := pool.open
+    tables := Mapping.rMappingTables(conn, tableFilter)
+    tables.each { echo(it) }
+    pool.close(conn)
+    context = CacheableContext(Mapping(tables))
   }
 
   Void open()
