@@ -15,11 +15,12 @@ using [java]java.lang::Class
 **
 internal mixin TestConnection
 {
-  static CacheableContext c() { factory.context }
+  static const CacheableContext c
   static const ConnFactory factory
 
   static
   {
     factory = ConnFactory.make(TestConnection#.pod)
+    c = factory.initFromPod(TestConnection#.pod)
   }
 }

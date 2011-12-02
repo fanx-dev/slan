@@ -12,6 +12,7 @@
 ** Record is a data row of datatable
 **
 @Js
+@Serializable
 class Record
 {
   Schema schema { private set }
@@ -29,6 +30,6 @@ class Record
   }
 
   Obj? get(Int i) { values[i] }
-  Void set(Obj? value, Int i) { values[i] = value }
+  Void set(Int i, Obj? value) { values[i] = value }
 }
 

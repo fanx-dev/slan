@@ -17,6 +17,7 @@ internal class ConnFactoryTest : Test
 {
   Void test()
   {
-    factory := ConnFactory.makeDb(TestConnection#.pod, |Str name->Bool| { name.equalsIgnoreCase("STUDENT") })
+    factory := ConnFactory.make(TestConnection#.pod)
+    context := factory.initFromDb(|Str name->Bool| { name.equalsIgnoreCase("STUDENT") })
   }
 }

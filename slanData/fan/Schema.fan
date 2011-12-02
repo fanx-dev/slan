@@ -12,6 +12,7 @@
 ** Schema is a metadata of records
 **
 @Js
+@Serializable
 const class Schema
 {
   private const Str:Int map := Str:Int[:]
@@ -33,6 +34,7 @@ const class Schema
     fmap := Str:Int[:]
     columns.each |f, i|
     {
+      if (f.index != i) throw ArgErr("field index must equals position")
       fmap[f.name] = i
     }
     this.map = fmap

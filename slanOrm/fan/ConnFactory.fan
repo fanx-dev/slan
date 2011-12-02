@@ -14,8 +14,8 @@ using concurrent
 **
 const class ConnFactory
 {
-  const CacheableContext context
   private const ConnectionPool pool
+  private const Log log := Pod.of(this).log
 
   new make(Pod pod, Str configPrefix := "test")
   {
@@ -24,25 +24,28 @@ const class ConnFactory
       pod.config("${configPrefix}.uri", "jdbc:h2:~/test"),
       pod.config("${configPrefix}.username"),
       pod.config("${configPrefix}.password"))
-
-    tables := Mapping.mappingTables(pod)
-    tables.each { echo(it) }
-    context = CacheableContext(OMapping(tables))
   }
 
-  new makeDb(Pod pod, |Str->Bool|? tableFilter := null, Str configPrefix := "test")
+  Context initFromPod(Pod pod)
   {
-    Class.forName(pod.config("${configPrefix}.driver", "org.h2.Driver"))
-    pool = ConnectionPool(
-      pod.config("${configPrefix}.uri", "jdbc:h2:~/test"),
-      pod.config("${configPrefix}.username"),
-      pod.config("${configPrefix}.password"))
+    tables := Mapping.mappingTables(pod)
+    if (log.isDebug)
+    {
+      tables.each { log.debug(it.toStr) }
+    }
+    return CacheableContext(OMapping(tables))
+  }
 
+  Context initFromDb(|Str->Bool|? tableFilter := null)
+  {
     conn := pool.open
     tables := Mapping.rMappingTables(conn, tableFilter)
-    tables.each { echo(it) }
+    if (log.isDebug)
+    {
+      tables.each { log.debug(it.toStr) }
+    }
     pool.close(conn)
-    context = CacheableContext(Mapping(tables))
+    return CacheableContext(Mapping(tables))
   }
 
   Void open()

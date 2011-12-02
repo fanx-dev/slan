@@ -38,7 +38,8 @@ const class Mapping
 
   virtual Schema getTableByName(Str name)
   {
-    tables[name]
+    echo(tables)
+    return tables[name]
   }
 
   Void each(|Schema, Int| f)

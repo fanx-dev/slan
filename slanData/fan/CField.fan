@@ -12,6 +12,7 @@
 ** Field is column of datatable
 **
 @Js
+@Serializable
 const class CField
 {
   const Str name
