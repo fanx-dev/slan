@@ -43,7 +43,7 @@ const class Schema
 
   Void each(|CField, Int| f)
   {
-    columns.each |c, i| { f(c, i) }
+    columns.each(f)
   }
 
   CField find(Str name) { get(map[name]) }

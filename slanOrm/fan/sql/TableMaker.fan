@@ -9,12 +9,47 @@
 using isql
 using slanData
 
-const class ColumnMaker
+
+internal const class TableMaker
+{
+  const ColumnMaker column
+
+  new make(Dialect dialect)
+  {
+    this.column = ColumnMaker(dialect)
+  }
+
+  Str createTable(Schema table)
+  {
+    sql := StrBuf()
+    sql.add("create table $table.name(")
+
+    table.each |CField c|
+    {
+      sqlType := column.getSqlType( c, table.autoGenerateId && table.id == c )
+      sql.add("$c.name $sqlType,")
+    }
+    sql.add("primary key ($table.id.name)")
+    sql.add(")")
+    return sql.toStr
+  }
+
+  Str dropTable(Schema table)
+  {
+    return "drop table $table.name"
+  }
+}
+
+**************************************************************************
+**
+**************************************************************************
+
+internal const class ColumnMaker
 {
   ** the database dialect of using
-  const SlanDialect dialect
+  const Dialect dialect
 
-  new make(SlanDialect dialect)
+  new make(Dialect dialect)
   {
     this.dialect = dialect
   }

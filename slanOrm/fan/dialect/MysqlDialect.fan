@@ -10,7 +10,7 @@
 **
 **
 **
-const class MysqlDialect : SlanDialect
+const class MysqlDialect : Dialect
 {
   override Str bool(){ "bit" }
 

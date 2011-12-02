@@ -28,7 +28,7 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache()
 
-  new make(Type:Schema tables) : super(tables) {}
+  new make(Mapping tables) : super(tables) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Tools
@@ -113,9 +113,9 @@ const class CacheableContext : Context
   **
   ** clear the query cache which key satrts with typename + ','
   **
-  Void clearQueryCache(Type type)
+  Void clearQueryCache(Schema table)
   {
-    name := type.qname + ","
+    name := table.name + ","
     queryCache.clearIf |Str key -> Bool|
     {
       key.startsWith(name)
@@ -134,7 +134,7 @@ const class CacheableContext : Context
   {
     super.insert(obj)
     set(objIdKey(obj), obj)
-    clearQueryCache(obj.typeof)
+    clearQueryCache(tables.getTableByObj(obj))
   }
 
   ** update by id
@@ -142,7 +142,7 @@ const class CacheableContext : Context
   {
     super.update(obj)
     set(objIdKey(obj), obj)
-    clearQueryCache(obj.typeof)
+    clearQueryCache(tables.getTableByObj(obj))
   }
 
   ** delete by example
@@ -150,41 +150,40 @@ const class CacheableContext : Context
   {
     super.deleteByExample(obj)
     set(objIdKey(obj), null)
-    clearQueryCache(obj.typeof)
+    clearQueryCache(tables.getTableByObj(obj))
   }
 
-  override Void deleteById(Type type, Obj id)
+  override Void deleteById(Schema table, Obj id)
   {
-    super.deleteById(type, id)
-    set(idToKey(type, id), null)
-    clearQueryCache(type)
+    super.deleteById(table, id)
+    set(idToKey(table, id), null)
+    clearQueryCache(table)
   }
 
   ** get object id as key
   private Str objIdKey(Obj obj)
   {
-    obj.typeof.qname + "," + getId(obj)
+    tables.getTableByObj(obj).name + "," + getId(obj)
   }
 
-  private Str idToKey(Type type, Obj id)
+  private Str idToKey(Schema table, Obj id)
   {
-    return type.qname + "," + id
+    return table.name + "," + id
   }
 
   ////////////////////////////////////////////////////////////////////////
   // By ID
   ////////////////////////////////////////////////////////////////////////
 
-  override Obj? findById(Type type, Obj id)
+  override Obj? findById(Schema table, Obj id)
   {
-    table := getTable(type)
-    key := idToKey(type, id)
+    key := idToKey(table, id)
     if (this.containsKey(key))
     {
       return get(key)
     }
 
-    obj := super.findById(type, id)
+    obj := super.findById(table, id)
     set(key, obj)
     return obj
   }

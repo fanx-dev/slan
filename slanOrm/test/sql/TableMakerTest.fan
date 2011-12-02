@@ -10,13 +10,13 @@ using slanData
 
 internal class TableMakerTest : Test
 {
-  TableMaker maker := TableMaker()
+  TableMaker maker := TableMaker(Dialect())
   Schema table := StudentTable.getTable
 
   Void testCreateTable()
   {
     sql := maker.createTable(table)
-    verifyEq(sql,"create table Student(sid bigint,name varchar(255),married bit,age bigint,weight double,dt datetime,primary key (sid))")
+    verifyEq(sql,"create table Student(sid bigint,name varchar(255),married boolean,age bigint,weight double,dt datetime,primary key (sid))")
   }
 
   Void testDropTable()

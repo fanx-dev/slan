@@ -7,7 +7,7 @@
 //
 
 
-const class PostgreSqlDialect : SlanDialect
+const class PostgreSqlDialect : Dialect
 {
   override Str float(){ "double precision" }
 

@@ -118,7 +118,7 @@ const class SqlUtil
   ** auto mapping form type.
   ** table name default is podName+typeName.
   **
-  static Schema mappingFromType(Type type, SlanDialect dialect)
+  static Schema mappingFromType(Type type)
   {
     Int? id
     cs := CField[,]

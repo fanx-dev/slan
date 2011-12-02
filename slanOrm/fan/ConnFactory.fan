@@ -25,8 +25,8 @@ const class ConnFactory
       pod.config("${configPrefix}.username"),
       pod.config("${configPrefix}.password"))
 
-    tables := CacheableContext.mappingTables([:], pod)
-    context = CacheableContext(tables)
+    tables := CacheableContext.mappingTables([,], pod)
+    context = CacheableContext(OMapping(tables))
   }
 
   Void open()

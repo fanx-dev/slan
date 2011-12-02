@@ -50,8 +50,8 @@ internal class CacheTest : NewTestBase
 
   Void selectWhere()
   {
-    stu := c.select(Student#, "where Student_age>20")
-    stu2 := c.select(Student#, "where Student_age>20")
+    stu := c.select(c.getTable(Student#), "where Student_age>20")
+    stu2 := c.select(c.getTable(Student#), "where Student_age>20")
   }
 
   Void count()

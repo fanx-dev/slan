@@ -19,21 +19,22 @@ const class Context
   static const Str id := Context#.qname + ".conn"
 
   ** mapping table model
-  const Type:Schema tables
+  const Mapping tables
 
   ** power of sql
-  private const Executor executor := Executor()
+  private const Executor executor
 
   ** constructor
-  new make(Type:Schema tables)
+  new make(Mapping tables, Dialect dialect := Dialect())
   {
     this.tables = tables
+    executor = Executor(dialect)
   }
 
   ** get type's mapping table
   Schema getTable(Type t)
   {
-    return tables[t]
+    tables.getTableByType(t)
   }
 
   **
@@ -54,8 +55,7 @@ const class Context
   **
   ** find the persistence object, @Ignore facet will ignore the type
   **
-  static Type:Schema mappingTables(Type:Schema tables, Pod pod,
-                              SlanDialect dialect := MysqlDialect())
+  static Schema[] mappingTables(Schema[] tables, Pod pod)
   {
     pod.types.each |Type t|
     {
@@ -65,8 +65,8 @@ const class Context
         {
           throw MappingErr("entity $t.name must be @Serializable")
         }
-        table := SqlUtil.mappingFromType(t, dialect)
-        tables[t] = table
+        table := SqlUtil.mappingFromType(t)
+        tables.add(table)
       }
     }
     return tables
@@ -79,28 +79,27 @@ const class Context
   ** insert this obj to database
   virtual Void insert(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     this.executor.insert(table, this.conn, obj)
   }
 
   ** update by id
   virtual Void update(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     this.executor.update(table, this.conn, obj)
   }
 
   ** delete by example
   virtual Void deleteByExample(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     this.executor.delete(table, this.conn, obj)
   }
 
   ** delete by id
-  virtual Void deleteById(Type type, Obj id)
+  virtual Void deleteById(Schema table, Obj id)
   {
-    table := getTable(type)
     this.executor.removeById(table, this.conn, id)
   }
 
@@ -111,14 +110,14 @@ const class Context
   ** select by example
   Obj[] list(Obj obj, Str orderby := "", Int offset := 0, Int limit := 50)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     return executor.select(table, this.conn, obj, orderby, offset, limit)
   }
 
   ** select by example and get the first one
   Obj? one(Obj obj, Str orderby := "", Int offset := 0)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     return executor.selectOne(table, this.conn, obj, orderby, offset)
   }
 
@@ -127,25 +126,24 @@ const class Context
 //////////////////////////////////////////////////////////////////////////
 
   ** query by condition
-  Obj[] select(Type type, Str condition, Int offset := 0, Int limit := 50)
+  Obj[] select(Schema table, Str condition, Int offset := 0, Int limit := 50)
   {
-    table := getTable(type)
-    return this.executor.selectWhere(table, this.conn, condition, offset, limit)
+    this.executor.selectWhere(table, this.conn, condition, offset, limit)
   }
 
 //////////////////////////////////////////////////////////////////////////
 // By ID
 //////////////////////////////////////////////////////////////////////////
 
-  virtual Obj? findById(Type type, Obj id){
-    table := getTable(type)
+  virtual Obj? findById(Schema table, Obj id)
+  {
     return this.executor.findById(table, this.conn, id)
   }
 
   ** get object id value by mapping table
   Obj? getId(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     return table.id.get(obj)
   }
 
@@ -156,14 +154,14 @@ const class Context
   ** count by example
   virtual Int count(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     return this.executor.count(table, this.conn, obj)
   }
 
   ** exist by example,this operate noCache
   Bool exist(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     n := this.executor.count(table, this.conn, obj)
     return n > 0
   }
@@ -183,9 +181,9 @@ const class Context
 
   private Bool existById(Obj obj)
   {
-    table := getTable(obj.typeof)
+    table := tables.getTableByObj(obj)
     id := table.id.get(obj)
-    if (findById(obj.typeof, id) != null)
+    if (findById(table, id) != null)
     {
       return true
     }
@@ -196,21 +194,18 @@ const class Context
 // Table operate
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Type type)
+  Void createTable(Schema table)
   {
-    table := getTable(type)
     this.executor.createTable(table, this.conn)
   }
 
-  Void dropTable(Type type)
+  Void dropTable(Schema table)
   {
-    table := getTable(type)
     this.executor.dropTable(table, this.conn)
   }
 
-  Bool tableExists(Type type)
+  Bool tableExists(Schema table)
   {
-    table := getTable(type)
     return this.conn.meta.tableExists(table.name)
   }
 
@@ -226,7 +221,7 @@ const class Context
   **
   Void tryCreateAllTable()
   {
-    this.tables.vals.each |Schema t|
+    this.tables.each |Schema t|
     {
       if (this.conn.meta.tableExists(t.name))
       {
@@ -245,7 +240,7 @@ const class Context
   ** drop all table with in appliction
   Void dropAllTable()
   {
-    this.tables.vals.each |Schema t|
+    this.tables.each |Schema t|
     {
       if(this.conn.meta.tableExists(t.name))
       {

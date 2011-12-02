@@ -34,7 +34,7 @@ mixin Entity
   ** delete by id
   Void delete()
   {
-    context.deleteById(this.typeof, context.getId(this))
+    context.deleteById(context.getTable(this.typeof), context.getId(this))
   }
 
   Entity[] list(Str orderby := "", Int offset := 0, Int limit := 50)
@@ -72,18 +72,18 @@ mixin Entity
   ** static
   Entity[] select(Str where, Int offset := 0, Int limit := 50)
   {
-    context.select(this.typeof, where, offset)
+    context.select(context.getTable(this.typeof), where, offset)
   }
 
   ** static
   Entity? findById(Obj id)
   {
-    context.findById(this.typeof, id)
+    context.findById(context.getTable(this.typeof), id)
   }
 
   ** static
   Void deleteById(Obj id)
   {
-    context.deleteById(this.typeof, id)
+    context.deleteById(context.getTable(this.typeof), id)
   }
 }

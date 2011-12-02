@@ -15,13 +15,21 @@ using slanData
 internal const class Executor
 {
   const static InsertMaker inserMaker := InsertMaker()
-  const static TableMaker tableMaker := TableMaker()
+  const TableMaker tableMaker
   const static UpdateMaker updateMaker := UpdateMaker()
   const static WhereMaker whereMaker := WhereMaker()
   const static IdWhereMaker idWhereMaker := IdWhereMaker()
   const static SelectMaker selectMaker := SelectMaker()
 
   const Log log := Pod.of(this).log
+
+  const Dialect dialect
+
+  new make(Dialect dialect)
+  {
+    this.dialect = dialect
+    tableMaker = TableMaker(dialect)
+  }
 
   Void insert(Schema table, SqlConn db, Obj obj)
   {

@@ -7,7 +7,7 @@
 //
 
 
-const class H2Dialect : SlanDialect
+const class H2Dialect : Dialect
 {
   override Str string(Int m := 255)
   {

@@ -121,36 +121,6 @@ internal const class WhereMaker
 **
 **************************************************************************
 
-internal const class TableMaker
-{
-  //TODO
-  const ColumnMaker? column
-
-  Str createTable(Schema table)
-  {
-    sql := StrBuf()
-    sql.add("create table $table.name(")
-
-    table.each |CField c|
-    {
-      sqlType := column.getSqlType( c, table.autoGenerateId && table.id == c )
-      sql.add("$c.name $sqlType,")
-    }
-    sql.add("primary key ($table.id.name)")
-    sql.add(")")
-    return sql.toStr
-  }
-
-  Str dropTable(Schema table)
-  {
-    return "drop table $table.name"
-  }
-}
-
-**************************************************************************
-**
-**************************************************************************
-
 **
 ** by ID
 **

@@ -10,7 +10,7 @@
 ** decide whice type column to create.
 ** It's column factory
 **
-const abstract class SlanDialect
+const class Dialect
 {
   virtual Str bigInt(){ "bigint" }
   virtual Str smallInt(){ "smallint" }

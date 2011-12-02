@@ -19,7 +19,7 @@ internal class QueryTest : NewTestBase
 
   Void testWhereAll()
   {
-    Student[] stus := c.select(Student#, "")
+    Student[] stus := c.select(c.getTable(Student#), "")
     verifyEq(stus.size, 4)
   }
 
@@ -28,7 +28,7 @@ internal class QueryTest : NewTestBase
     Student s := Student{}.list("order by Student_age desc").first
     verifyEq(s.name, "yjd4")
 
-    Student s2 := c.select(Student#, "order by Student_age desc").first
+    Student s2 := c.select(c.getTable(Student#), "order by Student_age desc").first
     verifyEq(s2.name, "yjd4")
   }
 }
