@@ -6,17 +6,19 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 internal class TableMakerTest : Test
 {
   TableMaker maker := TableMaker()
-  Table table := StudentTable.getTable
-  
+  Schema table := StudentTable.getTable
+
   Void testCreateTable()
   {
     sql := maker.createTable(table)
     verifyEq(sql,"create table Student(sid bigint,name varchar(255),married bit,age bigint,weight double,dt datetime,primary key (sid))")
   }
-  
+
   Void testDropTable()
   {
     sql := maker.dropTable(table)

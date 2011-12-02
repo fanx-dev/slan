@@ -13,49 +13,28 @@ using slanData
 ** mapping model for database table.
 ** must has a prime key.
 **
-const class Table : Schema
+const class SqlUtil
 {
-  ** Entity type
-  const Type type
+  const static Log log := SqlUtil#.pod.log
 
-  private const Log log := Pod.of(this).log
-
-  new make(Type type, Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
-    : super(name, fields, idIndex, autoGenerateId)
+  ** just a tool convert object to sql string
+  static Str toSqlStr(Obj? o)
   {
-    this.type = type
-    if (!type.hasFacet(Serializable#))
-    {
-        throw MappingErr("class $type.name must be Serializable.
-                          please using @Ignore for Ignore")
-    }
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// Mmethod
-//////////////////////////////////////////////////////////////////////////
-
-  **
-  ** fetch data
-  **
-  Obj getInstance(Row r)
-  {
-    obj := type.make
-    columns.each |Column c, Int i|
-    {
-      value := r[i]
-      c.set(obj, value)
-    }
-    return obj
+    if (o == null)     return "null"
+    if (o is Str)      return "'$o'"
+    if (o is DateTime) return "'" + o->toLocale("YYYY-MM-DD hh:mm:ss") + "'"
+    if (o is Date)     return "'" + o->toLocale("YYYY-MM-DD") + "'"
+    if (o is Time)     return "'" + o->toLocale("hh:mm:ss") + "'"
+    return o.toStr
   }
 
   **
   ** make string from object for cache key
   **
-  Str makeKey(Obj obj)
+  static Str makeKey(OSchema s, Obj obj)
   {
     condition := StrBuf()
-    columns.each |Column c|
+    s.each |CField c|
     {
       value := c.get(obj)
       if (value != null)
@@ -66,28 +45,61 @@ const class Table : Schema
     return condition.toStr
   }
 
+  **
+  ** fetch data
+  **
+  static Obj getInstance(Schema s, Row r)
+  {
+    if (s is OSchema)
+    {
+      return (s as OSchema).getInstance(r)
+    }
+
+    values := [,]
+    s.each |CField c, Int i|
+    {
+      values.add(r[i])
+    }
+    return slanData::Record(s, values)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // MatchDb
 //////////////////////////////////////////////////////////////////////////
 
+  ** check the column is match the database
+  static Bool checkMatchDbField(CField f, Col c)
+  {
+    if (!c.name.equalsIgnoreCase(f.name)) return false
+    if (f.isPrimitive)
+    {
+      return c.type.qname == f.type.qname
+    }
+    if (f.type.isEnum)
+    {
+      return c.type.qname == Int#.qname
+    }
+    return c.type.qname == Str#.qname
+  }
+
   **
   ** check model is match the database
   **
-  Bool checkMatchDb(Col[] tcols)
+  static Bool checkMatchDb(OSchema s, Col[] tcols)
   {
-    if (columns.size > tcols.size)
+    if (s.size > tcols.size)
     {
-      log.warn("model have $columns.size field,but database $tcols.size")
+      log.warn("model have $s.size field,but database $tcols.size")
       return false
     }
 
     errCount := 0
-    columns.each |Column c, Int i|
+    s.each |CField c, Int i|
     {
-      pass := c.checkMatchDb(tcols[i])
+      pass := checkMatchDbField(c, tcols[i])
       if (!pass)
       {
-        log.warn("table $name field ${columns[i].name} miss the database")
+        log.warn("table $s.name field ${s.get(i).name} miss the database")
         errCount++
       }
     }
@@ -106,10 +118,10 @@ const class Table : Schema
   ** auto mapping form type.
   ** table name default is podName+typeName.
   **
-  static Table mappingFromType(Type type, SlanDialect dialect)
+  static Schema mappingFromType(Type type, SlanDialect dialect)
   {
     Int? id
-    cs := Column[,]
+    cs := CField[,]
     Bool generateId := false
 
     type.fields.each |Field f|
@@ -120,15 +132,15 @@ const class Table : Schema
         if (f.hasFacet(Colu#))
         {
           Colu c := f.facet(Colu#)
-          cs.add(Column(f, dialect, cs.size, c.name, c.m, c.d))
+          cs.add(OField(f, cs.size, c.name) { length = c.m; precision = c.d })
         }
         else if (f.hasFacet(Text#))
         {
-          cs.add(Column(f, dialect, cs.size, null, 1024))
+          cs.add(OField(f, cs.size, null) { length = 1024 })
         }
         else
         {
-          cs.add(Column(f, dialect, cs.size))
+          cs.add(OField(f, cs.size))
         }
 
         if (f.hasFacet(Id#))
@@ -156,7 +168,7 @@ const class Table : Schema
       throw MappingErr("Record must have Id, add @Id facet for field")
     }
 
-    table := Table
+    table := OSchema
     (
       type,
       type.name,

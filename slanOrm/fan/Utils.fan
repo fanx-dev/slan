@@ -15,62 +15,6 @@ class Utils
   {
     s.remove(s.size - 1)
   }
-
-  ** just a tool convert object to sql string
-  static Str toSqlStr(Obj? o)
-  {
-    if (o == null)     return "null"
-    if (o is Str)      return "'$o'"
-    if (o is DateTime) return "'" + o->toLocale("YYYY-MM-DD hh:mm:ss") + "'"
-    if (o is Date)     return "'" + o->toLocale("YYYY-MM-DD") + "'"
-    if (o is Time)     return "'" + o->toLocale("hh:mm:ss") + "'"
-    return o.toStr
-  }
-
-  static Bool isPrimitiveType(Type type)
-  {
-    switch(type.toNonNullable)
-    {
-      case Int#:
-        return true
-      case Str#:
-        return true
-      case Float#:
-        return true
-      case Bool#:
-        return true
-      case DateTime#:
-        return true
-      case Date#:
-        return true
-      case Time#:
-        return true
-      case Decimal#:
-        return true
-      case Buf#:
-        return true
-      default:
-        return false
-    }
-  }
-
-  **
-  ** fetch data
-  **
-  static Obj getInstance(Schema s, Row r)
-  {
-    if (s is Table)
-    {
-      return (s as Table).getInstance(r)
-    }
-
-    values := [,]
-    s.each |CField c, Int i|
-    {
-      values.add(r[i])
-    }
-    return slanData::Record(s, values)
-  }
 }
 
 const class MappingErr : Err

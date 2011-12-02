@@ -88,7 +88,7 @@ internal const class Executor
         set.moveTo(offset)
         while(set.next)
         {
-          list.add(Utils.getInstance(table, set))
+          list.add(SqlUtil.getInstance(table, set))
         }
       }
     }
@@ -117,7 +117,7 @@ internal const class Executor
         set.moveTo(offset)
         if (set.next)
         {
-          one = (Utils.getInstance(table, set))
+          one = (SqlUtil.getInstance(table, set))
         }
       }
     }
@@ -145,7 +145,7 @@ internal const class Executor
         set.moveTo(offset)
         while(set.next)
         {
-          list.add(Utils.getInstance(table, set))
+          list.add(SqlUtil.getInstance(table, set))
         }
       }
     }
@@ -209,7 +209,7 @@ internal const class Executor
       s.query |set|
       {
         set.next
-        obj = Utils.getInstance(table, set)
+        obj = SqlUtil.getInstance(table, set)
       }
     }
     return obj

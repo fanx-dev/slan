@@ -8,8 +8,9 @@
 
 **
 ** super class for entity,convenient but not necessary
+** rename from 'Record'
 **
-mixin Record
+mixin Entity
 {
   abstract Context context()
 
@@ -36,12 +37,12 @@ mixin Record
     context.deleteById(this.typeof, context.getId(this))
   }
 
-  Record[] list(Str orderby := "", Int offset := 0, Int limit := 50)
+  Entity[] list(Str orderby := "", Int offset := 0, Int limit := 50)
   {
     context.list(this, orderby, offset, limit)
   }
 
-  Record? one(Str orderby := "", Int offset := 0)
+  Entity? one(Str orderby := "", Int offset := 0)
   {
     context.one(this, orderby, offset)
   }
@@ -69,13 +70,13 @@ mixin Record
   ////////////////////////////////////////////////////////////////////////
 
   ** static
-  Record[] select(Str where, Int offset := 0, Int limit := 50)
+  Entity[] select(Str where, Int offset := 0, Int limit := 50)
   {
     context.select(this.typeof, where, offset)
   }
 
   ** static
-  Record? findById(Obj id)
+  Entity? findById(Obj id)
   {
     context.findById(this.typeof, id)
   }

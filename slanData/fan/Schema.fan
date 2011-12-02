@@ -85,33 +85,3 @@ const class Schema
     }
   }
 }
-
-**************************************************************************
-** Field is column of datatable
-**************************************************************************
-@Js
-const class CField
-{
-  const Str name
-  const Type type
-  const Int index
-
-  new make(Str name, Type type, Int index)
-  {
-    this.name = name
-    this.type = type
-    this.index = index
-  }
-
-  virtual Obj? get(Obj obj)
-  {
-    Record r := obj
-    return r.get(index)
-  }
-
-  virtual Void set(Obj obj, Obj? value)
-  {
-    Record r := obj
-    r.set(index, value)
-  }
-}

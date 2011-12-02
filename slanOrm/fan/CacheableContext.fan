@@ -8,6 +8,7 @@
 
 using isql
 using concurrent
+using slanData
 
 **
 ** context with cache
@@ -27,7 +28,7 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache()
 
-  new make(Type:Table tables) : super(tables) {}
+  new make(Type:Schema tables) : super(tables) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Tools
@@ -199,7 +200,7 @@ const class CacheableContext : Context
 
     type := obj.typeof
     table := getTable(type)
-    sb := table.makeKey(obj)
+    sb := SqlUtil.makeKey(table, obj)
     key := "$type.qname,count,$sb"
 
     if (queryCache.containsKey(key))

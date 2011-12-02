@@ -6,13 +6,15 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 internal class InsertMakerTest : Test
 {
   InsertMaker maker := InsertMaker()
 
   Void testGetSql()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
 
     sql := maker.getSql(table)
     echo(sql)
@@ -20,7 +22,7 @@ internal class InsertMakerTest : Test
 
   Void testGetParam()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
     stu := Student
     {
       name = "yjd"

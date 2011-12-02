@@ -10,7 +10,7 @@ internal class TableTest : Test
 {
   Void testCreateFromType()
   {
-    t := Table.mappingFromType(Student#, MysqlDialect())
+    t := SqlUtil.mappingFromType(Student#, MysqlDialect())
     verify(t.id.name == "Student_sid")
     verifyEq(t.size, 9)
   }

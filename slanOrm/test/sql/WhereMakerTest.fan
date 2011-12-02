@@ -6,13 +6,15 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 internal class WhereMakerTest : Test
 {
   WhereMaker maker := WhereMaker()
 
   Void testGetSql()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
     stu := Student
     {
       name = "yjd"
@@ -26,7 +28,7 @@ internal class WhereMakerTest : Test
 
   Void testGetParam()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
     stu := Student
     {
       name = "yjd"

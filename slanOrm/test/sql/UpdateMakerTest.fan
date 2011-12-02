@@ -6,13 +6,15 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 internal class UpdateMakerTest : Test
 {
   UpdateMaker maker := UpdateMaker()
 
   Void testGetSql()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
     stu := Student
     {
       name = "yjd"
@@ -26,7 +28,7 @@ internal class UpdateMakerTest : Test
 
   Void testGetParam()
   {
-    Table table := StudentTable.getTable
+    Schema table := StudentTable.getTable
     stu := Student
     {
       sid = 123

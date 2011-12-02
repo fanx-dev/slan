@@ -8,6 +8,7 @@
 
 using isql
 using concurrent
+using slanData
 
 **
 ** session and manager
@@ -18,19 +19,19 @@ const class Context
   static const Str id := Context#.qname + ".conn"
 
   ** mapping table model
-  const Type:Table tables
+  const Type:Schema tables
 
   ** power of sql
   private const Executor executor := Executor()
 
   ** constructor
-  new make(Type:Table tables)
+  new make(Type:Schema tables)
   {
     this.tables = tables
   }
 
   ** get type's mapping table
-  Table getTable(Type t)
+  Schema getTable(Type t)
   {
     return tables[t]
   }
@@ -51,9 +52,9 @@ const class Context
 //////////////////////////////////////////////////////////////////////////
 
   **
-  ** find the persistence object,@Ignore facet will ignore the type
+  ** find the persistence object, @Ignore facet will ignore the type
   **
-  static Type:Table mappingTables(Type:Table tables, Pod pod,
+  static Type:Schema mappingTables(Type:Schema tables, Pod pod,
                               SlanDialect dialect := MysqlDialect())
   {
     pod.types.each |Type t|
@@ -64,7 +65,7 @@ const class Context
         {
           throw MappingErr("entity $t.name must be @Serializable")
         }
-        table := Table.mappingFromType(t, dialect)
+        table := SqlUtil.mappingFromType(t, dialect)
         tables[t] = table
       }
     }
@@ -214,10 +215,10 @@ const class Context
   }
 
   ** check the object table is fit to database table
-  Bool checkTable(Table table)
+  Bool checkTable(Schema table)
   {
     trow := this.conn.meta.tableMeta(table.name)
-    return table.checkMatchDb(trow)
+    return SqlUtil.checkMatchDb(table, trow)
   }
 
   **
@@ -225,7 +226,7 @@ const class Context
   **
   Void tryCreateAllTable()
   {
-    this.tables.vals.each |Table t|
+    this.tables.vals.each |Schema t|
     {
       if (this.conn.meta.tableExists(t.name))
       {
@@ -244,7 +245,7 @@ const class Context
   ** drop all table with in appliction
   Void dropAllTable()
   {
-    this.tables.vals.each |Table t|
+    this.tables.vals.each |Schema t|
     {
       if(this.conn.meta.tableExists(t.name))
       {

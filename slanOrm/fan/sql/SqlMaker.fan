@@ -33,7 +33,7 @@ internal const class InsertMaker
   Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
-    table.nonAutoGenerate |Column c|
+    table.nonAutoGenerate |CField c|
     {
       param.add(c.get(obj))
     }
@@ -66,7 +66,7 @@ internal const class UpdateMaker
   Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
-    table.nonIdColumn |Column c|
+    table.nonIdColumn |CField c|
     {
       param.add(c.get(obj))
     }
@@ -105,7 +105,7 @@ internal const class WhereMaker
   Obj?[] getParam(Schema table, Obj obj)
   {
     param := Obj?[,]
-    table.each |Column c|
+    table.each |CField c|
     {
       value := c.get(obj)
       if (value != null)
@@ -123,14 +123,17 @@ internal const class WhereMaker
 
 internal const class TableMaker
 {
+  //TODO
+  const ColumnMaker? column
+
   Str createTable(Schema table)
   {
     sql := StrBuf()
     sql.add("create table $table.name(")
 
-    table.each |Column c|
+    table.each |CField c|
     {
-      sqlType := c.getSqlType( table.autoGenerateId && table.id == c )
+      sqlType := column.getSqlType( c, table.autoGenerateId && table.id == c )
       sql.add("$c.name $sqlType,")
     }
     sql.add("primary key ($table.id.name)")
@@ -158,7 +161,7 @@ internal const class IdWhereMaker
     return " from $table.name where $table.id.name=?"
   }
 
-  Obj?[] getParam(Table table, Obj id)
+  Obj?[] getParam(Schema table, Obj id)
   {
     return [id]
   }

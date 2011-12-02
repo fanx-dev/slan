@@ -6,12 +6,14 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using slanData
+
 **
 ** test model
 **
 @Persistent
 @Serializable
-internal class Student : Record
+internal class Student : Entity
 {
   @Id
   Int? sid
@@ -38,19 +40,19 @@ internal class Student : Record
 
 internal class StudentTable
 {
-  static Table getTable()
+  static Schema getTable()
   {
     dialect := MysqlDialect()
-    cs := Column[,]
+    cs := CField[,]
     {
-      Column(Student#sid, dialect, 0, "sid"),
-      Column(Student#name, dialect, 1, "name"),
-      Column(Student#married, dialect, 2, "married"),
-      Column(Student#age, dialect, 3, "age"),
-      Column(Student#weight, dialect, 4, "weight"),
-      Column(Student#dt, dialect, 5, "dt")
+      OField(Student#sid, 0, "sid"),
+      OField(Student#name, 1, "name"),
+      OField(Student#married, 2, "married"),
+      OField(Student#age, 3, "age"),
+      OField(Student#weight, 4, "weight"),
+      OField(Student#dt, 5, "dt")
     }
-    t := Table
+    t := OSchema
     (
       Student#,
       "Student",
