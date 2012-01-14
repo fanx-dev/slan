@@ -29,20 +29,21 @@ class Rest : SlanWeblet
   @WebPost
   Str post()
   {
-    "post"
+    echo(req.method)
+    return "post"
   }
 
   @WebPut
   Str put()
   {
-    echo("put")
+    echo(req.method)
     return "put: $stashId"
   }
 
   @WebDelete
   Str delete()
   {
-    echo("delete")
+    echo(req.method)
     return "delete: $stashId"
   }
 }

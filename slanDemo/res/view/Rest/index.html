@@ -6,6 +6,40 @@
         width: 80px;
       }
     </style>
+    <script src="/public/javascript/ajax.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+      function put()
+      {
+        ajax(
+        {
+          url: "/Rest/1",
+          type: "PUT",
+          data: "json",
+          onSuccess: function(msg)
+          {
+            alert(msg);
+          }
+        });
+      }
+
+      function del()
+      {
+        ajax(
+        {
+          url: "/Rest/1",
+          type: "DELETE",
+          data: "json",
+          onSuccess: function(msg)
+          {
+            alert(msg);
+          }
+        });
+      }
+
+      </script>
+
   </head>
   <body>
 
@@ -17,13 +51,9 @@
      <input type="submit" value="Post" />
    </form>
 
-   <form name="form" method="put" action="/Rest/1">
-     <input type="submit" value="Put" />
-   </form>
+   <button type="button" onclick="put();">Put</button>
 
-   <form name="form" method="delete" action="/Rest/1">
-     <input type="submit" value="Delete" />
-   </form>
+   <button type="button" onclick="del();">Delete</button>
 
   </body>
 </html>
