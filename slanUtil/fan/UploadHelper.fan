@@ -10,9 +10,9 @@ using web
 
 const class UploadHelper : Weblet
 {
-  const |Str,handler| handler
+  const |Str, InStream| handler
 
-  new make(|Str,handler| handler)
+  new make(|Str, InStream| handler)
   {
     this.handler = handler
   }
