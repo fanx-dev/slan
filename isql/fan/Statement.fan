@@ -20,18 +20,6 @@ class Statement
   **
   internal native static Statement create(SqlConn conn, Str sql, Bool prepare)
 
-
-  **
-  ** using it with try/catch
-  **
-  Void use(|This| f)
-  {
-    try
-      f.call(this)
-    finally
-      this.close
-  }
-
   **
   ** Set the sql
   **
@@ -61,6 +49,9 @@ class Statement
 // Other
 ///////////////////////////////////////////////////////////
 
+  **
+  ** Get the auto generate keys
+  **
   native DataSet getGeneratedKeys()
 
   **
@@ -82,7 +73,7 @@ class Statement
   **
   ** Execute the statement and return the resulting ResultSet
   **
-  native Void query(|DataSet| f)
+  native DataSet query()
 
   **
   ** Execute a SQL statement and return number of rows modified.

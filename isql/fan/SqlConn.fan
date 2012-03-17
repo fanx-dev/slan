@@ -53,34 +53,8 @@ class SqlConn
   **
   ** Create a statement for this database.
   **
-  Statement prepare(Str sql) { Statement.create(this, sql, true) }
+  Statement sql(Str sql, Bool prepare := true) { Statement.create(this, sql, prepare) }
 
-  **
-  ** Convenience for statement(sql).use { it.execute }
-  **
-  Int execute(Str sql)
-  {
-    Int r := -1
-    Statement.create(this, sql, false).use { r = it.execute }
-    return r
-  }
-
-  **
-  ** Convenience for statement(sql).use { it.query { while(set.next) { f.call(set) } } }
-  **
-  Void query(Str sql, |Row| f)
-  {
-    Statement.create(this, sql, false).use |stmt|
-    {
-      stmt.query |set|
-      {
-        while(set.next)
-        {
-          f.call(set)
-        }
-      }
-    }
-  }
 
 //////////////////////////////////////////////////////////////////////////
 // Transactions

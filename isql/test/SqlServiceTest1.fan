@@ -48,12 +48,12 @@ class SqlServiceTest1 : Test
   **
   Void dropTables()
   {
-    db.execute("drop table if exists farmers")
+    db.sql("drop table if exists farmers").execute
   }
 
   Void createTable()
   {
-    db.execute(
+    db.sql(
      "create table farmers(
       farmer_id int auto_increment,
       name      varchar(255) not null,
@@ -71,7 +71,7 @@ class SqlServiceTest1 : Test
       d         date,
       t         time,
       primary key (farmer_id))
-      ")
+      ").execute
 
     meta := db.meta.tableMeta("farmers")
     verifyEq(meta.size, 15)
@@ -112,7 +112,7 @@ class SqlServiceTest1 : Test
     }
     s += ")"
 
-    db.execute(s)
+    db.sql(s).execute
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,9 @@ class SqlServiceTest1 : Test
 
   private Void query()
   {
-    db.query("select * from farmers order by farmer_id") |set|
+    set := db.sql("select * from farmers order by farmer_id").query
+
+    while(set.next)
     {
       set.cols.each |c|
       {
@@ -130,20 +132,21 @@ class SqlServiceTest1 : Test
       }
       echo("=======================")
     }
+    set.close
   }
 
   private Void prepare()
   {
-    db.prepare("select * from farmers where name=?").set(0, "Alice").query |set|
+    set := db.sql("select * from farmers where name=?").set(0, "Alice").query
+
+    while(set.next)
     {
-      while(set.next)
+      set.cols.each |c|
       {
-        set.cols.each |c|
-        {
-          val := set.get(c.index)
-          echo("$c.name: $val, ${val?.typeof}")
-        }
+        val := set.get(c.index)
+        echo("$c.name: $val, ${val?.typeof}")
       }
     }
+    set.close
   }
 }

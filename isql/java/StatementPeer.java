@@ -118,7 +118,7 @@ public class StatementPeer
 // Execute
 //////////////////////////////////////////////////////////////////////////
 
-  public void query(Statement self, Func f)
+  public DataSet query(Statement self)
   {
     java.sql.ResultSet rs = null;
     try
@@ -131,25 +131,14 @@ public class StatementPeer
       {
         rs = stmt.executeQuery(sql);
       }
-    }
-    catch (SQLException ex)
-    {
-      throw SqlConnPeer.err(ex);
-    }
 
-    DataSet set = DataSet.make();
-    try
-    {
+      DataSet set = DataSet.make();
       set.peer.init(rs);
-      f.call(set);
+      return set;
     }
     catch (SQLException ex)
     {
       throw SqlConnPeer.err(ex);
-    }
-    finally
-    {
-      set.peer.close();
     }
   }
 

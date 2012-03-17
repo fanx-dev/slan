@@ -110,7 +110,7 @@ public class DataSetPeer
     return jResultSet.absolute((int)pos);
   }
 
-  public void close()
+  public void close(DataSet row)
   {
     try
     {
