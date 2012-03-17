@@ -28,6 +28,9 @@ const class CField
   ** field type is primitive ,like Int,Float,Str,DateTime...
   const Bool isPrimitive
 
+  ** hint to build index on this field
+  const Bool? indexed
+
   new make(Str name, Type type, Int index, |This|? f := null)
   {
     this.name = name
@@ -35,6 +38,7 @@ const class CField
     this.index = index
     f?.call(this)
     isPrimitive = Util.isPrimitiveType(type)
+    if (indexed == null) indexed = false
   }
 
   virtual Obj? get(Obj obj)

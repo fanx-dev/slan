@@ -31,5 +31,12 @@ class Record
 
   Obj? get(Int i) { values[i] }
   Void set(Int i, Obj? value) { values[i] = value }
+
+  Obj? id()
+  {
+    idf := schema.id
+    if (idf == null) return null
+    return get(idf.index)
+  }
 }
 
