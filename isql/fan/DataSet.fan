@@ -10,7 +10,7 @@
 ** ResultSet is a query result Cursor.
 ** See [pod-doc]`pod-doc#row`.
 **
-class DataSet
+class ResultSet
 {
 
   **

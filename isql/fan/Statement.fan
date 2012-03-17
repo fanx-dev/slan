@@ -52,7 +52,7 @@ class Statement
   **
   ** Get the auto generate keys
   **
-  native DataSet getGeneratedKeys()
+  native ResultSet getGeneratedKeys()
 
   **
   ** Close the statement.
@@ -73,7 +73,7 @@ class Statement
   **
   ** Execute the statement and return the resulting ResultSet
   **
-  native DataSet query()
+  native ResultSet query()
 
   **
   ** Execute a SQL statement and return number of rows modified.

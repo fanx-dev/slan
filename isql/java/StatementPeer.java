@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import fan.sys.*;
 import fan.isql.Statement;
+import fan.isql.ResultSet;
 
 public class StatementPeer
 {
@@ -118,7 +119,7 @@ public class StatementPeer
 // Execute
 //////////////////////////////////////////////////////////////////////////
 
-  public DataSet query(Statement self)
+  public ResultSet query(Statement self)
   {
     java.sql.ResultSet rs = null;
     try
@@ -132,7 +133,7 @@ public class StatementPeer
         rs = stmt.executeQuery(sql);
       }
 
-      DataSet set = DataSet.make();
+      ResultSet set = ResultSet.make();
       set.peer.init(rs);
       return set;
     }
@@ -180,9 +181,9 @@ public class StatementPeer
     }
   }
 
-  public DataSet getGeneratedKeys(Statement self)
+  public ResultSet getGeneratedKeys(Statement self)
   {
-    DataSet set = DataSet.make();
+    ResultSet set = ResultSet.make();
     try
     {
       set.peer.init(stmt.getGeneratedKeys());

@@ -115,7 +115,7 @@ public class SqlUtil
   /**
    * Map an java.sql.ResultSet column to a Fantom object.
    */
-  public static Object toObj(ResultSet rs, int col)
+  public static Object toObj(java.sql.ResultSet rs, int col)
     throws SQLException
   {
     switch (rs.getMetaData().getColumnType(col))
@@ -166,7 +166,7 @@ public class SqlUtil
   /**
    * Map an java.sql.ResultSet column to a Fantom object.
    */
-  public static SqlToFan converter(ResultSet rs, int col)
+  public static SqlToFan converter(java.sql.ResultSet rs, int col)
     throws SQLException
   {
     switch (rs.getMetaData().getColumnType(col))
@@ -221,13 +221,13 @@ public class SqlUtil
 
   public abstract static class SqlToFan
   {
-    public abstract Object toObj(ResultSet rs, int col)
+    public abstract Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException;
   }
 
   public static class ToFanStr extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       return rs.getString(col);
@@ -236,7 +236,7 @@ public class SqlUtil
 
   public static class ToFanBool extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       boolean b = rs.getBoolean(col);
@@ -247,7 +247,7 @@ public class SqlUtil
 
   public static class ToFanInt extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       long i = rs.getLong(col);
@@ -258,7 +258,7 @@ public class SqlUtil
 
   public static class ToFanFloat extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       double f = rs.getDouble(col);
@@ -269,7 +269,7 @@ public class SqlUtil
 
   public static class ToFanDecimal extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       return rs.getBigDecimal(col);
@@ -278,7 +278,7 @@ public class SqlUtil
 
   public static class ToFanDateTime extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       java.sql.Timestamp ts = rs.getTimestamp(col);
@@ -289,7 +289,7 @@ public class SqlUtil
 
   public static class ToFanDate extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       java.sql.Date d = rs.getDate(col);
@@ -300,7 +300,7 @@ public class SqlUtil
 
   public static class ToFanTime extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       java.sql.Time t = rs.getTime(col);
@@ -311,7 +311,7 @@ public class SqlUtil
 
   public static class ToFanBuf extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       byte[] buf = rs.getBytes(col);
@@ -322,7 +322,7 @@ public class SqlUtil
 
   public static class ToDefFanStr extends SqlToFan
   {
-    public Object toObj(ResultSet rs, int col)
+    public Object toObj(java.sql.ResultSet rs, int col)
       throws SQLException
     {
       return String.valueOf(rs.getObject(col));

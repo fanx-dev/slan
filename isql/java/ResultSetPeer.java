@@ -9,20 +9,21 @@ package fan.isql;
 
 import java.sql.*;
 import fan.sys.*;
+import fan.isql.ResultSet;
 
-public class DataSetPeer
+public class ResultSetPeer
 {
 
 //////////////////////////////////////////////////////////////////////////
 // Peer Factory
 //////////////////////////////////////////////////////////////////////////
 
-  public static DataSetPeer make(DataSet fan)
+  public static ResultSetPeer make(ResultSet fan)
   {
-    return new DataSetPeer();
+    return new ResultSetPeer();
   }
 
-  public void init(ResultSet rs) throws SQLException
+  public void init(java.sql.ResultSet rs) throws SQLException
   {
     this.jResultSet = rs;
     cols = makeCols(jResultSet);
@@ -33,7 +34,7 @@ public class DataSetPeer
 // metadata
 //////////////////////////////////////////////////////////////////////////
 
-  public List cols(DataSet row)
+  public List cols(ResultSet row)
   {
     return cols.list;
   }
@@ -42,7 +43,7 @@ public class DataSetPeer
    * Map result set columns to Fan columns.
    * result set.
    */
-  private static Cols makeCols(ResultSet rs)
+  private static Cols makeCols(java.sql.ResultSet rs)
     throws SQLException
   {
     // map the meta-data to a dynamic type
@@ -64,8 +65,8 @@ public class DataSetPeer
     return new Cols(cols);
   }
 
-  public Col col(DataSet row, String name) { return col(row, name, true); }
-  public Col col(DataSet row, String name, boolean checked)
+  public Col col(ResultSet row, String name) { return col(row, name, true); }
+  public Col col(ResultSet row, String name, boolean checked)
   {
     Col col = cols.get(name);
     if (col != null) return col;
@@ -77,7 +78,7 @@ public class DataSetPeer
 // value
 //////////////////////////////////////////////////////////////////////////
 
-  public Object get(DataSet row, long col) throws SQLException
+  public Object get(ResultSet row, long col) throws SQLException
   {
     int i = (int)col;
     return converters[i].toObj(jResultSet, i+1);
@@ -86,7 +87,7 @@ public class DataSetPeer
   /**
    * Make the list of converters for the specified result set.
    */
-  private static SqlUtil.SqlToFan[] makeConverters(ResultSet rs)
+  private static SqlUtil.SqlToFan[] makeConverters(java.sql.ResultSet rs)
     throws SQLException
   {
     int numCols = rs.getMetaData().getColumnCount();
@@ -100,17 +101,17 @@ public class DataSetPeer
 // Cursor
 //////////////////////////////////////////////////////////////////////////
 
-  public boolean next(DataSet row) throws SQLException
+  public boolean next(ResultSet row) throws SQLException
   {
     return jResultSet.next();
   }
 
-  public boolean moveTo(DataSet row, long pos) throws SQLException
+  public boolean moveTo(ResultSet row, long pos) throws SQLException
   {
     return jResultSet.absolute((int)pos);
   }
 
-  public void close(DataSet row)
+  public void close(ResultSet row)
   {
     try
     {
