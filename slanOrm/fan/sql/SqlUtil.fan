@@ -48,7 +48,7 @@ const class SqlUtil
   **
   ** fetch data
   **
-  static Obj getInstance(Schema s, Row r)
+  static Obj getInstance(Schema s, ResultSet r)
   {
     if (s is OSchema)
     {
@@ -58,7 +58,7 @@ const class SqlUtil
     values := [,]
     s.each |CField c, Int i|
     {
-      values.add(r[i])
+      values.add(r.get(i))
     }
     return slanData::Record(s, values)
   }

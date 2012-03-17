@@ -36,12 +36,12 @@ const class OSchema : Schema
   **
   ** fetch data
   **
-  Obj getInstance(Row r)
+  Obj getInstance(ResultSet r)
   {
     obj := type.make
     columns.each |CField c, Int i|
     {
-      value := r[i]
+      value := r.get(i)
       c.set(obj, value)
     }
     return obj

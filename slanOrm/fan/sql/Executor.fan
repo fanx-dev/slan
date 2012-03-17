@@ -40,20 +40,19 @@ internal const class Executor
       log.debug(sql)
       log.debug(params.toStr)
     }
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     params.each |p, i|{ stmt.set(i, p) }
-    stmt.use
+    stmt.execute
+    if (table.autoGenerateId == true)
     {
-      it.execute
-      if (table.autoGenerateId == true)
+      set := stmt.getGeneratedKeys
+      if (set.next)
       {
-        set := it.getGeneratedKeys
-        if (set.next)
-        {
-          table.id.set(obj, set.get(0))
-        }
+        table.id.set(obj, set.get(0))
       }
+      set.close
     }
+    stmt.close
   }
 
   Void update(Schema table, SqlConn db, Obj obj)
@@ -65,9 +64,10 @@ internal const class Executor
       log.debug(sql)
       log.debug(params.toStr)
     }
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     params.each |p, i|{ stmt.set(i, p) }
-    stmt.use { it.execute }
+    stmt.execute
+    stmt.close
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,20 +86,18 @@ internal const class Executor
       log.debug(params.toStr)
     }
     Obj[] list := [,]
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     stmt.limit = offset + limit
     params.each |p, i|{ stmt.set(i, p) }
-    stmt.use |s|
+
+    set := stmt.query
+    set.moveTo(offset)
+    while(set.next)
     {
-      s.query |set|
-      {
-        set.moveTo(offset)
-        while(set.next)
-        {
-          list.add(SqlUtil.getInstance(table, set))
-        }
-      }
+      list.add(SqlUtil.getInstance(table, set))
     }
+    set.close
+    stmt.close
     return list
   }
 
@@ -115,20 +113,18 @@ internal const class Executor
       log.debug(params.toStr)
     }
     Obj? one := null
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     stmt.limit = offset + 1
     params.each |p, i|{ stmt.set(i, p) }
-    stmt.use |s|
+    set := stmt.query
+    set.moveTo(offset)
+    if (set.next)
     {
-      s.query |set|
-      {
-        set.moveTo(offset)
-        if (set.next)
-        {
-          one = (SqlUtil.getInstance(table, set))
-        }
-      }
+      one = (SqlUtil.getInstance(table, set))
     }
+    set.close
+    stmt.close
+
     return one
   }
 
@@ -144,19 +140,17 @@ internal const class Executor
     }
     Obj[] list := [,]
     i := 0
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     stmt.limit = offset + limit
-    stmt.use |s|
+    set := stmt.query
+    set.moveTo(offset)
+    while(set.next)
     {
-      s.query |set|
-      {
-        set.moveTo(offset)
-        while(set.next)
-        {
-          list.add(SqlUtil.getInstance(table, set))
-        }
-      }
+      list.add(SqlUtil.getInstance(table, set))
     }
+    set.close
+    stmt.close
+
     return list
   }
 
@@ -169,9 +163,10 @@ internal const class Executor
       log.debug(sql)
       log.debug(paramss.toStr)
     }
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     paramss.each |p, i|{ stmt.set(i, p) }
-    stmt.use { it.execute }
+    stmt.execute
+    stmt.close
   }
 
   Int count(Schema table, SqlConn db, Obj obj)
@@ -183,17 +178,15 @@ internal const class Executor
       log.debug(sql)
       log.debug(params.toStr)
     }
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     params.each |p, i|{ stmt.set(i, p) }
     Int i := 0
-    stmt.use |s|
-    {
-      s.query |set|
-      {
-        set.next
-        i = set.get(0)
-      }
-    }
+    set := stmt.query
+    set.next
+    i = set.get(0)
+    set.close
+    stmt.close
+
     return i
   }
 
@@ -204,7 +197,8 @@ internal const class Executor
   Void removeById(Schema table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "delete ")
-    stmt.use { it.execute }
+    stmt.execute
+    stmt.close
   }
 
   Obj? findById(Schema table, SqlConn db, Obj id)
@@ -212,14 +206,12 @@ internal const class Executor
     stmt := byIdStmt(table, db, id, selectMaker.getSql(table))
 
     Obj? obj := null
-    stmt.use |s|
-    {
-      s.query |set|
-      {
-        set.next
-        obj = SqlUtil.getInstance(table, set)
-      }
-    }
+    set := stmt.query
+    set.next
+    obj = SqlUtil.getInstance(table, set)
+    set.close
+    stmt.close
+
     return obj
   }
 
@@ -228,13 +220,10 @@ internal const class Executor
     stmt := byIdStmt(table, db, id, "select count(*)")
 
     Bool exist := false
-    stmt.use |s|
-    {
-      s.query |DataSet set|
-      {
-        exist = set.next
-      }
-    }
+    set := stmt.query
+    exist = set.next
+    set.close
+    stmt.close
     return exist
   }
 
@@ -247,7 +236,7 @@ internal const class Executor
       log.debug(sql)
       log.debug(params.toStr)
     }
-    stmt := db.prepare(sql)
+    stmt := db.sql(sql)
     params.each |p, i|{ stmt.set(i, p) }
     return stmt
   }
@@ -263,7 +252,9 @@ internal const class Executor
     {
       log.debug(sql)
     }
-    db.execute(sql)
+    stmt := db.sql(sql)
+    stmt.execute
+    stmt.close
   }
 
   Void dropTable(Schema table, SqlConn db)
@@ -273,6 +264,8 @@ internal const class Executor
     {
       log.debug(sql)
     }
-    db.execute(sql)
+    stmt := db.sql(sql)
+    stmt.execute
+    stmt.close
   }
 }
