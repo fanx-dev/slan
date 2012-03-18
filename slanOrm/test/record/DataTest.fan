@@ -26,8 +26,7 @@ internal class DataTest : Test
     log.level = LogLevel.debug
     table = Teacher.getSchema
     factory = ConnFactory.make(TestConnection#.pod)
-    tables := Mapping([table])
-    c = Context(tables)
+    c = Context()
     factory.open
   }
 

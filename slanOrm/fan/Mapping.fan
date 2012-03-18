@@ -8,10 +8,12 @@
 
 using slanData
 using isql
+using slanActor::Cache as SlanCache
 
 const class Mapping
 {
   private const Str:Schema tables
+  private const SlanCache cache
 
   new make(Schema[] list)
   {
@@ -21,12 +23,24 @@ const class Mapping
       tables[it.name] = it
     }
     this.tables = tables
+    cache = SlanCache()
   }
 
-  virtual Schema get(Str name)
+  virtual Schema get(Type type)
   {
-    echo(tables)
-    return tables[name]
+    key := type.name
+    if (tables.containsKey(key)) return tables[key]
+
+    if (cache.containsKey(key))
+    {
+      return cache.get(key)
+    }
+    else
+    {
+      table := SqlUtil.mappingFromType(type)
+      cache.set(key, table)
+      return table
+    }
   }
 
   Void each(|Schema| f)

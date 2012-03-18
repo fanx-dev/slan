@@ -25,7 +25,7 @@ const class Context
   private const Executor executor
 
   ** constructor
-  new make(Mapping tables, Dialect dialect := Dialect())
+  new make(Mapping tables := Mapping([,]), Dialect dialect := Dialect())
   {
     this.tables = tables
     executor = Executor(dialect)
@@ -37,7 +37,7 @@ const class Context
     if (obj is Type)
     {
       type := obj as Type
-      return tables.get(type.name)
+      return tables.get(type)
     }
     else if (obj is Record)
     {
@@ -46,7 +46,7 @@ const class Context
     }
     else
     {
-      return tables.get(obj.typeof.name)
+      return tables.get(obj.typeof)
     }
   }
 
