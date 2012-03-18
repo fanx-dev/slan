@@ -50,17 +50,13 @@ const class SqlUtil
   **
   static Obj getInstance(Schema s, ResultSet r)
   {
-    if (s is OSchema)
-    {
-      return (s as OSchema).getInstance(r)
-    }
-
-    values := [,]
+    obj := s.newInstance
     s.each |CField c, Int i|
     {
-      values.add(r.get(i))
+      value := r.get(i)
+      c.set(obj, value)
     }
-    return slanData::Record(s, values)
+    return obj
   }
 
 //////////////////////////////////////////////////////////////////////////

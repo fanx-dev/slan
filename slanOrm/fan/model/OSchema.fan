@@ -33,17 +33,9 @@ const class OSchema : Schema
 // Mmethod
 //////////////////////////////////////////////////////////////////////////
 
-  **
-  ** fetch data
-  **
-  Obj getInstance(ResultSet r)
+  override Obj newInstance()
   {
-    obj := type.make
-    columns.each |CField c, Int i|
-    {
-      value := r.get(i)
-      c.set(obj, value)
-    }
-    return obj
+    return type.make
   }
+
 }

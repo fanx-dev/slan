@@ -58,6 +58,11 @@ const class Schema
     return columns[idIndex]
   }
 
+  virtual Obj newInstance()
+  {
+    return Record(this)
+  }
+
   override Str toStr()
   {
     s := StrBuf()
