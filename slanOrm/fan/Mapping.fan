@@ -23,25 +23,7 @@ const class Mapping
     this.tables = tables
   }
 
-  virtual Schema getTableByType(Type type)
-  {
-    getTableByName(type.name)
-  }
-
-  virtual Schema getTableByObj(Obj obj)
-  {
-    if (obj is Record)
-    {
-      Record r := obj
-      return r.schema
-    }
-    else
-    {
-      return getTableByType(obj.typeof)
-    }
-  }
-
-  virtual Schema getTableByName(Str name)
+  virtual Schema get(Str name)
   {
     echo(tables)
     return tables[name]

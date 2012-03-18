@@ -134,7 +134,7 @@ const class CacheableContext : Context
   {
     super.insert(obj)
     set(objIdKey(obj), obj)
-    clearQueryCache(tables.getTableByObj(obj))
+    clearQueryCache(getTable(obj))
   }
 
   ** update by id
@@ -142,7 +142,7 @@ const class CacheableContext : Context
   {
     super.update(obj)
     set(objIdKey(obj), obj)
-    clearQueryCache(tables.getTableByObj(obj))
+    clearQueryCache(getTable(obj))
   }
 
   ** delete by example
@@ -150,7 +150,7 @@ const class CacheableContext : Context
   {
     super.deleteByExample(obj)
     set(objIdKey(obj), null)
-    clearQueryCache(tables.getTableByObj(obj))
+    clearQueryCache(getTable(obj))
   }
 
   override Void deleteById(Schema table, Obj id)
@@ -163,7 +163,7 @@ const class CacheableContext : Context
   ** get object id as key
   private Str objIdKey(Obj obj)
   {
-    tables.getTableByObj(obj).name + "," + getId(obj)
+    getTable(obj).name + "," + getId(obj)
   }
 
   private Str idToKey(Schema table, Obj id)

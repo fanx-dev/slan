@@ -19,7 +19,7 @@ const class Context
   static const Str id := Context#.qname + ".conn"
 
   ** mapping table model
-  const Mapping tables
+  private const Mapping tables
 
   ** power of sql
   private const Executor executor
@@ -32,9 +32,22 @@ const class Context
   }
 
   ** get type's mapping table
-  Schema getTable(Type t)
+  Schema getTable(Obj obj)
   {
-    tables.getTableByType(t)
+    if (obj is Type)
+    {
+      type := obj as Type
+      return tables.get(type.name)
+    }
+    else if (obj is Record)
+    {
+      Record r := obj
+      return r.schema
+    }
+    else
+    {
+      return tables.get(obj.typeof.name)
+    }
   }
 
   **
@@ -55,21 +68,21 @@ const class Context
   ** insert this obj to database
   virtual Void insert(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     this.executor.insert(table, this.conn, obj)
   }
 
   ** update by id
   virtual Void update(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     this.executor.update(table, this.conn, obj)
   }
 
   ** delete by example
   virtual Void deleteByExample(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     this.executor.delete(table, this.conn, obj)
   }
 
@@ -86,14 +99,14 @@ const class Context
   ** select by example
   Obj[] list(Obj obj, Str orderby := "", Int offset := 0, Int limit := 50)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     return executor.select(table, this.conn, obj, orderby, offset, limit)
   }
 
   ** select by example and get the first one
   Obj? one(Obj obj, Str orderby := "", Int offset := 0)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     return executor.selectOne(table, this.conn, obj, orderby, offset)
   }
 
@@ -119,7 +132,7 @@ const class Context
   ** get object id value by mapping table
   Obj? getId(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     return table.id.get(obj)
   }
 
@@ -130,14 +143,14 @@ const class Context
   ** count by example
   virtual Int count(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     return this.executor.count(table, this.conn, obj)
   }
 
-  ** exist by example,this operate noCache
+  ** exist by example, this operate noCache
   Bool exist(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     n := this.executor.count(table, this.conn, obj)
     return n > 0
   }
@@ -157,7 +170,7 @@ const class Context
 
   private Bool existById(Obj obj)
   {
-    table := tables.getTableByObj(obj)
+    table := getTable(obj)
     id := table.id.get(obj)
     if (findById(table, id) != null)
     {
