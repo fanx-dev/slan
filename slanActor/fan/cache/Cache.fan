@@ -62,7 +62,7 @@ const class Cache
   Void remove(Str key) { cache->remove(key) }
 
   ** contains the Key
-  Bool containsKey(Str key) { cache->containsKey(key) }
+  Bool containsKey(Str key) { cache->containsKey(key)->get }
 
   ** remove all
   Void clear(){ cache->clear }

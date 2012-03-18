@@ -26,7 +26,7 @@ const class Mapping
     cache = SlanCache()
   }
 
-  virtual Schema get(Type type)
+  virtual Schema getFromType(Type type)
   {
     key := type.name
     if (tables.containsKey(key)) return tables[key]
@@ -38,6 +38,24 @@ const class Mapping
     else
     {
       table := SqlUtil.mappingFromType(type)
+      cache.set(key, table)
+      return table
+    }
+  }
+
+  virtual Schema getFromDb(SqlConn conn, Str name)
+  {
+    key := name
+    if (tables.containsKey(key)) return tables[key]
+
+    if (cache.containsKey(key))
+    {
+      return cache.get(key)
+    }
+    else
+    {
+      cols := conn.meta.tableMeta(name)
+      table := SqlUtil.colsToSchema(name, cols)
       cache.set(key, table)
       return table
     }

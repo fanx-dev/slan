@@ -37,7 +37,7 @@ const class Context
     if (obj is Type)
     {
       type := obj as Type
-      return tables.get(type)
+      return tables.getFromType(type)
     }
     else if (obj is Record)
     {
@@ -46,8 +46,13 @@ const class Context
     }
     else
     {
-      return tables.get(obj.typeof)
+      return tables.getFromType(obj.typeof)
     }
+  }
+
+  Schema getTableFromDb(Str name)
+  {
+    tables.getFromDb(conn, name)
   }
 
   **
