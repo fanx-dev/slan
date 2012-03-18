@@ -33,7 +33,7 @@ const class ConnFactory
     {
       tables.each { log.debug(it.toStr) }
     }
-    return CacheableContext(OMapping(tables))
+    return CacheableContext(Mapping(tables))
   }
 
   Context initFromDb(|Str->Bool|? tableFilter := null)

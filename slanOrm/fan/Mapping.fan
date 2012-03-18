@@ -11,12 +11,10 @@ using isql
 
 const class Mapping
 {
-  const Str:Schema tables
-  private const Schema[] list
+  private const Str:Schema tables
 
   new make(Schema[] list)
   {
-    this.list = list
     tables := Str:Schema[:]
     list.each
     {
@@ -32,8 +30,15 @@ const class Mapping
 
   virtual Schema getTableByObj(Obj obj)
   {
-    Record r := obj
-    return getTableByName(r.schema.name)
+    if (obj is Record)
+    {
+      Record r := obj
+      return r.schema
+    }
+    else
+    {
+      return getTableByType(obj.typeof)
+    }
   }
 
   virtual Schema getTableByName(Str name)
@@ -42,9 +47,9 @@ const class Mapping
     return tables[name]
   }
 
-  Void each(|Schema, Int| f)
+  Void each(|Schema| f)
   {
-    list.each(f)
+    tables.each(f)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,31 +93,3 @@ const class Mapping
   }
 }
 
-**************************************************************************
-**
-**************************************************************************
-
-const class OMapping : Mapping
-{
-  const [Type:Schema]? tTables
-
-  new make(OSchema[] list) : super(list)
-  {
-    tables := Type:Schema[:]
-    list.each
-    {
-      tables[it.type] = it
-    }
-    this.tTables = tables
-  }
-
-  override Schema getTableByType(Type type)
-  {
-    tTables[type]
-  }
-
-  override Schema getTableByObj(Obj obj)
-  {
-    getTableByType(obj.typeof)
-  }
-}
