@@ -28,7 +28,8 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache()
 
-  new make(Mapping tables) : super(tables) {}
+  new make(Str curId := id, Mapping tables := Mapping([,]), Dialect dialect := Dialect())
+   : super(curId, tables, dialect) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Tools

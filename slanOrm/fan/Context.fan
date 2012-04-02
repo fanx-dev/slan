@@ -24,10 +24,13 @@ const class Context
   ** power of sql
   private const Executor executor
 
+  const Str curId
+
   ** constructor
-  new make(Mapping tables := Mapping([,]), Dialect dialect := Dialect())
+  new make(Str curId := id, Mapping tables := Mapping([,]), Dialect dialect := Dialect())
   {
     this.tables = tables
+    this.curId = curId
     executor = Executor(dialect)
   }
 
@@ -60,7 +63,7 @@ const class Context
   **
   SqlConn conn()
   {
-    SqlConn? c := Actor.locals[id]
+    SqlConn? c := Actor.locals[curId]
     if (c == null) throw SqlErr("Database is not open.")
     if (c.isClosed) throw SqlErr("Database has been closed.")
     return c

@@ -9,7 +9,7 @@
 **
 ** wrapper the object for cache
 **
-** 
+**
 @Serializable
 class CacheObj
 {
@@ -18,7 +18,7 @@ class CacheObj
   const Str id
   const Duration expire
   const Duration createTime
-  
+
   new make(|This| f)
   {
     f(this)

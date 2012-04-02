@@ -33,7 +33,7 @@ const class ConnFactory
     {
       tables.each { log.debug(it.toStr) }
     }
-    return CacheableContext(Mapping(tables))
+    return CacheableContext(Context.id, Mapping(tables))
   }
 
   Context initFromDb(|Str->Bool|? tableFilter := null)
@@ -45,7 +45,7 @@ const class ConnFactory
       tables.each { log.debug(it.toStr) }
     }
     pool.close(conn)
-    return CacheableContext(Mapping(tables))
+    return CacheableContext(Context.id, Mapping(tables))
   }
 
   Void open()
