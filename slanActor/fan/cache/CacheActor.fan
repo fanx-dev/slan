@@ -80,7 +80,11 @@ const class CacheActor : AsyActor
     //remove
     for (i:=0; i<halfNum; ++i)
     {
-      map.remove(list[i].key)
+      v := map.remove(list[i].key)
+      if (v != null && v is CacheValue)
+      {
+        ((CacheValue)v).onRemove
+      }
     }
 
     log.debug("after clean: " + map.size)

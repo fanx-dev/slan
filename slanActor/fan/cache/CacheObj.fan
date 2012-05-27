@@ -20,6 +20,11 @@ mixin CacheObj
   abstract Str key()
 }
 
+mixin CacheValue
+{
+  abstract Void onRemove()
+}
+
 @Serializable
 internal class MutableCacheObj : CacheObj
 {
