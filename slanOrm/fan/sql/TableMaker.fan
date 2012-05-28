@@ -37,6 +37,11 @@ internal const class TableMaker
     return sql.toStr
   }
 
+  Str createIndex(Str tableName, Str fieldName)
+  {
+    "create index index_${tableName}_${fieldName} on ${tableName} (${fieldName})"
+  }
+
   Str dropTable(Schema table)
   {
     return "drop table $table.name"

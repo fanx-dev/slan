@@ -255,6 +255,21 @@ internal const class Executor
     stmt := db.sql(sql)
     stmt.execute
     stmt.close
+
+    table.each |CField f|
+    {
+      if (f.indexed)
+      {
+        sql = tableMaker.createIndex(table.name, f.name)
+        if (log.isDebug)
+        {
+          log.debug(sql)
+        }
+        stmt = db.sql(sql)
+        stmt.execute
+        stmt.close
+      }
+    }
   }
 
   Void dropTable(Schema table, SqlConn db)

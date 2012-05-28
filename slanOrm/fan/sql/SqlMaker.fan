@@ -150,7 +150,7 @@ internal const class SelectMaker
 
     table.each
     {
-      sql.add("$it.name,")
+      sql.add("${table.name}.$it.name,")
     }
 
     Utils.removeLastChar(sql)
