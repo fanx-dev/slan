@@ -18,8 +18,8 @@ const class OSchema : Schema
   ** Entity type
   const Type type
 
-  new make(Type type, Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
-    : super(name, fields, idIndex, autoGenerateId)
+  new makeNew(Type type, Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
+    : super.makeNew(name, fields, idIndex, autoGenerateId)
   {
     this.type = type
     if (!type.hasFacet(Serializable#))

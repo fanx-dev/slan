@@ -15,7 +15,9 @@
 @Serializable
 class Record
 {
+  @Transient
   Schema schema { private set }
+
   private Obj?[] values
 
   new make(Schema s, Obj?[]? vals := null)

@@ -23,8 +23,8 @@ const class OField : CField
   **
   ** if the name is null, will use field name
   **
-  new make(Field field, Int index, Str? name := null, |This|? f := null)
-    : super(name ?: field.parent.name + "_" + field.name, field.type, index, f)
+  new makeNew(Field field, Int index, Str? name := null, |This|? f := null)
+    : super.makeNew(name ?: field.parent.name + "_" + field.name, field.type, index, f)
   {
     this.field = field
   }

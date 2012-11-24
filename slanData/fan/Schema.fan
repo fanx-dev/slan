@@ -24,7 +24,9 @@ const class Schema
   ** auto generate the key
   const Bool autoGenerateId
 
-  new make(Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
+  new make(|This| f) { f(this) }
+
+  new makeNew(Str name, CField[] fields, Int idIndex := -1, Bool autoGenerateId := false)
   {
     this.columns = fields
     this.name = name

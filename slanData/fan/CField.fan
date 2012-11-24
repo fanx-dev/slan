@@ -31,7 +31,9 @@ const class CField
   ** hint to build index on this field
   const Bool? indexed
 
-  new make(Str name, Type type, Int index, |This|? f := null)
+  new make(|This| f) { f(this) }
+
+  new makeNew(Str name, Type type, Int index, |This|? f := null)
   {
     this.name = name
     this.type = type
