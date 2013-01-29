@@ -65,7 +65,11 @@ const class SlanRouteMod : WebMod
 
     //execute
     req.mod = mod
+    buf := Buf()
+    req.stash["_out"] = WebOutStream(buf.out)
     mod.onService
+    buf.flip
+    buf.in.pipe(res.out)
   }
 
   **

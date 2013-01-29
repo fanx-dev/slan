@@ -37,7 +37,7 @@ internal const class TemplateTranslater
           {
             Void dump(|->|? lay, WebOutStream? out_)
             {
-              out := out_ ?: res.out
+              WebOutStream out := out_ ?: req.stash[\"_out\"]
               $all
             }
           }"
