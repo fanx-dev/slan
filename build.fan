@@ -22,13 +22,9 @@ class Build : BuildGroup
     [
       `idraft/build.fan`,
       `slanActor/build.fan`,
-      `slanData/build.fan`,
 
       `slanUtil/build.fan`,
       `slanWeb/build.fan`,
-
-      `isql/build.fan`,
-      `slanOrm/build.fan`
     ]
   }
 
