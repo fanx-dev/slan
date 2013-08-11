@@ -54,4 +54,10 @@ const class Cache
 
   ** remove all
   Void clear(){ cache->clear }
+
+  Void addAll([Str:Obj?] target) { cache->allAll(target) }
+
+  Void clearIf(|Str -> Bool| f) { cache->clearIf(f) }
+
+  [Str:Obj?] getMap() { cache->getMap }
 }

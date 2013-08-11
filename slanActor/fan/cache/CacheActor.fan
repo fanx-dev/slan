@@ -62,6 +62,8 @@ const class CacheActor : AsyActor
     return map
   }
 
+  [Str:Obj?] _getMap() { map }
+
 //////////////////////////////////////////////////////////////////////////
 // clear
 //////////////////////////////////////////////////////////////////////////
@@ -93,4 +95,32 @@ const class CacheActor : AsyActor
     log.debug("after clean: " + map.size)
     Env.cur.gc
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Other
+//////////////////////////////////////////////////////////////////////////
+
+  Void _addAll([Str:Obj?] target)
+  {
+    srcous := map
+    target.each |Obj? value, Str key|
+    {
+      srcous[key]=value
+      if (log.isDebug)
+      {
+        log.debug("commitCahe:[$key:$value]".replace("\n",""))
+      }
+    }
+  }
+
+  Void _clearIf(|Str -> Bool| f)
+  {
+    old := Str[,]
+    map.each |v,k|
+    {
+      if (f(k)) old.add(k)
+    }
+    old.each { map.remove(it) }
+  }
+
 }
