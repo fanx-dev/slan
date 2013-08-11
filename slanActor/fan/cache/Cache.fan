@@ -50,7 +50,7 @@ const class Cache
   Void remove(Str key) { cache->remove(key) }
 
   ** contains the Key
-  Bool containsKey(Str key) { cache->containsKey(key) }
+  Bool containsKey(Str key) { (cache->containsKey(key) as Future).get }
 
   ** remove all
   Void clear(){ cache->clear }
@@ -59,5 +59,5 @@ const class Cache
 
   Void clearIf(|Str -> Bool| f) { cache->clearIf(f) }
 
-  [Str:Obj?] getMap() { cache->getMap }
+  [Str:Obj?] getMap() { (cache->getMap as Future).get }
 }

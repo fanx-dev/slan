@@ -52,7 +52,14 @@ class Schema
     columns.each(f)
   }
 
-  CField find(Str name) { get(map[name]) }
+  CField find(Str name)
+  {
+    i := map[name]
+    if (i == null) {
+      throw Err("not found $name")
+    }
+    return get(i)
+  }
 
 
   ** PK of this table
@@ -64,7 +71,12 @@ class Schema
 
   virtual Obj newInstance()
   {
-    return type.make([this])
+    m := type.method("make").params
+    if (m.size == 0) {
+      return type.make([,])
+    } else {
+      return type.make([this])
+    }
   }
 
   override Str toStr()

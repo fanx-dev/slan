@@ -20,13 +20,13 @@ const class CacheableContext : Context
   **
   ** cache for object
   **
-  const Cache objCache := Cache()
+  const Cache objCache := Cache(500, false)
 
   **
   ** cache for query .
   ** the key is serialization string,value is id list.
   **
-  const Cache queryCache := Cache()
+  const Cache queryCache := Cache(500, false)
 
   new make(Str curId := id)
    : super(curId) {}

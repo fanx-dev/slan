@@ -27,16 +27,6 @@ mixin Record
     if (idf == null) return null
     return get(idf.index)
   }
-
-  override Obj? trap(Str name, Obj?[]? args := null)
-  {
-    if (args == null) {
-      return get(schema.find(name).index)
-    } else {
-      set(schema.find(name).index, args)
-      return null
-    }
-  }
 }
 
 @Js
@@ -56,6 +46,20 @@ class ArrayRecord : Record
 
   override Obj? get(Int i) { values[i] }
   override Void set(Int i, Obj? value) { values[i] = value }
+
+  override Obj? trap(Str name, Obj?[]? args := null)
+  {
+    m := this.typeof.slot(name, false)
+    if (m != null) {
+      return super.trap(name, args)
+    }
+    if (args == null) {
+      return get(schema.find(name).index)
+    } else {
+      set(schema.find(name).index, args)
+      return null
+    }
+  }
 }
 
 
