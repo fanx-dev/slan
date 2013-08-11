@@ -25,34 +25,22 @@ const class Cache
   @Operator
   Obj? get(Str key)
   {
-    CacheObj? obj := (cache->get(key) as Future).get
-    if(obj == null) return null
-    return obj.value
+    obj := (cache->get(key) as Future).get
+    if (safe) return obj
+    else return ((Unsafe)obj).val
   }
 
   @Operator
   Void set(Str key, Obj? val)
   {
-    CacheObj? obj
+    Obj? obj
     if (safe)
     {
-      if (val == null)
-      {
-        obj = UnsafeCacheObj(val, key)
-      }
-      else if (val.isImmutable)
-      {
-        val.toImmutable
-        obj = UnsafeCacheObj(val, key)
-      }
-      else
-      {
-        obj = MutableCacheObj(val, key)
-      }
+      obj = val
     }
     else
     {
-      obj = UnsafeCacheObj(val, key)
+      obj = Unsafe(val)
     }
 
     cache->set(key, obj)
@@ -62,7 +50,7 @@ const class Cache
   Void remove(Str key) { cache->remove(key) }
 
   ** contains the Key
-  Bool containsKey(Str key) { cache->containsKey(key)->get }
+  Bool containsKey(Str key) { cache->containsKey(key) }
 
   ** remove all
   Void clear(){ cache->clear }

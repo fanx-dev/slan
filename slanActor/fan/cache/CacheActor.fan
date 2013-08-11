@@ -14,25 +14,26 @@ using concurrent
 const class CacheActor : AsyActor
 {
   const Int maxNum
-  const Int halfNum
   private const ActorLocal cacheMap := ActorLocal()
   private const Log log := Pod.of(this).log
 
   new make(Int maxNum := 500) : super(ActorPool())
   {
     this.maxNum = maxNum
-    halfNum = maxNum / 2
   }
 
-  CacheObj? _get(Str key)
+  Obj? _get(Str key)
   {
     obj := map.get(key)
-    if(obj == null) return null
-    obj.updateLastAccess
+
+    //move to last
+    map.remove(key)
+    map[key] = obj
+
     return obj
   }
 
-  Void _set(Str key, CacheObj? obj)
+  Void _set(Str key, Obj? obj)
   {
     clean
     map.set(key, obj)
@@ -50,12 +51,12 @@ const class CacheActor : AsyActor
   **
   ** get current cache map
   **
-  private [Str:CacheObj] map()
+  private [Str:Obj?] map()
   {
     map := cacheMap.get
     if (map == null)
     {
-      map = Str:CacheObj[:]
+      map = Str:Obj?[:] { ordered = true }
       cacheMap.set(map)
     }
     return map
@@ -75,12 +76,14 @@ const class CacheActor : AsyActor
 
     log.debug("before clean: " + map.size)
     //sort
-    CacheObj[] list := map.vals.sort |CacheObj a, CacheObj b->Int| { return a.lastAccess <=> b.lastAccess }
+    keys := map.keys
+    //echo(keys)
 
     //remove
+    halfNum := maxNum / 2
     for (i:=0; i<halfNum; ++i)
     {
-      v := map.remove(list[i].key)
+      v := map.remove(keys[i])
       if (v != null && v is CacheValue)
       {
         ((CacheValue)v).onRemove
