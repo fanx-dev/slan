@@ -8,6 +8,7 @@
 
 using web
 using compiler
+using slanActor
 
 **
 ** cache for script by
