@@ -49,9 +49,12 @@ const class Proxy : WebMod
     c.readRes
     res.statusCode = c.resCode
     c.resHeaders.each |v,k| { res.headers[k] = v }
+    res.headers["Content-Encoding"] = ""
+
     if (c.resHeaders["Content-Type"]   != null ||
-        c.resHeaders["Content-Length"] != null)
+        c.resHeaders["Content-Length"] != null) {
       c.resIn.pipe(res.out)
+    }
     c.close
   }
 }
