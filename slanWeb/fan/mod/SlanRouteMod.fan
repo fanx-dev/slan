@@ -9,6 +9,7 @@
 using webmod
 using web
 using concurrent
+using slanCompiler
 
 **
 ** Route for all Mod
@@ -69,6 +70,9 @@ const class SlanRouteMod : WebMod
     req.stash["_out"] = WebOutStream(buf.out)
     mod.onService
     buf.flip
+    if (!res.isCommitted) {
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+    }
     buf.in.pipe(res.out)
   }
 
@@ -146,6 +150,7 @@ const class SlanRouteMod : WebMod
   {
     if (res.isCommitted && !res.isDone)
     {
+      //err.trace
       res.out.print("<p>ERROR: $req.uri</p>")
       res.out.w(err.traceToStr.replace("\n","<br/>"))
     }

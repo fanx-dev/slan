@@ -21,6 +21,16 @@ const class TemplateCompiler : ScriptCompiler
     codeTrans = TemplateTranslater(podName)
   }
 
+  virtual File getFile(Uri uri) {
+    uri.toFile
+  }
+
+  Void renderUri(Uri uri, |->|? lay := null, WebOutStream? out := null)
+  {
+    file := getFile(uri)
+    render(file, lay, out)
+  }
+
   Void render(File file, |->|? lay := null, WebOutStream? out := null)
   {
     type := getType(file)

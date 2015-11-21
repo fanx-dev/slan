@@ -7,6 +7,7 @@
 //
 
 using build
+using slanCompiler
 
 **
 ** Helper to find resource

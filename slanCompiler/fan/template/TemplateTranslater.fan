@@ -31,9 +31,9 @@ internal const class TemplateTranslater
     all := convertTemplate(file)
 
     s := "using web
-          using slanWeb
+          using slanTemplate
 
-          const class HtmlTemplet : ${SlanWeblet#.name}
+          const class HtmlTemplet : ${TemplateWeblet#.name}
           {
             Void dump(|->|? lay, WebOutStream? out_)
             {

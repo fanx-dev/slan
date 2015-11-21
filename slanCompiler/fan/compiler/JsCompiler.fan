@@ -6,9 +6,9 @@
 //   2010-9-22  Jed Young  Creation
 //
 
-using util
+//using util
 using web
-using webmod
+//using webmod
 using compiler
 
 **
@@ -67,7 +67,7 @@ const class JsCompiler
   **
   ** compile to jscode
   **
-  JsScript getJsScript(File file)
+  internal JsScript getJsScript(File file)
   {
     cache.getOrAdd(file)|->Obj|
     {
@@ -122,7 +122,7 @@ const class JsCompiler
 ** JsScript
 **************************************************************************
 
-const class JsScript
+internal const class JsScript
 {
   const Str js;
   const Str main;

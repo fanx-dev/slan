@@ -8,6 +8,7 @@
 
 using build
 using concurrent
+using slanCompiler
 
 **
 ** Application Config

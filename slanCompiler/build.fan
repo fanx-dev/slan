@@ -16,21 +16,17 @@ class Build : BuildPod
 {
   new make()
   {
-    podName = "slanWeb"
-    summary = "slan web framework"
+    podName = "slanCompiler"
+    summary = "slan template compiler"
     depends =
     [
         "sys 1.0",
-        "webmod 1.0",
         "web 1.0",
         "compiler 1.0",
-        "util 1.0",
         "concurrent 1.0",
-        "build 1.0",
-        "slanActor 1.0",
-        "slanCompiler 1.0"
+        "slanActor 1.0"
     ]
-    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/action/`, `fan/util/`]
-    //resDirs = [`res/`]
+    srcDirs = [`test/`, `fan/`, `fan/compiler/`, `fan/template/`]
+    resDirs = [`res/`]
   }
 }

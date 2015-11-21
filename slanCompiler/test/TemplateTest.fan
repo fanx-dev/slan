@@ -11,9 +11,8 @@ internal class TemplateTest : Test
   Void test()
   {
     Pod.of(this).log.level = LogLevel.debug
-    SlanApp slanApp := SlanApp.makeProduct("slanSample")
-    TemplateCompiler c := slanApp.templateCompiler
-    c->getType(`fan://slanWeb/res/welcome.html`.get)
+    TemplateCompiler c := TemplateCompiler()
+    c->getType(`fan://slanTemplate/res/welcome.html`.get)
     Pod.of(this).log.level = LogLevel.info
   }
 }

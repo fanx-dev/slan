@@ -25,6 +25,7 @@ class Build : BuildGroup
       `isql/build.fan`,
 
       `slanUtil/build.fan`,
+      `slanCompiler/build.fan`,
       `slanWeb/build.fan`,
       `slanRecord/build.fan`
     ]

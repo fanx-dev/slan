@@ -44,7 +44,7 @@ internal class Tokenizer
   // covert
   ////////////////////////////////////////////////////////////////////////
 
-  public static Str convert(Str oldStr, Str podName)
+  public static Str convert(Str oldStr, Str? podName)
   {
     tok := Tokenizer(oldStr)
     buf := StrBuf()
@@ -61,7 +61,7 @@ internal class Tokenizer
 
   //private static Str triple = Str<|"""|>
 
-  private static Str getCode(Tokenizer tok, Str s, Str podName)
+  private static Str getCode(Tokenizer tok, Str s, Str? podName)
   {
     Str code := ""
     switch(tok.preMode)
@@ -76,12 +76,13 @@ internal class Tokenizer
       case localeMode:
         if (tok.valid)
         {
-          if (s.contains("::"))
+          if (podName == null || s.contains("::"))
             code = "\$<$s>"
           else
             code = "\$<$podName::$s>"
-        }else
+        } else {
           code = s
+        }
     }
     return code
   }
