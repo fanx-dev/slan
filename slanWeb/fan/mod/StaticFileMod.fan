@@ -16,11 +16,9 @@ using web
 const class StaticFileMod : WebMod
 {
   private const Uri dir
-  private const SlanApp slanApp
 
-  new make(SlanApp slanApp, Uri dir)
+  new make(Uri dir)
   {
-    this.slanApp = slanApp
     this.dir = dir
   }
 
@@ -28,7 +26,8 @@ const class StaticFileMod : WebMod
   {
     rel := req.modRel.relTo(`/`)
     ps := dir + rel
-    File file := slanApp.resourceHelper.getUri(ps).get
+    SlanApp slanApp := SlanApp.cur
+    File file := slanApp.getUri(ps).get
     FileWeblet(file).onService
   }
 }

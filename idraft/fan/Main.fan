@@ -47,7 +47,7 @@ class Main : AbstractMain
     }
     else
     {
-      Actor.locals["idraft.appHome"] = appHome
+      Actor.locals["slan.appHome"] = appHome
       rootMod = type.make
     }
 

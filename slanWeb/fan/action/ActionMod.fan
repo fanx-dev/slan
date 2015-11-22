@@ -21,31 +21,51 @@ using concurrent
 const class ActionMod : WebMod
 {
   private const Uri dir //action directory
-  private const ActionRunner actionRunner
-  private const SlanApp slanApp
-
-  static const Str slanAppId := "slanWeb.ActionRunner.slanApp"
 
   **
   ** dir:action directory
   **
-  new make(SlanApp slanApp, Uri dir)
+  new make(Uri dir)
   {
-    this.slanApp = slanApp
     this.dir = dir
-    actionRunner = ActionRunner()
   }
 
   override Void onService()
   {
-    checkReferer
+    //checkReferer
+    paths := pathArray(req.modRel)
+    typeName := paths.first
+    slanApp := SlanApp.cur
+    consume := false
+    Type? type
+    if (typeName != null) {
+      type = slanApp.getType(typeName, dir, false)
+    }
 
-    //locate action
-    action := ActionLocation(slanApp, dir)
-    path := pathArray(req.modRel)
-    if (action.parse(path))
-    {
-      run(action)
+    if (type != null) {
+      consume = true
+    } else {
+      type = slanApp.getType("Index", dir, false)
+    }
+
+    if (type == null) {
+      res.sendErr(404)
+      return
+    }
+
+    if (consume) {
+      if (paths.size > 1) {
+        req.stash["_paths"] = paths[1..-1]
+      }
+    } else {
+      req.stash["_paths"] = paths
+    }
+
+    obj := type.make()
+    locale.use {
+      if (obj is Weblet) {
+        (obj as Weblet).onService
+      }
     }
   }
 
@@ -75,26 +95,22 @@ const class ActionMod : WebMod
     return relStr[0..<dot].toUri.path
   }
 
-  ** run action
-  private Void run(ActionLocation action)
+  **
+  ** build-in locale
+  **
+  private Locale? locale()
   {
-    Actor.locals[slanAppId] = slanApp
-    try
-    {
-      actionRunner.execute(action)
-    }
-    //catch(SlanCompilerErr e)
-    //{
-    //  throw e
-    //}
-    //catch(Err e)
-    //{
-      //throw Err("Action error : name $action.type.name#$action.method.name,
-       //           on $action.constructorParams,with $action.methodParams", e)
-    //}
-    finally
-    {
-      Actor.locals.remove(slanAppId)
-    }
+    acceptLang := req.headers["Accept-Language"]
+    if (acceptLang == null || acceptLang == "") return null
+
+    localeStr := acceptLang.split(';').first
+    localeStr = localeStr.split(',').first
+    list := localeStr.split('-')
+
+    lang := list.first.lower
+    country := list.last.upper
+    locale := "$lang-$country"
+
+    return Locale.fromStr(locale, false)
   }
 }

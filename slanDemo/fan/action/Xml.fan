@@ -15,7 +15,7 @@ class Xml : SlanWeblet
 {
   Void data()
   {
-    m->name = "abc"
+    stash("name", "abc")
     render
   }
 }

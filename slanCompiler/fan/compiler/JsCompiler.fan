@@ -27,7 +27,7 @@ const class JsCompiler
     this.podName = podName
   }
 
-  Void render(WebOutStream out, File file, [Str:Str]? env := null)
+  Void renderFile(WebOutStream out, File file, [Str:Str]? env := null)
   {
     script := getJsScript(file)
 

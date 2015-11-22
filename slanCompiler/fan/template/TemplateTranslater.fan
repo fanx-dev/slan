@@ -31,7 +31,7 @@ internal const class TemplateTranslater
     all := convertTemplate(file)
 
     s := "using web
-          using slanTemplate
+          using slanCompiler
 
           const class HtmlTemplet : ${TemplateWeblet#.name}
           {

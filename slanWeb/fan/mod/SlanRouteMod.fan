@@ -19,28 +19,19 @@ const class SlanRouteMod : WebMod
   private const static Str publics := "public"
   private const static Str actions := "action"
   private const Uri errorPage := `/$publics/error.html`
-  private const SlanApp slanApp
 
   ** Map of URI path names to sub-WebMods.
   const Str:WebMod routes
 
-  new make(SlanApp slanApp)
+  new make()
   {
-    this.slanApp = slanApp
     routes =
     [
-      actions : ActionMod(slanApp, `fan/$actions/`),
+      actions : ActionMod(`fan/$actions/`),
       "pod" : PodJsMod(),
-      "jsfan" : JsfanMod(slanApp, `fan/jsfan/`),
-      publics : StaticFileMod(slanApp, `$publics/`),
+      "jsfan" : JsfanMod(`fan/jsfan/`),
+      publics : StaticFileMod(`$publics/`),
     ]
-  }
-
-  static SlanRouteMod makeApp(Str podName)
-  {
-    Str? appHome := Actor.locals["idraft.appHome"]
-    app := appHome == null ? SlanApp.makeProduct(podName) : SlanApp.makeDebug(appHome.toUri)
-    return SlanRouteMod(app)
   }
 
   override Void onService()
@@ -124,6 +115,7 @@ const class SlanRouteMod : WebMod
   ** trace errInfo
   private Void onErro(Err err)
   {
+    slanApp := SlanApp.cur
     if (req.absUri.host == "localhost" || !slanApp.isProductMode)
     {
       //show error on debug mode

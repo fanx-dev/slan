@@ -28,7 +28,9 @@ class Build : BuildPod
         "concurrent 1.0",
         "build 1.0",
         "slanActor 1.0",
-        "slanCompiler 1.0"
+        "slanCompiler 1.0",
+        "inet 1.0",
+        "wisp 1.0"
     ]
     srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/action/`, `fan/util/`]
     //resDirs = [`res/`]

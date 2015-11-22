@@ -16,15 +16,15 @@ const class Base : Controller
 {
   Void index()
   {
-    m->name = "world"
-    m->compileJs = compileJs(`Hello.fwt`)
+    stash("name", "world")
+    stash("compileJs", compileJs(`Hello.fwt`))
     render
   }
 
   @WebGet
   Void welcome()
   {
-    m->name = stashId
+    stash("name", stashId)
     render
   }
 

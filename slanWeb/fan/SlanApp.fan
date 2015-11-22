@@ -33,10 +33,25 @@ const class SlanApp
   **
   ** depends javascript pod names
   **
-  const Str[] jsDepends
+  private const Str[] jsDepends
+
+  ** static instance
+  static const AtomicRef instance := AtomicRef()
+
+  ** get static instance
+  static SlanApp cur() { instance.val }
+
+  ** init static instance
+  static Void init(Str podName) {
+    Str? appHome := Actor.locals["slan.appHome"]
+    slanApp := appHome == null ? SlanApp.makeProduct(podName) : SlanApp.makeDebug(appHome.toUri)
+    instance.val = slanApp
+
+    echo("$podName, $slanApp.appHome")
+  }
 
   ** new Debug Mode
-  new makeDebug(Uri appHome)
+  private new makeDebug(Uri appHome)
   {
     checkAppHome(appHome)
 
@@ -51,13 +66,13 @@ const class SlanApp
     addJsDepends(depends, Pod.find(podName))
     jsDepends = depends
 
-    resourceHelper = ResourceHelper(this)
     jsCompiler = JsCompiler(this.jsDepends, this.podName)
-    templateCompiler = TemplateCompiler(this.podName)
+    templateCompiler = SlanTemplate(this.podName)
+    scriptCompiler = ScriptCompiler(this.podName)
   }
 
   ** new Product Mode
-  new makeProduct(Str podName)
+  private new makeProduct(Str podName)
   {
     checkPodName(podName)
 
@@ -68,9 +83,9 @@ const class SlanApp
     addJsDepends(depends, Pod.find(podName))
     jsDepends = depends
 
-    resourceHelper = ResourceHelper(this)
     jsCompiler = JsCompiler(this.jsDepends, this.podName)
-    templateCompiler = TemplateCompiler(this.podName)
+    templateCompiler = SlanTemplate(this.podName)
+    scriptCompiler = ScriptCompiler(this.podName)
   }
 
   **
@@ -102,10 +117,70 @@ const class SlanApp
   }
 
 //////////////////////////////////////////////////////////////////////////
+// resourceHelper
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** res path. switch podFile or file
+  **
+  Uri getUri(Uri path)
+  {
+    if (this.isProductMode)
+    {
+      return `fan://${this.podName}/$path`
+    }
+    else
+    {
+      return `${this.appHome}$path`
+    }
+  }
+
+  **
+  ** find type by script or pod.
+  ** internal for JsfanMod#
+  ** if product mode return podName
+  **
+  internal Obj findTypeUri(Str typeName, Uri dir)
+  {
+    if (this.isProductMode)
+    {
+      //find in pod
+      //return `fan://$podName/$typeName`
+      return this.podName
+    }
+    else
+    {
+      //find in file
+      path := `${dir.toStr}${typeName}.fan`.toFile
+      file := `${this.appHome}$path`
+      return file
+    }
+  }
+
+  Type? getType(Str typeName, Uri dir, Bool checked := true)
+  {
+    typeRes := findTypeUri(typeName, dir)
+    if (typeRes is Str)
+    {
+      return Pod.find(typeRes).type(typeName, checked)
+    }
+    else
+    {
+      file := (typeRes as Uri).get(null, checked)
+      if (file == null) return null
+      type := scriptCompiler.getType(file)
+
+      if (type.name != typeName)
+        throw UnknownTypeErr("The file name not match the type name: $type.name != $file")
+      return type
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Application tools
 //////////////////////////////////////////////////////////////////////////
 
-  const ResourceHelper resourceHelper
+  private const ScriptCompiler scriptCompiler
 
   **
   ** fantom to javascript compiler
@@ -115,5 +190,18 @@ const class SlanApp
   **
   ** html template to fantome class compiler
   **
-  const TemplateCompiler templateCompiler
+  const SlanTemplate templateCompiler
+}
+
+
+const class SlanTemplate : TemplateCompiler
+{
+  new make(Str? podName := null) : super(podName){
+  }
+
+  override File getFile(Uri uri) {
+    slanApp := SlanApp.cur
+    file := slanApp.getUri(`res/view/${uri}.html`).get
+    return file
+  }
 }

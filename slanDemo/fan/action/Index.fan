@@ -21,7 +21,7 @@ class Index : SlanWeblet
 
     res.out.html.
       head.title.w("slan sample").titleEnd.headEnd.
-      h1.w("Slan Framework").h1End.
+      h1.w("Slan Web Framework").h1End.
 
       h2.w("Base Examples").h2End.
       a(`/Base`).w("/Base").aEnd.br.

@@ -15,18 +15,17 @@ using web
 const class JsfanMod : WebMod
 {
   private const Uri dir
-  private const SlanApp slanApp
 
-  new make(SlanApp slanApp, Uri dir)
+  new make(Uri dir)
   {
-    this.slanApp = slanApp
     this.dir = dir
   }
 
   override Void onService()
   {
     typeName := req.uri.basename
-    typeRes := slanApp.resourceHelper.findTypeUri(typeName, dir)
+    slanApp := SlanApp.cur
+    typeRes := slanApp.findTypeUri(typeName, dir)
 
     res.headers["Content-Type"] = "text/html; charset=utf-8"
     if (typeRes is Str)
@@ -37,7 +36,7 @@ const class JsfanMod : WebMod
     else
     {
       file := (typeRes as Uri).get
-      slanApp.jsCompiler.render(res.out, file)
+      slanApp.jsCompiler.renderFile(res.out, file)
     }
   }
 }

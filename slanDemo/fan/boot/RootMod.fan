@@ -21,7 +21,7 @@ const class RootMod : PipelineMod
   {
     pp.steps =
     [
-      SlanRouteMod.makeApp(this.typeof.pod.name)
+      SlanRouteMod()
     ]
     //pp.after = [ SlanLogMod(logDir) ]
   }){}

@@ -28,10 +28,10 @@ const class TemplateCompiler : ScriptCompiler
   Void renderUri(Uri uri, |->|? lay := null, WebOutStream? out := null)
   {
     file := getFile(uri)
-    render(file, lay, out)
+    renderFile(file, lay, out)
   }
 
-  Void render(File file, |->|? lay := null, WebOutStream? out := null)
+  Void renderFile(File file, |->|? lay := null, WebOutStream? out := null)
   {
     type := getType(file)
     obj := type.make()
