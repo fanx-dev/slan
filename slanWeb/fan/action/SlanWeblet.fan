@@ -43,27 +43,33 @@ mixin SlanWeblet : Weblet
   {
     Str[]? paths := req.stash["_paths"]
     Method? method
+    hasSubPath := false
     if (paths != null && paths.first != null) {
       method = this.typeof.method(paths.first, false)
+      hasSubPath = true
+
+      if (method != null) {
+        if (paths != null && paths.size > 1) {
+          req.stash["_stashId"] = paths[1]
+        }
+        return method
+      }
     }
 
     //named op
-    if (method != null) {
-      if (paths != null && paths.size > 1) {
-        req.stash["_stashId"] = paths[1]
-      }
-      return method
-    }
-    else if (paths != null) {
+    if (paths != null) {
       req.stash["_stashId"] = paths.first
     }
 
-    method = this.typeof.method("index", false)
-    if (method != null) {
-      return method
+    if (!hasSubPath && req.method == "GET") {
+      method = this.typeof.method("index", false)
+      if (method != null) {
+        return method
+      }
     }
 
     method = this.typeof.method(req.method.lower, false)
+
     return method
   }
 
@@ -126,7 +132,7 @@ mixin SlanWeblet : Weblet
     }
 
     //writeContentType
-    ext := (req.stash["_contentType"] as Str) ?: "html"
+    ext := (req.modRel.ext) ?: "html"
     if (!res.isCommitted) setContentType(ext)
 
     slanApp := SlanApp.cur

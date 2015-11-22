@@ -1,2 +1,2 @@
-fan idraft -appHome file:/D:/code/Hg/slan/slanDemo/ slanDemo::RootMod
-#fan idraft -appHome file:/home/jed/yjd/code/slan/slanDemo/ slanDemo::RootMod
+fan idraft -appHome file:/Users/yangjiandong/workspace/code/slan/slanDemo/ slanDemo::RootMod
+#fan slanWeb::Main -appHome file:/Users/yangjiandong/workspace/code/slan/slanDemo/ slanDemo

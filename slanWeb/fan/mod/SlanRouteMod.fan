@@ -61,7 +61,7 @@ const class SlanRouteMod : WebMod
     req.stash["_out"] = WebOutStream(buf.out)
     mod.onService
     buf.flip
-    if (!res.isCommitted) {
+    if (!res.isCommitted && res.headers["Content-Type"] == null) {
       res.headers["Content-Type"] = "text/html; charset=utf-8"
     }
     buf.in.pipe(res.out)

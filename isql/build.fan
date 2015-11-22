@@ -17,7 +17,7 @@ class Build : BuildPod
   new make()
   {
     podName  = "isql"
-    summary  = "Yet another relational database access"
+    summary  = "JDBC like relational database access"
     meta     = ["org.name":     "Fantom",
                 "org.uri":      "http://fantom.org/",
                 "proj.name":    "Fantom Core",

@@ -60,6 +60,4 @@ class Index : SlanWeblet
     setContentType
     req.headers.each |Str v, Str k| { res.out.printLine("$k: $v") }
   }
-
-  Void get(){ res.sendErr(404) }
 }

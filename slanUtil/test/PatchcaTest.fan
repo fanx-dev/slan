@@ -17,16 +17,18 @@ internal class PatchcaTest : Test
 
   Void testOutputImage()
   {
-    file := File(`/D:/Temp/test/img.jpg`)
+    file := File.createTemp
     patchca := Patchca{ width = 200 }
     patchca.outputImage(file.out, "5xMio")
+    echo(file)
   }
 
   Void test()
   {
-    file := File(`/D:/Temp/test/img2.jpg`)
+    file := File.createTemp
     patchca := Patchca{}
     code := patchca.create(file.out)
     echo(code)
+    echo(file)
   }
 }

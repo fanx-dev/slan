@@ -10,10 +10,11 @@ internal class ImageTextTest : Test
 {
   Void testDraw()
   {
-    file := File(`/D:/Temp/test/imgText.jpg`)
+    file := File.createTemp
     img := ImageText{ width = 300; height = 300 }
     img.drawStr("5xMio")
     2000.times{ img.drawPointNoise }
     img.dump(file.out)
+    echo(file)
   }
 }

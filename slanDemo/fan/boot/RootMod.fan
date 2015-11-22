@@ -19,6 +19,8 @@ const class RootMod : PipelineMod
 {
   new make(Uri? path := null) : super(|PipelineMod pp|
   {
+    SlanApp.init(this.typeof.pod.name)
+
     pp.steps =
     [
       SlanRouteMod()

@@ -107,8 +107,8 @@ const class SlanApp
 
   private Void checkAppHome(Uri appPath)
   {
-    if (!appPath.isDir)  throw ArgErr("Invalid appHome. Directory need a slash")
-    if (!`${appPath}build.fan`.toFile.exists)  throw ArgErr("Invalid appHome. not find build.fan")
+    if (!appPath.isDir)  throw ArgErr("Invalid appHome:$appPath Directory need a slash")
+    if (!`${appPath}build.fan`.toFile.exists)  throw ArgErr("Invalid appHome:$appPath not find build.fan")
   }
 
   private Void checkPodName(Str name)

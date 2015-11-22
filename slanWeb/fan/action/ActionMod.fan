@@ -61,11 +61,19 @@ const class ActionMod : WebMod
       req.stash["_paths"] = paths
     }
 
-    obj := type.make()
-    locale.use {
-      if (obj is Weblet) {
-        (obj as Weblet).onService
+    obj := type.make() as Weblet
+    if (obj == null) {
+      res.sendErr(404)
+      return
+    }
+
+    loc := locale
+    if (loc != null) {
+      loc.use {
+        obj.onService
       }
+    } else {
+      obj.onService
     }
   }
 
