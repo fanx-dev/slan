@@ -25,13 +25,13 @@ const class TemplateCompiler : ScriptCompiler
     uri.toFile
   }
 
-  Void renderUri(Uri uri, |->|? lay := null, WebOutStream? out := null)
+  virtual Void renderUri(Uri uri, |->|? lay := null, WebOutStream? out := null)
   {
     file := getFile(uri)
     renderFile(file, lay, out)
   }
 
-  Void renderFile(File file, |->|? lay := null, WebOutStream? out := null)
+  private Void renderFile(File file, |->|? lay := null, WebOutStream? out := null)
   {
     type := getType(file)
     obj := type.make()

@@ -190,7 +190,7 @@ const class SlanApp
   **
   ** html template to fantome class compiler
   **
-  const SlanTemplate templateCompiler
+  const TemplateCompiler templateCompiler
 }
 
 
@@ -201,7 +201,12 @@ const class SlanTemplate : TemplateCompiler
 
   override File getFile(Uri uri) {
     slanApp := SlanApp.cur
-    file := slanApp.getUri(`res/view/${uri}.html`).get
+    if (uri.ext == null) {
+      uri = (`res/view/${uri}.html`)
+    } else {
+      uri = `res/view/${uri}`
+    }
+    file := slanApp.getUri(uri).get
     return file
   }
 }

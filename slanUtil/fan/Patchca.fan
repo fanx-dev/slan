@@ -20,17 +20,17 @@ using [java]fanx.interop
 const class Patchca
 {
   ** image size
-  const Int width := 120
-  const Int height := 25
+  const Int width := 80
+  const Int height := 30
 
   ** char num
-  const Int n := 5
+  const Int n := 4
 
   const Int margin := 5
-  const Int charPad := 15
-  const Int noise := 3
+  const Int charPad := 0
+  const Int noise := 4
 
-  const Int fontSize := 24
+  const Int fontSize := 30
 
   new make(|This|? f := null)
   {
@@ -77,7 +77,7 @@ const class Patchca
   ** get random code
   internal Str randomCode()
   {
-    Int[] list := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".chars
+    Int[] list := "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghjkmnprstuvwxyz2345678".chars
     Int[] code := [,]
     n.times
     {
@@ -177,8 +177,8 @@ const class Patchca
 
     x1 := Int.random(0..width)
     y1 := Int.random(0..height)
-    w := Int.random(1..3)
-    h := Int.random(1..3)
+    w := Int.random(1..2)
+    h := Int.random(1..2)
 
     g.fillOval(x1, y1, w, h)
   }

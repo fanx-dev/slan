@@ -16,6 +16,7 @@ mixin SlanWeblet : Weblet
 {
 
   override Void onService() {
+
     method := findMethod();
     if (method == null) {
       res.sendErr(404)
@@ -123,7 +124,7 @@ mixin SlanWeblet : Weblet
   **
   ** render the template
   **
-  Void render(Uri? view := null, |->|? lay := null, WebOutStream? out := null)
+  virtual Void render(Uri? view := null, |->|? lay := null, WebOutStream? out := null)
   {
     if (view == null)
     {
@@ -138,8 +139,10 @@ mixin SlanWeblet : Weblet
     slanApp := SlanApp.cur
     req.stash["templateCompiler"] = slanApp.templateCompiler
 
-    file := slanApp.getUri(`res/view/${view}.$ext`).get
-    slanApp.templateCompiler.renderFile(file, lay, out)
+    if (view.ext == null) {
+      view = `${view}.$ext`
+    }
+    slanApp.templateCompiler.renderUri(view, lay, out)
   }
 
   ** render default view
