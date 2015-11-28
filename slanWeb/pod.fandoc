@@ -9,27 +9,15 @@
 Overview [#overview]
 ********************
 
-
-Run Mode [#runMode]
-=============
-
-There are two way to run service. scriptMode/podMode(debug mode/product mode)
-- scriptMode is instant for change,
-- podMode is easy to deploy.
-
-- The debug mode by 'slanWeb::main'.
-- The product mode by 'appHome/fan/boot/Main.fan'.
-
 Route [#route]
 =============
 
-See the uri 'http://localhost:8080/action/Welcome/print/115?i=123&m=bac'
-    it will route to 'action'(dir) and compile 'Welcome.fan'(class),
-    then newInstance 'Welecome' and call 'printInfo'(method) with 'i=123,m=bac'(named params)
+The uri 'http://localhost:8080/action/Welcome/print/115?i=123&m=bac'
+will route to 'action'(dir) and 'Welcome'(class), and call 'printInfo'(method)
+with 'i=123,m=bac'(named params)
 
-Most of the time, you should just use 'http://localhost:8080/Welcome/print'
-    it will route to 'action' and call Welcome's print method.
-    if no method be provide ,will to 'index' method.
+Most of the time, you should just use 'http://localhost:8080/Welcome/print',
+It will call Welcome's print method.
 
 Html Template [#htmlTemplate]
 =============
@@ -54,35 +42,32 @@ In fact the string be compile to fantom string, so we can embedded '$ interpolat
 
 Pass Arguments [#passArguments]
 -----------
-'m->name' is short cut of 'req.stash'. It be used to pass args from controller to view.
+The 'req.stash[]' be used to pass args from controller to view.
 we get the args in template code by '@name'.
-'@' is more shortcut of 'm->', but in the html '@name' equals '${m->name.toStr.toXml}'.
 
 Render [#render]
 -----------
-Call the 'SlanWeblet#render' to render the template. Default template by the action name.
-If res is not commited and has no null retruning value, the result will be serialized and render as plan text.
+Call the 'SlanWeblet#render' to render the template. Default template is the action name.
+If res is not commited and has non-null retruning value, the result will be serialized and render as plan text.
 
-Controller [#controller]
+
+Run [#run]
 =============
-Subclass your controller from 'SlanWeblet' will be convenience.
-
-You can override the method 'SlanWeblet#invoke' to insert your logic, like this:
-
-  const class Controller : SlanWeblet
-  {
-    override Obj? invoke(Str name, Obj?[]? args)
-    {
-      if (!checkAuthority) res.sendErr(401)
-      Obj? result
-      //open connection
-      connection.use
-      {
-        result = this.trap(name, args)
-      }
-      return result
-    }
+SlanRouteMod is std WebMod. But need init SlanApp before new SlanRouteMod
+  const class RootMod : PipelineMod {
+    new make(Uri? path := null) : super(|PipelineMod pp| {
+      SlanApp.init(this.typeof.pod.name)
+      pp.steps = [ SlanRouteMod() ]
+      pp.after = [ SlanLogMod(logDir) ]
+    }){}
   }
 
-'SlanWeblet' has some util method, such as stashId, setContentType, toUri, esc...
+support restart by draft:
+  fan idraft -appHome file:/Users/yangjiandong/workspace/code/slan/slanDemo/ slanDemo::RootMod
+
+Deploy [#deploy]
+==============
+
+Deploy to cloud server as std servlet container.
+see: `https://bitbucket.org/chunquedong/fanlet` and slanDemo/build.fan#dist
 
