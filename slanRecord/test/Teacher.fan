@@ -10,6 +10,7 @@
 **
 ** Teacher record model
 **
+/*
 internal class Teacher : ArrayRecord
 {
   new make(Schema s) : super(s) { }
@@ -32,3 +33,24 @@ internal class Teacher : ArrayRecord
   Float? weight    { get { super.get(3) } set { super.set(3, it) } }
   Buf? image       { get { super.get(4) } set { super.set(4, it) } }
 }
+*/
+
+internal class Teacher : ObjRecord
+{
+  static Schema getSchema()
+  {
+    schema := ObjSchema(Teacher#)
+    return schema
+  }
+
+  new make(Schema s) : super(s) { }
+
+  @Id
+  @Column { name = "sid" }
+  Int? id
+  Str? name
+  Int? age
+  Float? weight
+  Buf? image
+}
+

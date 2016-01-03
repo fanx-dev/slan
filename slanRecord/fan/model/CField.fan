@@ -8,6 +8,7 @@
 //   2011-05-03  Jed Young  Creation
 //
 
+
 **
 ** Field is column of datatable
 **
@@ -15,9 +16,16 @@
 @Serializable
 class CField
 {
+  ** column name
   Str name
+
+  ** fantom type
   Type type
-  Int index := -1
+
+  ** index in Schema
+  Int index := -1 { internal set }
+
+  ** sql type. if null will use type
   Str? sqlType
 
   ** first parameter
