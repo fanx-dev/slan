@@ -13,46 +13,42 @@
 **
 @Js
 @Serializable
-class Schema
+const class Table
 {
   @Transient
-  private Str:Int map := Str:Int[:]
+  const private Str:Int map
 
-  protected CField[] columns := [,]
+  const protected Column[] columns
 
-  Str name
-  Int idIndex := -1
-  Type type
+  const Str name
+  const Int idIndex := -1
+  const Type type
 
   ** auto generate the key
-  Bool autoGenerateId := false
+  const Bool autoGenerateId := false
 
-  new make(|This| f) { f(this) }
+  new make(|This| f) {
+    f(this)
 
-  new makeNew(Str name, Type type := ArrayRecord#)
-  {
-    this.name = name
-    this.type = type;
+    fmap := Str:Int[:]
+    columns.each |field, i| {
+      fmap[field.name] = i
+      if (field.index != i) {
+        throw ArgErr("field index error. $field: $field.index != $i")
+      }
+    }
+    map = fmap
   }
 
   Int size() { columns.size }
-  CField get(Int i) { columns[i] }
+  Column get(Int i) { columns[i] }
 
-  @Operator
-  This add(CField f)
-  {
-    columns.add(f)
-    f.index = columns.size-1
-    map[f.name] = f.index
-    return this
-  }
-
-  Void each(|CField, Int| f)
+  Void each(|Column, Int| f)
   {
     columns.each(f)
   }
 
-  CField find(Str name)
+  Column find(Str name)
   {
     i := map[name]
     if (i == null) {
@@ -63,7 +59,7 @@ class Schema
 
 
   ** PK of this table
-  CField? id()
+  Column? id()
   {
     if (idIndex == -1) return null
     return columns[idIndex]
@@ -99,7 +95,7 @@ class Schema
 //////////////////////////////////////////////////////////////////////////
 
   ** Each Columns except id
-  Void nonIdColumn(|CField| f)
+  Void nonIdColumn(|Column| f)
   {
     columns.each
     {
@@ -111,7 +107,7 @@ class Schema
   }
 
   ** Each Columns except auto generate field
-  Void nonAutoGenerate(|CField| f)
+  Void nonAutoGenerate(|Column| f)
   {
     if (autoGenerateId == true)
     {

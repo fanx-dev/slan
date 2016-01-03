@@ -9,7 +9,7 @@
 
 internal const class InsertMaker
 {
-  Str getSql(Schema table)
+  Str getSql(Table table)
   {
     sql := StrBuf()
     sql.add("insert into $table.name(")
@@ -29,10 +29,10 @@ internal const class InsertMaker
     return sql.toStr
   }
 
-  Obj?[] getParam(Schema table, Obj obj)
+  Obj?[] getParam(Table table, Obj obj)
   {
     param := Obj?[,]
-    table.nonAutoGenerate |CField c|
+    table.nonAutoGenerate |Column c|
     {
       param.add(c.get(obj))
     }
@@ -46,7 +46,7 @@ internal const class InsertMaker
 
 internal const class UpdateMaker
 {
-  Str getSql(Schema table,Obj obj)
+  Str getSql(Table table,Obj obj)
   {
     sql := StrBuf()
     sql.add("update $table.name set ")
@@ -62,10 +62,10 @@ internal const class UpdateMaker
     return sql.toStr
   }
 
-  Obj?[] getParam(Schema table, Obj obj)
+  Obj?[] getParam(Table table, Obj obj)
   {
     param := Obj?[,]
-    table.nonIdColumn |CField c|
+    table.nonIdColumn |Column c|
     {
       param.add(c.get(obj))
     }
@@ -83,7 +83,7 @@ internal const class UpdateMaker
 **
 internal const class WhereMaker
 {
-  Str getSql(Schema table, Obj obj)
+  Str getSql(Table table, Obj obj)
   {
     from := " from $table.name"
     condition := StrBuf()
@@ -101,10 +101,10 @@ internal const class WhereMaker
     return "$from where $condition"
   }
 
-  Obj?[] getParam(Schema table, Obj obj)
+  Obj?[] getParam(Table table, Obj obj)
   {
     param := Obj?[,]
-    table.each |CField c|
+    table.each |Column c|
     {
       value := c.get(obj)
       if (value != null)
@@ -125,12 +125,12 @@ internal const class WhereMaker
 **
 internal const class IdWhereMaker
 {
-  Str getSql(Schema table)
+  Str getSql(Table table)
   {
     return " from $table.name where $table.id.name=?"
   }
 
-  Obj?[] getParam(Schema table, Obj id)
+  Obj?[] getParam(Table table, Obj id)
   {
     return [id]
   }
@@ -142,7 +142,7 @@ internal const class IdWhereMaker
 
 internal const class SelectMaker
 {
-  Str getSql(Schema table)
+  Str getSql(Table table)
   {
     sql := StrBuf()
     sql.add("select ")

@@ -11,7 +11,7 @@ using isql
 **
 ** important class for execute sql.
 **
-internal const class Executor
+internal const class SqlExecutor
 {
   const static InsertMaker inserMaker := InsertMaker()
   const TableMaker tableMaker := TableMaker()
@@ -23,7 +23,7 @@ internal const class Executor
   const Log log := Pod.of(this).log
 
 
-  Void insert(Schema table, SqlConn db, Obj obj)
+  Void insert(Table table, SqlConn db, Obj obj)
   {
     sql := inserMaker.getSql(table)
     params := inserMaker.getParam(table, obj)
@@ -47,7 +47,7 @@ internal const class Executor
     stmt.close
   }
 
-  Void update(Schema table, SqlConn db, Obj obj)
+  Void update(Table table, SqlConn db, Obj obj)
   {
     sql := updateMaker.getSql(table, obj)
     params := updateMaker.getParam(table, obj)
@@ -67,7 +67,7 @@ internal const class Executor
 //////////////////////////////////////////////////////////////////////////
 
   ** select data list
-  Obj[] select(Schema table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
+  Obj[] select(Table table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -94,7 +94,7 @@ internal const class Executor
   }
 
   ** select data list
-  Obj? selectOne(Schema table, SqlConn db, Obj obj, Str orderby, Int offset)
+  Obj? selectOne(Table table, SqlConn db, Obj obj, Str orderby, Int offset)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -121,7 +121,7 @@ internal const class Executor
   }
 
   ** select by condition
-  Obj[] selectWhere(Schema table, SqlConn db, Str condition, Int offset, Int limit)
+  Obj[] selectWhere(Table table, SqlConn db, Str condition, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + " from $table.name"
     if (condition != "") sql += " " + condition
@@ -146,7 +146,7 @@ internal const class Executor
     return list
   }
 
-  Void delete(Schema table, SqlConn db, Obj obj)
+  Void delete(Table table, SqlConn db, Obj obj)
   {
     sql := "delete " + whereMaker.getSql(table, obj)
     paramss := whereMaker.getParam(table, obj)
@@ -161,7 +161,7 @@ internal const class Executor
     stmt.close
   }
 
-  Int count(Schema table, SqlConn db, Obj obj)
+  Int count(Table table, SqlConn db, Obj obj)
   {
     sql := "select count(*)" + whereMaker.getSql(table, obj);
     params := whereMaker.getParam(table, obj)
@@ -186,14 +186,14 @@ internal const class Executor
 // by ID
 //////////////////////////////////////////////////////////////////////////
 
-  Void removeById(Schema table, SqlConn db, Obj id)
+  Void removeById(Table table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "delete ")
     stmt.execute
     stmt.close
   }
 
-  Obj? findById(Schema table, SqlConn db, Obj id)
+  Obj? findById(Table table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, selectMaker.getSql(table))
 
@@ -207,7 +207,7 @@ internal const class Executor
     return obj
   }
 
-  Bool existById(Schema table, SqlConn db, Obj id)
+  Bool existById(Table table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "select count(*)")
 
@@ -219,7 +219,7 @@ internal const class Executor
     return exist
   }
 
-  private Statement byIdStmt(Schema table, SqlConn db, Obj id, Str before)
+  private Statement byIdStmt(Table table, SqlConn db, Obj id, Str before)
   {
     sql := before + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
@@ -237,7 +237,7 @@ internal const class Executor
 // Table op
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Schema table, SqlConn db)
+  Void createTable(Table table, SqlConn db)
   {
     sql := tableMaker.createTable(table)
     if (log.isDebug)
@@ -248,7 +248,7 @@ internal const class Executor
     stmt.execute
     stmt.close
 
-    table.each |CField f|
+    table.each |Column f|
     {
       if (f.indexed)
       {
@@ -264,7 +264,7 @@ internal const class Executor
     }
   }
 
-  Void dropTable(Schema table, SqlConn db)
+  Void dropTable(Table table, SqlConn db)
   {
     sql := tableMaker.dropTable(table)
     if (log.isDebug)

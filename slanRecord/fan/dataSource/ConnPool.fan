@@ -8,11 +8,12 @@
 
 using concurrent
 using isql
+using [java]java.lang::Class
 
 **
-** cache connection
+** connection pool
 **
-const class ConnectionPool
+const class ConnPool
 {
   **
   ** The username used to connect to this database.
@@ -30,13 +31,13 @@ const class ConnectionPool
   const Str connectionStr
 
   ** Standard log for the sql service
-  static const Log log := ConnectionPool#.pod.log
+  static const Log log := ConnPool#.pod.log
 
   ** actor
   private const Actor actor := Actor(ActorPool()) |Obj?[] arg->Obj?| { return receive(arg) }
 
   ** id for locals var
-  private const Str listId := ConnectionPool#.qname + ".listId"
+  private const Str listId := ConnPool#.qname + ".listId"
 
   ** receive msg
   private Obj? receive(Obj?[] arg)
@@ -60,6 +61,14 @@ const class ConnectionPool
     this.connectionStr = connStr
     this.username = username
     this.password = password
+  }
+
+  new makeConfig(Pod pod, Str configPrefix := "test")
+  {
+    Class.forName(pod.config("${configPrefix}.driver", "org.h2.Driver"))
+    this.connectionStr = pod.config("${configPrefix}.uri", "jdbc:h2:~/test")
+    this.username = pod.config("${configPrefix}.username")
+    this.password = pod.config("${configPrefix}.password")
   }
 
 //////////////////////////////////////////////////////////////////////////

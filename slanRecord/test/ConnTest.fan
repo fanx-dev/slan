@@ -13,13 +13,12 @@ using [java]java.lang::Class
 **
 ** Connection for test
 **
-internal class ConnFactoryTest : Test
+internal class ConnTest : Test
 {
   Void test()
   {
-    factory := ConnFactory.make(ConnFactoryTest#.pod)
-    factory.open
-    context := Context()
+    factory := ConnPool.makeConfig(ConnTest#.pod)
+    context := Context(factory.open)
     mapping := Mapping(context.conn)
     mapping.each { echo(it.name) }
   }

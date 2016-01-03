@@ -14,18 +14,16 @@ using concurrent
 **
 const class Context
 {
-  ** thread connection id
-  static const Str id := Context#.qname + ".conn"
-
   ** power of sql
-  private const Executor executor := Executor()
+  private const SqlExecutor executor := SqlExecutor()
 
-  const Str curId
+  ** thread connection id
+  const Str curId := Context#.qname + ".conn"
 
   ** constructor
-  new make(Str curId := id)
+  new make(SqlConn conn)
   {
-    this.curId = curId
+    Actor.locals[curId] = conn
   }
 
   **
@@ -62,7 +60,7 @@ const class Context
   }
 
   ** delete by id
-  virtual Void deleteById(Schema table, Obj id)
+  virtual Void deleteById(Table table, Obj id)
   {
     this.executor.removeById(table, this.conn, id)
   }
@@ -88,7 +86,7 @@ const class Context
 //////////////////////////////////////////////////////////////////////////
 
   ** query by condition
-  Obj[] select(Schema table, Str condition, Int offset := 0, Int limit := 50)
+  Obj[] select(Table table, Str condition, Int offset := 0, Int limit := 50)
   {
     this.executor.selectWhere(table, this.conn, condition, offset, limit)
   }
@@ -97,7 +95,7 @@ const class Context
 // By ID
 //////////////////////////////////////////////////////////////////////////
 
-  virtual Obj? findById(Schema table, Obj id)
+  virtual Obj? findById(Table table, Obj id)
   {
     return this.executor.findById(table, this.conn, id)
   }
@@ -146,23 +144,23 @@ const class Context
 // Table operate
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Schema table)
+  Void createTable(Table table)
   {
     this.executor.createTable(table, this.conn)
   }
 
-  Void dropTable(Schema table)
+  Void dropTable(Table table)
   {
     this.executor.dropTable(table, this.conn)
   }
 
-  Bool tableExists(Schema table)
+  Bool tableExists(Table table)
   {
     return this.conn.meta.tableExists(table.name)
   }
 
   ** check the object table is fit to database table
-  Bool checkTable(Schema table)
+  Bool checkTable(Table table)
   {
     trow := this.conn.meta.tableMeta(table.name)
     return SqlUtil.checkMatchDb(table, trow)

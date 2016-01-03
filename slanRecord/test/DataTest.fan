@@ -16,22 +16,21 @@ internal class DataTest : Test
   LogLevel defaultLevel := log.level
 
   Context? c
-  ConnFactory? factory
+  ConnPool? factory
 
-  Schema? table
+  Table? table
 
   override Void setup()
   {
     log.level = LogLevel.debug
-    table = Teacher.getSchema
-    factory = ConnFactory.make(DataTest#.pod)
-    c = Context()
-    factory.open
+    table = User.table
+    factory = ConnPool.makeConfig(DataTest#.pod)
+    c = Context(factory.open)
   }
 
   override Void teardown()
   {
-    factory.close
+    factory.close(c.conn)
     log.level = defaultLevel
   }
 
@@ -46,7 +45,7 @@ internal class DataTest : Test
 
   private Void insert()
   {
-    t1 := Teacher(table)
+    t1 := User()
     t1.name = "yjd"
     t1.age = 25
     t1.weight = 56.9f
@@ -61,9 +60,9 @@ internal class DataTest : Test
 
   private Void query()
   {
-    t1 := Teacher(table)
+    t1 := User()
     t1.name = "yjd"
-    t2 := c.one(t1) as Teacher
+    t2 := c.one(t1) as User
 
     verifyEq(t2.age, 25)
     verifyEq(t2.weight, 56.9f)

@@ -13,7 +13,7 @@ using slanActor
 **
 ** context with cache
 **
-const class CacheableContext : Context
+const class CacheContext : Context
 {
   private const Log log := Pod.of(this).log
 
@@ -28,8 +28,8 @@ const class CacheableContext : Context
   **
   const Cache queryCache := Cache(500, false)
 
-  new make(Str curId := id)
-   : super(curId) {}
+  new make(SqlConn conn)
+   : super(conn) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Tools
@@ -104,7 +104,7 @@ const class CacheableContext : Context
   **
   ** clear the query cache which key satrts with typename + ','
   **
-  Void clearQueryCache(Schema table)
+  Void clearQueryCache(Table table)
   {
     name := table.name + ","
     queryCache.clearIf |Str key -> Bool|
@@ -144,7 +144,7 @@ const class CacheableContext : Context
     clearQueryCache(obj.schema)
   }
 
-  override Void deleteById(Schema table, Obj id)
+  override Void deleteById(Table table, Obj id)
   {
     super.deleteById(table, id)
     set(idToKey(table, id), null)
@@ -157,7 +157,7 @@ const class CacheableContext : Context
     obj.schema.name + "," + (obj.getId)
   }
 
-  private Str idToKey(Schema table, Obj id)
+  private Str idToKey(Table table, Obj id)
   {
     return table.name + "," + id
   }
@@ -166,7 +166,7 @@ const class CacheableContext : Context
   // By ID
   ////////////////////////////////////////////////////////////////////////
 
-  override Obj? findById(Schema table, Obj id)
+  override Obj? findById(Table table, Obj id)
   {
     key := idToKey(table, id)
     if (this.containsKey(key))

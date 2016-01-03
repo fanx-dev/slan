@@ -11,23 +11,23 @@ using concurrent
 
 class Mapping
 {
-  private Str:Schema tables := [:]
+  private Str:Table tables := [:]
 
-  new make(SqlConn conn := Actor.locals[Context.id], |Str->Bool|? tableFilter := null)
+  new make(SqlConn conn, |Str->Bool|? tableFilter := null)
   {
-    Schema[] list := getDbSchema(conn, tableFilter)
+    Table[] list := getDbSchema(conn, tableFilter)
     list.each
     {
       tables[it.name] = it
     }
   }
 
-  virtual Schema get(Str name)
+  virtual Table get(Str name)
   {
     tables.get(name)
   }
 
-  Void each(|Schema| f)
+  Void each(|Table| f)
   {
     tables.each(f)
   }
@@ -37,7 +37,7 @@ class Mapping
   **
   Void tryCreateAllTable(Context context)
   {
-    this.tables.each |Schema t|
+    this.tables.each |Table t|
     {
       if (context.tableExists(t))
       {
@@ -56,7 +56,7 @@ class Mapping
   ** drop all table with in appliction
   Void dropAllTable(Context context)
   {
-    this.tables.each |Schema t|
+    this.tables.each |Table t|
     {
       if(context.tableExists(t))
       {
@@ -69,9 +69,9 @@ class Mapping
 // Tools
 //////////////////////////////////////////////////////////////////////////
 
-  static Schema[] getDbSchema(SqlConn conn, |Str->Bool|? tableFilter := null)
+  static Table[] getDbSchema(SqlConn conn, |Str->Bool|? tableFilter := null)
   {
-    tables := Schema[,]
+    tables := Table[,]
     conn.meta.tables.each |Str t|
     {
       if (tableFilter == null || tableFilter(t))

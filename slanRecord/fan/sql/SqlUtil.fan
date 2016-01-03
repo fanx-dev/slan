@@ -16,7 +16,7 @@ const class SqlUtil
 {
   const static Log log := SqlUtil#.pod.log
 
-  ** just a tool convert object to sql string
+  ** convert object to sql string
   static Str toSqlStr(Obj? o)
   {
     if (o == null)     return "null"
@@ -30,10 +30,10 @@ const class SqlUtil
   **
   ** make string from object for cache key
   **
-  static Str makeKey(Schema s, Obj obj)
+  static Str makeKey(Table s, Obj obj)
   {
     condition := StrBuf()
-    s.each |CField c|
+    s.each |Column c|
     {
       value := c.get(obj)
       if (value != null)
@@ -47,10 +47,10 @@ const class SqlUtil
   **
   ** fetch data
   **
-  static Obj getInstance(Schema s, ResultSet r)
+  static Obj getInstance(Table s, ResultSet r)
   {
     obj := s.newInstance
-    s.each |CField c, Int i|
+    s.each |Column c, Int i|
     {
       value := r.get(i)
       c.set(obj, value)
@@ -63,7 +63,7 @@ const class SqlUtil
 //////////////////////////////////////////////////////////////////////////
 
   ** check the column is match the database
-  static Bool checkMatchDbField(CField f, Col c)
+  static Bool checkMatchDbField(Column f, Col c)
   {
     if (!c.name.equalsIgnoreCase(f.name)) return false
     if (Utils.isPrimitiveType(f.type))
@@ -80,7 +80,7 @@ const class SqlUtil
   **
   ** check model is match the database
   **
-  static Bool checkMatchDb(Schema s, Col[] tcols)
+  static Bool checkMatchDb(Table s, Col[] tcols)
   {
     if (s.size > tcols.size)
     {
@@ -89,7 +89,7 @@ const class SqlUtil
     }
 
     errCount := 0
-    s.each |CField c, Int i|
+    s.each |Column c, Int i|
     {
       pass := checkMatchDbField(c, tcols[i])
       if (!pass)
@@ -109,12 +109,23 @@ const class SqlUtil
 // schema
 //////////////////////////////////////////////////////////////////////////
 
-  static Schema colsToSchema(Str name, Col[] cols)
+  static Table colsToSchema(Str name, Col[] cols)
   {
-    schema := Schema(name)
-    cols.each |col|
+    list := Column[,]
+    cols.each |col, i|
     {
-      schema.add(CField(col.name, col.type))
+      list.add(Column {
+        it.name = col.name
+        it.type = col.type
+        it.index = i
+      })
+    }
+    schema := Table {
+      it.name = name
+      it.type = ArrayRecord#
+      it.idIndex = -1
+      it.autoGenerateId = false
+      it.columns = list
     }
     return schema
   }

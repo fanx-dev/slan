@@ -13,12 +13,12 @@ internal const class TableMaker
 {
   const ColumnMaker column := ColumnMaker()
 
-  Str createTable(Schema table)
+  Str createTable(Table table)
   {
     sql := StrBuf()
     sql.add("create table $table.name(")
 
-    table.each |CField c|
+    table.each |Column c|
     {
       sqlType := column.getSqlType( c, table.autoGenerateId && table.id == c )
       sql.add("$c.name $sqlType,")
@@ -36,7 +36,7 @@ internal const class TableMaker
     "create index index_${tableName}_${fieldName} on ${tableName} (${fieldName})"
   }
 
-  Str dropTable(Schema table)
+  Str dropTable(Table table)
   {
     return "drop table $table.name"
   }
@@ -56,7 +56,7 @@ internal const class ColumnMaker
   **
   ** get sql type for create table
   **
-  virtual Str getSqlType(CField f, Bool autoGenerate := false)
+  virtual Str getSqlType(Column f, Bool autoGenerate := false)
   {
     if (f.sqlType != null)
     {
@@ -74,7 +74,7 @@ internal const class ColumnMaker
   **
   ** convert from fantom type to sql type
   **
-  private Str fanToSqlType(CField f, Bool autoGenerate)
+  private Str fanToSqlType(Column f, Bool autoGenerate)
   {
     if (autoGenerate) return "identity"
 

@@ -14,36 +14,30 @@
 **
 @Js
 @Serializable
-class CField
+const class Column
 {
   ** column name
-  Str name
+  const Str name
 
   ** fantom type
-  Type type
+  const Type type
 
   ** index in Schema
-  Int index := -1 { internal set }
+  const Int index
 
   ** sql type. if null will use type
-  Str? sqlType
+  const Str? sqlType
 
   ** first parameter
-  Int? length
+  const Int? length
 
   ** second parameter
-  Int? precision
+  const Int? precision
 
   ** hint to build index on this field
-  Bool indexed := false
+  const Bool indexed := false
 
   new make(|This| f) { f(this) }
-
-  new makeNew(Str name, Type type)
-  {
-    this.name = name
-    this.type = type
-  }
 
   virtual Obj? get(Obj obj)
   {
