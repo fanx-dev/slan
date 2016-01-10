@@ -111,10 +111,18 @@ class ObjRecord : Record
   }
 
   override Obj? get(Int i) {
-    (schema as ObjTable).fields[i].get(this)
+    obj := (schema as ObjTable).fields[i].get(this)
+    if (obj is Enum) {
+      return (obj as Enum).ordinal
+    }
+    return obj
   }
 
   override Void set(Int i, Obj? value) {
-    (schema as ObjTable).fields[i].set(this, value)
+    field := (schema as ObjTable).fields[i]
+    if (field.type.isEnum && value is Int) {
+      value = field.type.field("vals").get->get(value)
+    }
+    field.set(this, value)
   }
 }
