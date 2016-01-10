@@ -14,15 +14,14 @@ using slanWeb
 **
 const class Base : Controller
 {
-  Void index()
+  Void fwt()
   {
-    stash("name", "world")
     stash("compileJs", compileJs(`Hello.fwt`))
     render
   }
 
   @WebGet
-  Void welcome()
+  Void template()
   {
     stash("name", stashId)
     render

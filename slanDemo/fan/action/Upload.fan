@@ -13,38 +13,8 @@ using slanUtil
 **
 ** slanUtil
 **
-class Tool : SlanWeblet
+class Upload : SlanWeblet
 {
-
-//////////////////////////////////////////////////////////////////////////
-// patchca image
-//////////////////////////////////////////////////////////////////////////
-
-  @WebGet
-  Void patchca() { render }
-
-  Void image()
-  {
-    req.session // init session
-    res.headers["Content-Type"] = "image/jpg"
-    patchca := Patchca{}
-    code := patchca.create(res.out)
-    req.session["code"] = code
-  }
-
-  @WebPost
-  Str validate(Str code)
-  {
-    ocode := req.session["code"]
-    if (ocode == null || ocode == "") return "wrong"
-    message := code.equalsIgnoreCase(ocode) ? "right" : "wrong"
-    return message
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// upload
-//////////////////////////////////////////////////////////////////////////
-
   @WebGet
   Void upload()
   {

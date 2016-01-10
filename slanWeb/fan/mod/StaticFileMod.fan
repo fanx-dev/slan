@@ -27,7 +27,7 @@ const class StaticFileMod : WebMod
     rel := req.modRel.relTo(`/`)
     ps := dir + rel
     SlanApp slanApp := SlanApp.cur
-    File file := slanApp.getUri(ps).get
+    File file := slanApp.getResUri(ps).get
     FileWeblet(file).onService
   }
 }

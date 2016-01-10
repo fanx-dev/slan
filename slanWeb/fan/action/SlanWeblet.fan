@@ -162,7 +162,7 @@ mixin SlanWeblet : Weblet
   Str compileJs(Uri fwt, Str:Str env := ["fwt.window.root":"fwt-root"])
   {
     slanApp := SlanApp.cur
-    file := slanApp.getUri(`res/fwt/` + fwt).get
+    file := slanApp.getResUri(`res/fwt/` + fwt).get
     buf := Buf()
     slanApp.jsCompiler.renderFile(WebOutStream(buf.out), file, env)
     buf.flip

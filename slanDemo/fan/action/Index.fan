@@ -24,11 +24,11 @@ class Index : SlanWeblet
       h1.w("Slan Web Framework").h1End.
 
       h2.w("Base Examples").h2End.
-      a(`/Base`).w("/Base").aEnd.br.
-      a(`/action/Base/welcome/Akoufiky`).w("/action/Base/welcome/Akoufiky").aEnd.br.
-      a(`/Base/printInfo/apdb?i=123&m=bac`).w("/Base/printInfo/apdb?i=123&m=bac").aEnd.br.
+      a(`/Base/printInfo/test?i=123&m=bac`).w("/Base/printInfo/test?i=123&m=bac").aEnd.br.
+      a(`/Base/template/Slan`).w("/Base/template/Slan").aEnd.br.
+      a(`/Base/fwt`).w("/Base/fwt").aEnd.br.
 
-      h2.w("FWT and Ajax").h2End.
+      h2.w("JS FWT").h2End.
       a(`/jsfan/TableFwt.fan`).w("/jsfan/TableFwt.fan").aEnd.br.
 
       h2.w("XML").h2End.
@@ -42,14 +42,10 @@ class Index : SlanWeblet
       a(`/Localization`).w("/Localization").aEnd.br.
 
       h2.w("slanUtil").h2End.
-      a(`/Tool/patchca`).w("/Tool/patchca").aEnd.br.
-      a(`/Tool/upload`).w("/Tool/upload").aEnd.br.
-
-      h2.w("Test").h2End.
-      a(`/HotSwap`).w("/HotSwap").aEnd.br.
+      a(`/Patchca/patchca`).w("/Tool/patchca").aEnd.br.
+      a(`/Upload/upload`).w("/Tool/upload").aEnd.br.
 
       h2.w("Other").h2End.
-      a(`/doc`).w("FanDocs").aEnd.br.
       a(`/Index/dump`).w("RequestHeaders").aEnd.br.
 
     htmlEnd

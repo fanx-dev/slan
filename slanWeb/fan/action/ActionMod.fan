@@ -39,13 +39,13 @@ const class ActionMod : WebMod
     consume := false
     Type? type
     if (typeName != null) {
-      type = slanApp.getType(typeName, dir, false)
+      type = slanApp.findType(typeName, dir, false)
     }
 
     if (type != null) {
       consume = true
     } else {
-      type = slanApp.getType("Index", dir, false)
+      type = slanApp.findType("Index", dir, false)
     }
 
     if (type == null) {

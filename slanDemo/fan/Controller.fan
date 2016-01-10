@@ -12,9 +12,6 @@ const class Controller : SlanWeblet
 {
   override Obj? trap(Str name, Obj?[]? args := null)
   {
-    //you can open and close database connection at here
-    //and check Http Referer
-    //or check user authority
     echo("before")
     try
       return SlanWeblet.super.trap(name, args)

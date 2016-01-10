@@ -44,39 +44,23 @@ const class SlanApp
   ** init static instance
   static Void init(Str podName) {
     Str? appHome := Actor.locals["slan.appHome"]
-    slanApp := appHome == null ? SlanApp.makeProduct(podName) : SlanApp.makeDebug(appHome.toUri)
+    slanApp := SlanApp.make(podName, appHome.toUri)
     instance.val = slanApp
 
     echo("$podName, $slanApp.appHome")
   }
 
-  ** new Debug Mode
-  private new makeDebug(Uri appHome)
-  {
-    checkAppHome(appHome)
-
-    isProductMode = false
-    this.appHome = appHome
-
-    type := Env.cur.compileScript(`${appHome}build.fan`.toFile)
-    BuildPod build := type.make
-    podName = build.podName
-
-    Str[] depends := [,]
-    addJsDepends(depends, Pod.find(podName))
-    jsDepends = depends
-
-    jsCompiler = JsCompiler(this.jsDepends, this.podName)
-    templateCompiler = SlanTemplate(this.podName)
-    scriptCompiler = ScriptCompiler(this.podName)
-  }
-
   ** new Product Mode
-  private new makeProduct(Str podName)
+  private new make(Str podName, Uri? appHome)
   {
-    checkPodName(podName)
-
-    isProductMode = true
+    if (appHome != null) {
+      checkAppHome(appHome)
+      isProductMode = false
+      this.appHome = appHome
+    } else {
+      checkPodName(podName)
+      isProductMode = true
+    }
     this.podName = podName
 
     Str[] depends := [,]
@@ -123,7 +107,7 @@ const class SlanApp
   **
   ** res path. switch podFile or file
   **
-  Uri getUri(Uri path)
+  Uri getResUri(Uri path)
   {
     if (this.isProductMode)
     {
@@ -157,7 +141,7 @@ const class SlanApp
     }
   }
 
-  Type? getType(Str typeName, Uri dir, Bool checked := true)
+  Type? findType(Str typeName, Uri dir, Bool checked := true)
   {
     typeRes := findTypeUri(typeName, dir)
     if (typeRes is Str)
@@ -180,9 +164,7 @@ const class SlanApp
 // Application tools
 //////////////////////////////////////////////////////////////////////////
 
-  private const ScriptCompiler scriptCompiler
-
-  **
+  private const ScriptCompiler scriptCompiler  **
   ** fantom to javascript compiler
   **
   const JsCompiler jsCompiler
@@ -206,7 +188,7 @@ const class SlanTemplate : TemplateCompiler
     } else {
       uri = `res/view/${uri}`
     }
-    file := slanApp.getUri(uri).get
+    file := slanApp.getResUri(uri).get
     return file
   }
 }

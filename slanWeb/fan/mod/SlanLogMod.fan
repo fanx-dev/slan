@@ -27,7 +27,7 @@ const class SlanLogMod : LogMod
     dir = logFile
     filename = "web.log"
 
-    // install sys log handler
+    // log systome info to console
     sysLogger := FileLogger { it.dir = logFile; it.filename = "sys.log" }
     Log.addHandler |rec| { sysLogger.writeLogRec(rec) }
   }){}
