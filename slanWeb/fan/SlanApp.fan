@@ -44,7 +44,7 @@ const class SlanApp
   ** init static instance
   static Void init(Str podName) {
     Str? appHome := Actor.locals["slan.appHome"]
-    slanApp := SlanApp.make(podName, appHome.toUri)
+    slanApp := SlanApp.make(podName, appHome?.toUri)
     instance.val = slanApp
 
     echo("$podName, $slanApp.appHome")
