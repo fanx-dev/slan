@@ -12,7 +12,7 @@ internal class TemplateTest : Test
   {
     Pod.of(this).log.level = LogLevel.debug
     TemplateCompiler c := TemplateCompiler()
-    c->getType(`fan://slanTemplate/res/welcome.html`.get)
+    c->getType(`fan://slanCompiler/res/welcome.html`.get)
     Pod.of(this).log.level = LogLevel.info
   }
 }

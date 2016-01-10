@@ -35,9 +35,9 @@ internal const class TemplateTranslater
 
           const class HtmlTemplet : ${TemplateWeblet#.name}
           {
-            Void dump(|->|? lay, WebOutStream? out_)
+            Void dump(|->|? lay)
             {
-              WebOutStream out := out_ ?: req.stash[\"_out\"]
+              WebOutStream out := req.stash[\"_out\"] ?: res.out
               $all
             }
           }"

@@ -124,7 +124,7 @@ mixin SlanWeblet : Weblet
   **
   ** render the template
   **
-  virtual Void render(Uri? view := null, |->|? lay := null, WebOutStream? out := null)
+  virtual Void render(Uri? view := null, |->|? lay := null)
   {
     if (view == null)
     {
@@ -142,7 +142,7 @@ mixin SlanWeblet : Weblet
     if (view.ext == null) {
       view = `${view}.$ext`
     }
-    slanApp.templateCompiler.renderUri(view, lay, out)
+    slanApp.templateCompiler.renderUri(view, lay)
   }
 
   ** render default view

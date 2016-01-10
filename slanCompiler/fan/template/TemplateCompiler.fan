@@ -25,17 +25,17 @@ const class TemplateCompiler : ScriptCompiler
     uri.toFile
   }
 
-  virtual Void renderUri(Uri uri, |->|? lay := null, WebOutStream? out := null)
+  virtual Void renderUri(Uri uri, |->|? lay := null)
   {
     file := getFile(uri)
-    renderFile(file, lay, out)
+    renderFile(file, lay)
   }
 
-  private Void renderFile(File file, |->|? lay := null, WebOutStream? out := null)
+  private Void renderFile(File file, |->|? lay := null)
   {
     type := getType(file)
     obj := type.make()
-    type.method("dump").callOn(obj, [lay, out])
+    type.method("dump").callOn(obj, [lay])
   }
 
   protected override Str codeTranslate(File file)

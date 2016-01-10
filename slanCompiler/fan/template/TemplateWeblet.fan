@@ -50,10 +50,10 @@ mixin TemplateWeblet
   **
   ** render the template
   **
-  static Void render(Uri? view := null, |->|? lay := null, WebOutStream? out := null)
+  static Void render(Uri view, |->|? lay := null)
   {
     TemplateCompiler template := req.stash.getOrThrow("templateCompiler")
-    template.renderUri(view, lay, out)
+    template.renderUri(view, lay)
   }
 
 //////////////////////////////////////////////////////////////////////////
