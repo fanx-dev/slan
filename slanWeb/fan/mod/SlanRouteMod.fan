@@ -42,6 +42,7 @@ const class SlanRouteMod : WebMod
     }
     catch (Err err)
     {
+      err.trace
       onErro(err)
     }
   }
@@ -65,7 +66,10 @@ const class SlanRouteMod : WebMod
     if (!res.isCommitted && res.headers["Content-Type"] == null) {
       res.headers["Content-Type"] = "text/html; charset=utf-8"
     }
-    buf.in.pipe(res.out)
+
+    if (buf.size > 0) {
+      buf.in.pipe(res.out)
+    }
   }
 
   **
@@ -134,7 +138,6 @@ const class SlanRouteMod : WebMod
     else
     {
       //to error page
-      err.trace
       this.res.redirect(errorPage)
     }
   }
