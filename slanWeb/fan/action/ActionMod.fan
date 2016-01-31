@@ -67,14 +67,7 @@ const class ActionMod : WebMod
       return
     }
 
-    loc := locale
-    if (loc != null) {
-      loc.use {
-        obj.onService
-      }
-    } else {
-      obj.onService
-    }
+    obj.onService
   }
 
   **
@@ -101,24 +94,5 @@ const class ActionMod : WebMod
     relStr := rel.pathStr
     dot := relStr.indexr(".")
     return relStr[0..<dot].toUri.path
-  }
-
-  **
-  ** build-in locale
-  **
-  private Locale? locale()
-  {
-    acceptLang := req.headers["Accept-Language"]
-    if (acceptLang == null || acceptLang == "") return null
-
-    localeStr := acceptLang.split(';').first
-    localeStr = localeStr.split(',').first
-    list := localeStr.split('-')
-
-    lang := list.first.lower
-    country := list.last.upper
-    locale := "$lang-$country"
-
-    return Locale.fromStr(locale, false)
   }
 }
