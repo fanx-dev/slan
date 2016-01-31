@@ -31,6 +31,8 @@ const class Proxy : WebMod
     // check pods
     beforeService
 
+    dummy := req.session
+
     // proxy request
     c := WebClient()
     c.followRedirects = false
@@ -42,18 +44,32 @@ const class Proxy : WebMod
       c.reqHeaders[k] = v
     }
     c.writeReq
-    if (req.method == "POST")
+
+    is100Continue := c.reqHeaders["Expect"] == "100-continue"
+
+    if (req.method == "POST" && ! is100Continue)
       c.reqOut.writeBuf(req.in.readAllBuf).flush
 
     // proxy response
     c.readRes
+    if (is100Continue && c.resCode == 100)
+    {
+      c.reqOut.writeBuf(req.in.readAllBuf).flush
+      c.readRes // final response after the 100continue
+    }
+
     res.statusCode = c.resCode
-    c.resHeaders.each |v,k| { res.headers[k] = v }
-    res.headers["Content-Encoding"] = ""
+    c.resHeaders.each |v,k|
+    {
+      // we don't re-gzip responses
+      if (k == "Content-Encoding" && v == "gzip") return
+      res.headers[k] = v
+    }
 
     if (c.resHeaders["Content-Type"]   != null ||
         c.resHeaders["Content-Length"] != null) {
-      c.resIn.pipe(res.out)
+      buf := c.resIn.readAllBuf
+      res.out.writeBuf(buf).flush
     }
     c.close
   }
