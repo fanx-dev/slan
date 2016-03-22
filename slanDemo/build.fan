@@ -39,4 +39,17 @@ class Build : build::BuildPod
     ].addAll(Util.allDir(scriptDir.uri, `res/view/`)).
       addAll(Util.allDir(scriptDir.uri, `public/`))
   }
+
+  @Target { help = "build my app as a single JAR dist" }
+  Void dist()
+  {
+    dist := JarDist(this)
+    dist.outFile = scriptDir+`war/WEB-INF/lib/slanDemo.jar`
+    dist.podNames = Str["concurrent", "compiler", "build",
+                        "inet", "web", "webmod", "wisp", "util",
+                        "dom", "gfx", "fwt", "compilerJs",
+                        "slanActor", "slanCompiler", "slanWeb", "slanUtil", "slanDemo", "servlet"]
+    dist.mainMethod = "slanDemo::RootMod.init"
+    dist.run
+  }
 }

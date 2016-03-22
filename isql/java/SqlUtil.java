@@ -92,6 +92,7 @@ public class SqlUtil
       case Types.BINARY:
       case Types.VARBINARY:
       case Types.LONGVARBINARY:
+      case Types.BLOB:
         return Sys.BufType;
 
       case Types.TIMESTAMP:
@@ -154,6 +155,7 @@ public class SqlUtil
       case Types.BINARY:
       case Types.VARBINARY:
       case Types.LONGVARBINARY:
+      case Types.BLOB:
         byte[] buf = rs.getBytes(col);
         if (rs.wasNull()) return null;
         return new MemBuf(buf);
@@ -199,6 +201,7 @@ public class SqlUtil
       case Types.BINARY:
       case Types.VARBINARY:
       case Types.LONGVARBINARY:
+      case Types.BLOB:
         return new ToFanBuf();
 
       case Types.TIMESTAMP:

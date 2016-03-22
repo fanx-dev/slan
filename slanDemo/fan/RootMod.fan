@@ -27,4 +27,8 @@ const class RootMod : PipelineMod
     ]
     //pp.after = [ SlanLogMod(logDir) ]
   }){}
+
+  static Void init() {
+    echo("init")
+  }
 }
