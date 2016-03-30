@@ -108,14 +108,10 @@ internal const class ColumnMaker
 
   private Str getStringType(Int? m)
   {
-    if (m != null && m <= 255)
-    {
-      return "varchar($m)"
+    if (m == null) {
+      m = 64
     }
-    else
-    {
-      return "text"
-    }
+    return "varchar($m)"
   }
 
 }

@@ -11,7 +11,7 @@
 facet class Colu
 {
   ** column name
-  const Str name
+  const Str? name
 
   ** sql type. if null will use type
   const Str? sqlType
@@ -76,7 +76,7 @@ const class ObjTable : Table
      else if (f.hasFacet(Colu#)) {
        Colu c := f.facet(Colu#)
        cf := Column {
-          it.name = c.name
+          it.name = c.name ?: f.name
           it.type = f.type
           it.sqlType = c.sqlType
           it.length = c.length
