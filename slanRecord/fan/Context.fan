@@ -15,7 +15,7 @@ using concurrent
 const class Context
 {
   ** power of sql
-  private const SqlExecutor executor := SqlExecutor()
+  private const static SqlExecutor executor := SqlExecutor()
 
   ** thread connection id
   const Str curId := Context#.qname + ".conn"
@@ -44,25 +44,25 @@ const class Context
   ** insert this obj to database
   virtual Void insert(Record obj)
   {
-    this.executor.insert(obj.schema, this.conn, obj)
+    executor.insert(obj.schema, this.conn, obj)
   }
 
   ** update by id
   virtual Void update(Record obj)
   {
-    this.executor.update(obj.schema, this.conn, obj)
+    executor.update(obj.schema, this.conn, obj)
   }
 
   ** delete by example
   virtual Void deleteByExample(Record obj)
   {
-    this.executor.delete(obj.schema, this.conn, obj)
+    executor.delete(obj.schema, this.conn, obj)
   }
 
   ** delete by id
   virtual Void deleteById(Table table, Obj id)
   {
-    this.executor.removeById(table, this.conn, id)
+    executor.removeById(table, this.conn, id)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ const class Context
   ** query by condition
   Obj[] select(Table table, Str condition, Int offset := 0, Int limit := 50)
   {
-    this.executor.selectWhere(table, this.conn, condition, offset, limit)
+    executor.selectWhere(table, this.conn, condition, offset, limit)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ const class Context
 
   virtual Obj? findById(Table table, Obj id)
   {
-    return this.executor.findById(table, this.conn, id)
+    return executor.findById(table, this.conn, id)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,13 +107,13 @@ const class Context
   ** count by example
   virtual Int count(Record obj)
   {
-    return this.executor.count(obj.schema, this.conn, obj)
+    return executor.count(obj.schema, this.conn, obj)
   }
 
   ** exist by example, this operate noCache
   Bool exist(Record obj)
   {
-    n := this.executor.count(obj.schema, this.conn, obj)
+    n := executor.count(obj.schema, this.conn, obj)
     return n > 0
   }
 
@@ -146,12 +146,12 @@ const class Context
 
   Void createTable(Table table)
   {
-    this.executor.createTable(table, this.conn)
+    executor.createTable(table, this.conn)
   }
 
   Void dropTable(Table table)
   {
-    this.executor.dropTable(table, this.conn)
+    executor.dropTable(table, this.conn)
   }
 
   Bool tableExists(Table table)

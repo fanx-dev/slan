@@ -8,6 +8,27 @@
 //   2011-05-03  Jed Young  Creation
 //
 
+enum class DataType {
+    integer("integer")
+  , tinyint("tinyint")
+  , smallint("smallint")
+  , bigint("bigint")
+  , bool("boolean")
+  , character("char")
+  , varchar("varchar")
+  , text("text")
+  , blob("blob")
+  , identity("identity")
+  , date("date")
+  , time("time")
+  , timestamp("timestamp")
+  , decimal("decimal")
+  , double("double")
+  , float("float")
+
+  const Str sqlName
+  private new make(Str t) { sqlName = t }
+}
 
 **
 ** Field is column of datatable

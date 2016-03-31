@@ -7,21 +7,25 @@
 //
 
 using isql
+using concurrent
 
 **
 ** important class for execute sql.
 **
 internal const class SqlExecutor
 {
-  const static InsertMaker inserMaker := InsertMaker()
+  const InsertMaker inserMaker := InsertMaker()
   const TableMaker tableMaker := TableMaker()
-  const static UpdateMaker updateMaker := UpdateMaker()
-  const static WhereMaker whereMaker := WhereMaker()
-  const static IdWhereMaker idWhereMaker := IdWhereMaker()
-  const static SelectMaker selectMaker := SelectMaker()
+  const UpdateMaker updateMaker := UpdateMaker()
+  const WhereMaker whereMaker := WhereMaker()
+  const IdWhereMaker idWhereMaker := IdWhereMaker()
+  const SelectMaker selectMaker := SelectMaker()
 
   const Log log := Pod.of(this).log
 
+  SqlDialect sqlDialect() {
+    Actor.locals.getOrAdd("slan.sqlDialect") { SqlDialect() }
+  }
 
   Void insert(Table table, SqlConn db, Obj obj)
   {
@@ -239,7 +243,7 @@ internal const class SqlExecutor
 
   Void createTable(Table table, SqlConn db)
   {
-    sql := tableMaker.createTable(table)
+    sql := tableMaker.createTable(table, sqlDialect)
     if (log.isDebug)
     {
       log.debug(sql)
