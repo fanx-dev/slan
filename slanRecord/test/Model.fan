@@ -12,7 +12,7 @@
 **
 internal class User : ObjRecord
 {
-  const static Table table := ObjTable(User#)
+  const static TableDef table := ObjTableDef(User#)
 
   new make() : super(table) {}
 

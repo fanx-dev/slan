@@ -13,12 +13,12 @@
 **
 @Js
 @Serializable
-const class Table
+const class TableDef
 {
   @Transient
   const private Str:Int map
 
-  const protected Column[] columns
+  const FieldDef[] columns
 
   const Str name
   const Int idIndex := -1
@@ -41,14 +41,14 @@ const class Table
   }
 
   Int size() { columns.size }
-  Column get(Int i) { columns[i] }
+  FieldDef get(Int i) { columns[i] }
 
-  Void each(|Column, Int| f)
+  Void each(|FieldDef, Int| f)
   {
     columns.each(f)
   }
 
-  Column find(Str name)
+  FieldDef find(Str name)
   {
     i := map[name]
     if (i == null) {
@@ -59,7 +59,7 @@ const class Table
 
 
   ** PK of this table
-  Column? id()
+  FieldDef? id()
   {
     if (idIndex == -1) return null
     return columns[idIndex]
@@ -95,7 +95,7 @@ const class Table
 //////////////////////////////////////////////////////////////////////////
 
   ** Each Columns except id
-  Void nonIdColumn(|Column| f)
+  Void nonIdColumn(|FieldDef| f)
   {
     columns.each
     {
@@ -107,7 +107,7 @@ const class Table
   }
 
   ** Each Columns except auto generate field
-  Void nonAutoGenerate(|Column| f)
+  Void nonAutoGenerate(|FieldDef| f)
   {
     if (autoGenerateId == true)
     {
@@ -116,6 +116,49 @@ const class Table
     else
     {
       columns.each(f)
+    }
+  }
+}
+
+class TableDefBuilder {
+  Str name
+  Int idIndex := -1
+  Type type
+  Bool autoGenerateId := false
+
+  FieldDef[] columns := FieldDef[,]
+
+  new make(Str name, Type type := ArrayRecord#) {
+    this.name = name
+    this.type = type
+  }
+
+  This add(FieldDef f) {
+    addColumn(f.name, f.type, f.indexed, f.sqlType, f.length, f.precision)
+  }
+
+  This addColumn(Str name, Type type, Bool indexed := false, Str? sqlType := null, Int? length := null, Int? precision := null) {
+    c := FieldDef {
+      it.name = name
+      it.type = type
+      it.index = columns.size
+      it.indexed = indexed
+      it.sqlType = sqlType
+      it.length = length
+      it.precision = precision
+    }
+    columns.add(c)
+    return this
+  }
+
+  TableDef build() {
+    TableDef {
+      it.name = this.name
+      it.idIndex = this.idIndex
+      it.type = this.type
+      it.autoGenerateId = this.autoGenerateId
+
+      it.columns = this.columns
     }
   }
 }

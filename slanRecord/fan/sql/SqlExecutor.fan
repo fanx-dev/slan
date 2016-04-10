@@ -27,7 +27,7 @@ internal const class SqlExecutor
     Actor.locals.getOrAdd("slan.sqlDialect") { SqlDialect() }
   }
 
-  Void insert(Table table, SqlConn db, Obj obj)
+  Void insert(TableDef table, SqlConn db, Obj obj)
   {
     sql := inserMaker.getSql(table)
     params := inserMaker.getParam(table, obj)
@@ -51,7 +51,7 @@ internal const class SqlExecutor
     stmt.close
   }
 
-  Void update(Table table, SqlConn db, Obj obj)
+  Void update(TableDef table, SqlConn db, Obj obj)
   {
     sql := updateMaker.getSql(table, obj)
     params := updateMaker.getParam(table, obj)
@@ -71,7 +71,7 @@ internal const class SqlExecutor
 //////////////////////////////////////////////////////////////////////////
 
   ** select data list
-  Obj[] select(Table table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
+  Obj[] select(TableDef table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -98,7 +98,7 @@ internal const class SqlExecutor
   }
 
   ** select data list
-  Obj? selectOne(Table table, SqlConn db, Obj obj, Str orderby, Int offset)
+  Obj? selectOne(TableDef table, SqlConn db, Obj obj, Str orderby, Int offset)
   {
     sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
@@ -125,7 +125,7 @@ internal const class SqlExecutor
   }
 
   ** select by condition
-  Obj[] selectWhere(Table table, SqlConn db, Str condition, Int offset, Int limit)
+  Obj[] selectWhere(TableDef table, SqlConn db, Str condition, Int offset, Int limit)
   {
     sql := selectMaker.getSql(table) + " from $table.name"
     if (condition != "") sql += " " + condition
@@ -150,7 +150,7 @@ internal const class SqlExecutor
     return list
   }
 
-  Void delete(Table table, SqlConn db, Obj obj)
+  Void delete(TableDef table, SqlConn db, Obj obj)
   {
     sql := "delete " + whereMaker.getSql(table, obj)
     paramss := whereMaker.getParam(table, obj)
@@ -165,7 +165,7 @@ internal const class SqlExecutor
     stmt.close
   }
 
-  Int count(Table table, SqlConn db, Obj obj)
+  Int count(TableDef table, SqlConn db, Obj obj)
   {
     sql := "select count(*)" + whereMaker.getSql(table, obj);
     params := whereMaker.getParam(table, obj)
@@ -190,14 +190,14 @@ internal const class SqlExecutor
 // by ID
 //////////////////////////////////////////////////////////////////////////
 
-  Void removeById(Table table, SqlConn db, Obj id)
+  Void removeById(TableDef table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "delete ")
     stmt.execute
     stmt.close
   }
 
-  Obj? findById(Table table, SqlConn db, Obj id)
+  Obj? findById(TableDef table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, selectMaker.getSql(table))
 
@@ -211,7 +211,7 @@ internal const class SqlExecutor
     return obj
   }
 
-  Bool existById(Table table, SqlConn db, Obj id)
+  Bool existById(TableDef table, SqlConn db, Obj id)
   {
     stmt := byIdStmt(table, db, id, "select count(*)")
 
@@ -223,7 +223,7 @@ internal const class SqlExecutor
     return exist
   }
 
-  private Statement byIdStmt(Table table, SqlConn db, Obj id, Str before)
+  private Statement byIdStmt(TableDef table, SqlConn db, Obj id, Str before)
   {
     sql := before + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
@@ -241,7 +241,7 @@ internal const class SqlExecutor
 // Table op
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Table table, SqlConn db)
+  Void createTable(TableDef table, SqlConn db)
   {
     sql := tableMaker.createTable(table, sqlDialect)
     if (log.isDebug)
@@ -252,7 +252,7 @@ internal const class SqlExecutor
     stmt.execute
     stmt.close
 
-    table.each |Column f|
+    table.each |FieldDef f|
     {
       if (f.indexed)
       {
@@ -268,7 +268,7 @@ internal const class SqlExecutor
     }
   }
 
-  Void dropTable(Table table, SqlConn db)
+  Void dropTable(TableDef table, SqlConn db)
   {
     sql := tableMaker.dropTable(table)
     if (log.isDebug)

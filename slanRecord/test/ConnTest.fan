@@ -18,11 +18,11 @@ internal class ConnTest : Test
   Void test()
   {
     factory := ConnPool.makeConfig(ConnTest#.pod)
-    context := Context(factory.open)
+    context := factory.openContext
 
     mapping := Mapping(context.conn)
     mapping.each { echo(it.name) }
 
-    factory.close(context.conn)
+    context.close
   }
 }

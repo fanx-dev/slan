@@ -16,7 +16,7 @@
 mixin Record
 {
   @Transient
-  abstract Table schema
+  abstract TableDef schema
 
   abstract Obj? get(Int i)
   abstract Void set(Int i, Obj? value)
@@ -34,11 +34,11 @@ mixin Record
 class ArrayRecord : Record
 {
   @Transient
-  override Table schema
+  override TableDef schema
 
   Obj?[] values := [,]
 
-  new make(Table s)
+  new make(TableDef s)
   {
     schema = s
     values.size = s.size

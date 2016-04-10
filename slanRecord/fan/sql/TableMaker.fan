@@ -11,12 +11,12 @@ using isql
 
 internal const class TableMaker
 {
-  Str createTable(Table table, SqlDialect dialect)
+  Str createTable(TableDef table, SqlDialect dialect)
   {
     sql := StrBuf()
     sql.add("create table $table.name(")
 
-    table.each |Column c, i|
+    table.each |c, i|
     {
       if (i != 0) {
         sql.add(",")
@@ -45,7 +45,7 @@ internal const class TableMaker
     "create index index_${tableName}_${fieldName} on ${tableName} (${fieldName})"
   }
 
-  Str dropTable(Table table)
+  Str dropTable(TableDef table)
   {
     return "drop table $table.name"
   }

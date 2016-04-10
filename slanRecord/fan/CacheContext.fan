@@ -13,7 +13,7 @@ using slanActor
 **
 ** context with cache
 **
-const class CacheContext : Context
+class CacheContext : Context
 {
   private const Log log := Pod.of(this).log
 
@@ -104,7 +104,7 @@ const class CacheContext : Context
   **
   ** clear the query cache which key satrts with typename + ','
   **
-  Void clearQueryCache(Table table)
+  Void clearQueryCache(TableDef table)
   {
     name := table.name + ","
     queryCache.clearIf |Str key -> Bool|
@@ -144,7 +144,7 @@ const class CacheContext : Context
     clearQueryCache(obj.schema)
   }
 
-  override Void deleteById(Table table, Obj id)
+  override Void deleteById(TableDef table, Obj id)
   {
     super.deleteById(table, id)
     set(idToKey(table, id), null)
@@ -157,7 +157,7 @@ const class CacheContext : Context
     obj.schema.name + "," + (obj.getId)
   }
 
-  private Str idToKey(Table table, Obj id)
+  private Str idToKey(TableDef table, Obj id)
   {
     return table.name + "," + id
   }
@@ -166,7 +166,7 @@ const class CacheContext : Context
   // By ID
   ////////////////////////////////////////////////////////////////////////
 
-  override Obj? findById(Table table, Obj id)
+  override Obj? findById(TableDef table, Obj id)
   {
     key := idToKey(table, id)
     if (this.containsKey(key))

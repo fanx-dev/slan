@@ -12,29 +12,31 @@ using concurrent
 **
 ** session and manager
 **
-const class Context
+class Context
 {
   ** power of sql
   private const static SqlExecutor executor := SqlExecutor()
 
-  ** thread connection id
-  const Str curId := Context#.qname + ".conn"
+  **
+  ** Get the connection to this database for the current thread.
+  **
+  SqlConn? conn
+
+  internal ConnPool? connPool
 
   ** constructor
   new make(SqlConn conn)
   {
-    Actor.locals[curId] = conn
+    this.conn = conn
   }
 
-  **
-  ** Get the connection to this database for the current thread.
-  **
-  SqlConn conn()
-  {
-    SqlConn? c := Actor.locals[curId]
-    if (c == null) throw SqlErr("Database is not open.")
-    if (c.isClosed) throw SqlErr("Database has been closed.")
-    return c
+  Void close() {
+    if (connPool != null) {
+       connPool.close(conn)
+    } else {
+      conn.close
+    }
+    conn = null
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +62,7 @@ const class Context
   }
 
   ** delete by id
-  virtual Void deleteById(Table table, Obj id)
+  virtual Void deleteById(TableDef table, Obj id)
   {
     executor.removeById(table, this.conn, id)
   }
@@ -86,7 +88,7 @@ const class Context
 //////////////////////////////////////////////////////////////////////////
 
   ** query by condition
-  Obj[] select(Table table, Str condition, Int offset := 0, Int limit := 50)
+  Obj[] select(TableDef table, Str condition, Int offset := 0, Int limit := 50)
   {
     executor.selectWhere(table, this.conn, condition, offset, limit)
   }
@@ -95,7 +97,7 @@ const class Context
 // By ID
 //////////////////////////////////////////////////////////////////////////
 
-  virtual Obj? findById(Table table, Obj id)
+  virtual Obj? findById(TableDef table, Obj id)
   {
     return executor.findById(table, this.conn, id)
   }
@@ -144,23 +146,23 @@ const class Context
 // Table operate
 //////////////////////////////////////////////////////////////////////////
 
-  Void createTable(Table table)
+  Void createTable(TableDef table)
   {
     executor.createTable(table, this.conn)
   }
 
-  Void dropTable(Table table)
+  Void dropTable(TableDef table)
   {
     executor.dropTable(table, this.conn)
   }
 
-  Bool tableExists(Table table)
+  Bool tableExists(TableDef table)
   {
     return this.conn.meta.tableExists(table.name)
   }
 
   ** check the object table is fit to database table
-  Bool checkTable(Table table)
+  Bool checkTable(TableDef table)
   {
     trow := this.conn.meta.tableMeta(table.name)
     return SqlUtil.checkMatchDb(table, trow)

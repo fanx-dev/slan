@@ -36,12 +36,12 @@ facet class Id {
 **
 @Js
 @Serializable
-const class ObjTable : Table
+const class ObjTableDef : TableDef
 {
   const Field[] fields := [,]
 
-  new make(Type type) : super.make(|Table t| {
-     cfList := Column[,]
+  new make(Type type) : super.make(|TableDef t| {
+     cfList := FieldDef[,]
      fList := Field[,]
      type.fields.each |f, i| {
        initFeild(cfList, fList, f, i)
@@ -70,12 +70,12 @@ const class ObjTable : Table
      this.fields = fList
   }
 
-  private Void initFeild(Column[] cfList, Field[] fList, Field f, Int i) {
+  private Void initFeild(FieldDef[] cfList, Field[] fList, Field f, Int i) {
      if (f.isStatic || f.isSynthetic || f.hasFacet(Transient#)) {
      }
      else if (f.hasFacet(Colu#)) {
        Colu c := f.facet(Colu#)
-       cf := Column {
+       cf := FieldDef {
           it.name = c.name ?: f.name
           it.type = f.type
           it.sqlType = c.sqlType
@@ -88,7 +88,7 @@ const class ObjTable : Table
        fList.add(f)
      }
      else {
-       cf := Column {
+       cf := FieldDef {
           it.name = f.name
           it.type = f.type
           it.index = cfList.size
@@ -104,14 +104,14 @@ const class ObjTable : Table
 class ObjRecord : Record
 {
   @Transient
-  override Table schema
+  override TableDef schema
 
-  new make(Table s) {
+  new make(TableDef s) {
     schema = s
   }
 
   override Obj? get(Int i) {
-    obj := (schema as ObjTable).fields[i].get(this)
+    obj := (schema as ObjTableDef).fields[i].get(this)
     if (obj is Enum) {
       return (obj as Enum).ordinal
     }
@@ -119,7 +119,7 @@ class ObjRecord : Record
   }
 
   override Void set(Int i, Obj? value) {
-    field := (schema as ObjTable).fields[i]
+    field := (schema as ObjTableDef).fields[i]
     if (field.type.isEnum && value is Int) {
       value = field.type.field("vals").get->get(value)
     }

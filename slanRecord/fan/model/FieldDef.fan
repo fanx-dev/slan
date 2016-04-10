@@ -35,7 +35,7 @@ enum class DataType {
 **
 @Js
 @Serializable
-const class Column
+const class FieldDef
 {
   ** column name
   const Str name

@@ -30,10 +30,10 @@ const class SqlUtil
   **
   ** make string from object for cache key
   **
-  static Str makeKey(Table s, Obj obj)
+  static Str makeKey(TableDef s, Obj obj)
   {
     condition := StrBuf()
-    s.each |Column c|
+    s.each |c|
     {
       value := c.get(obj)
       if (value != null)
@@ -47,10 +47,10 @@ const class SqlUtil
   **
   ** fetch data
   **
-  static Obj getInstance(Table s, ResultSet r)
+  static Obj getInstance(TableDef s, ResultSet r)
   {
     obj := s.newInstance
-    s.each |Column c, Int i|
+    s.each |c, Int i|
     {
       value := r.get(i)
       c.set(obj, value)
@@ -63,7 +63,7 @@ const class SqlUtil
 //////////////////////////////////////////////////////////////////////////
 
   ** check the column is match the database
-  static Bool checkMatchDbField(Column f, Col c)
+  static Bool checkMatchDbField(FieldDef f, Col c)
   {
     if (!c.name.equalsIgnoreCase(f.name)) return false
     if (Utils.isPrimitiveType(f.type))
@@ -80,7 +80,7 @@ const class SqlUtil
   **
   ** check model is match the database
   **
-  static Bool checkMatchDb(Table s, Col[] tcols)
+  static Bool checkMatchDb(TableDef s, Col[] tcols)
   {
     if (s.size > tcols.size)
     {
@@ -89,7 +89,7 @@ const class SqlUtil
     }
 
     errCount := 0
-    s.each |Column c, Int i|
+    s.each |FieldDef c, Int i|
     {
       pass := checkMatchDbField(c, tcols[i])
       if (!pass)
@@ -109,25 +109,14 @@ const class SqlUtil
 // schema
 //////////////////////////////////////////////////////////////////////////
 
-  static Table colsToSchema(Str name, Col[] cols)
+  static TableDef colsToSchema(Str name, Col[] cols)
   {
-    list := Column[,]
+    builder := TableDefBuilder(name, ArrayRecord#)
     cols.each |col, i|
     {
-      list.add(Column {
-        it.name = col.name
-        it.type = col.type
-        it.index = i
-      })
+      builder.addColumn(col.name, col.type)
     }
-    schema := Table {
-      it.name = name
-      it.type = ArrayRecord#
-      it.idIndex = -1
-      it.autoGenerateId = false
-      it.columns = list
-    }
-    return schema
+    return builder.build
   }
 
 }

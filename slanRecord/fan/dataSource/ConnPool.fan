@@ -93,6 +93,8 @@ const class ConnPool
     }
   }
 
+  Context openContext() { Context(open) { connPool = this } }
+
   **
   ** not actually close ,just push into pool
   **

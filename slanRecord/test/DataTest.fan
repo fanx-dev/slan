@@ -18,7 +18,7 @@ internal class DataTest : Test
   Context? c
   ConnPool? factory
 
-  Table? table
+  TableDef? table
 
   override Void setup()
   {

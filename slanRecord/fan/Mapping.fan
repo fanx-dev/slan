@@ -11,23 +11,23 @@ using concurrent
 
 class Mapping
 {
-  private Str:Table tables := [:]
+  private Str:TableDef tables := [:]
 
   new make(SqlConn conn, |Str->Bool|? tableFilter := null)
   {
-    Table[] list := getDbSchema(conn, tableFilter)
+    TableDef[] list := getDbSchema(conn, tableFilter)
     list.each
     {
       tables[it.name] = it
     }
   }
 
-  virtual Table get(Str name)
+  virtual TableDef get(Str name)
   {
     tables.get(name)
   }
 
-  Void each(|Table| f)
+  Void each(|TableDef| f)
   {
     tables.each(f)
   }
@@ -37,7 +37,7 @@ class Mapping
   **
   Void tryCreateAllTable(Context context)
   {
-    this.tables.each |Table t|
+    this.tables.each |TableDef t|
     {
       if (context.tableExists(t))
       {
@@ -56,7 +56,7 @@ class Mapping
   ** drop all table with in appliction
   Void dropAllTable(Context context)
   {
-    this.tables.each |Table t|
+    this.tables.each |TableDef t|
     {
       if(context.tableExists(t))
       {
@@ -69,9 +69,9 @@ class Mapping
 // Tools
 //////////////////////////////////////////////////////////////////////////
 
-  static Table[] getDbSchema(SqlConn conn, |Str->Bool|? tableFilter := null)
+  static TableDef[] getDbSchema(SqlConn conn, |Str->Bool|? tableFilter := null)
   {
-    tables := Table[,]
+    tables := TableDef[,]
     conn.meta.tables.each |Str t|
     {
       if (tableFilter == null || tableFilter(t))

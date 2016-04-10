@@ -20,7 +20,7 @@ const class SqlDialect {
   **
   ** get sql type for create table
   **
-  virtual Str getSqlType(Column f) {
+  virtual Str getSqlType(FieldDef f) {
     if (f.sqlType != null) {
       return f.sqlType
     }
@@ -31,7 +31,7 @@ const class SqlDialect {
   **
   ** convert from fantom type to sql type
   **
-  private Str fanToSqlType(Column f)
+  private Str fanToSqlType(FieldDef f)
   {
     Str t := ""
     switch(f.type.toNonNullable)
