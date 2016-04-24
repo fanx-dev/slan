@@ -41,6 +41,7 @@ const class Proxy : WebMod
     req.headers.each |v,k|
     {
       if (k == "Host") return
+      if (k == "Content-Type" && req.method == "GET") return
       c.reqHeaders[k] = v
     }
     c.writeReq
@@ -66,7 +67,7 @@ const class Proxy : WebMod
       res.headers[k] = v
     }
 
-    if (c.resHeaders["Content-Type"]   != null ||
+    if (c.resHeaders["Transfer-Encoding"]   != null ||
         c.resHeaders["Content-Length"] != null) {
       buf := c.resIn.readAllBuf
       res.out.writeBuf(buf).flush
