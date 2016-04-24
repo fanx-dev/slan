@@ -23,7 +23,7 @@ const class StoreMap
       case "get":
         return Actor.locals[arg[1]]
       case "set":
-        return Actor.locals[arg[1]] = arg[2]
+        Actor.locals[arg[1]] = arg[2]
       case "remove":
         return Actor.locals.remove(arg[1])
       case "clear":
