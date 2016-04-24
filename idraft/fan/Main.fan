@@ -54,7 +54,7 @@ class Main : AbstractMain
     return runServices([WispService
     {
       it.addr = this.addr == null ? null : IpAddr(this.addr)
-      it.port = this.port
+      it.httpPort = this.port
       it.root = rootMod
     }])
   }

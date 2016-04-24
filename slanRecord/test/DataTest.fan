@@ -24,7 +24,7 @@ internal class DataTest : Test
   {
     log.level = LogLevel.debug
     table = User.table
-    factory = ConnPool.makeConfig(DataTest#.pod)
+    factory = ConnPool.makeConfig(DataTest#.pod, "test")
     c = Context(factory.open)
   }
 

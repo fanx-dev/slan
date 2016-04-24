@@ -17,7 +17,7 @@ internal class ConnTest : Test
 {
   Void test()
   {
-    factory := ConnPool.makeConfig(ConnTest#.pod)
+    factory := ConnPool.makeConfig(ConnTest#.pod, "test")
     context := factory.openContext
 
     mapping := Mapping(context.conn)

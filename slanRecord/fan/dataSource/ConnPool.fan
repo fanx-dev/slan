@@ -63,7 +63,7 @@ const class ConnPool
     this.password = password
   }
 
-  new makeConfig(Pod pod, Str configPrefix := "test")
+  new makeConfig(Pod pod, Str configPrefix)
   {
     Class.forName(pod.config("${configPrefix}.driver", "org.h2.Driver"))
     this.connectionStr = pod.config("${configPrefix}.uri", "jdbc:h2:~/test")
