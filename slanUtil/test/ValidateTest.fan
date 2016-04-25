@@ -31,4 +31,13 @@ internal class ValidateTest : Test
     t1 := "http://163.com"
     verify(Validate.isUri(t1))
   }
+
+  Void testOthers() {
+    verify(Validate.isIdentifier("abc123"))
+    verify(Validate.isIdentifier("123_abc"))
+    verify(Validate.isIdentifier("--__"))
+    verifyFalse(Validate.isIdentifier("a"))
+    verifyFalse(Validate.isIdentifier("abc@123"))
+    verifyFalse(Validate.isIdentifier("abc.123"))
+  }
 }

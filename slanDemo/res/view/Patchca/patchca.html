@@ -5,11 +5,11 @@
   </head>
   <body>
    <h1>input the code</h1>
-   <form name="form" method="post" action="/Tool/validate">
-     <img src="/Patchca/image">
+   <form name="form" method="post" action="/Patchca/validate">
+     <img src="/Patchca/image" style="cursor:pointer;" title="Click to refresh" onclick="this.src='/Patchca/image?d='+Math.random();">
      <input name="code" type="text">
      <button type="submit">submit</button>
    </form>
-   <p><a href="Index/index">home</a></p>
+   <p><a href="/Index/index">home</a></p>
   </body>
 </html>

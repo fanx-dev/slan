@@ -8,13 +8,15 @@
 
 using web
 
-const class UploadHelper : Weblet
+class UploadHelper : Weblet
 {
-  const |Str, InStream| handler
+  private Uri tempDir
+  Str:Obj params := Str:Obj[:]
 
-  new make(|Str, InStream| handler)
-  {
-    this.handler = handler
+  new make(Uri dir := `./temp/`) {
+    tempDir = dir
+    file := tempDir.toFile
+    if (!file.exists) file.create
   }
 
   override Void onPost()
@@ -26,42 +28,62 @@ const class UploadHelper : Weblet
     // process each multi-part
     WebUtil.parseMultiPart(req.in, boundary) |headers, in|
     {
-      // pick one of these (but not both!)
-      //echoPart(headers, in)
-      savePartToFile(headers, in)
+      extractPart(headers, in)
     }
   }
 
-  private Void savePartToFile(Str:Str headers, InStream in)
+  virtual Void dispose() {
+    params.each |v, k| {
+      if (v is File) {
+        try {
+          v->delete
+        } catch {}
+      }
+    }
+  }
+
+  protected virtual Void extractPart(Str:Str headers, InStream in)
   {
     disHeader := headers["Content-Disposition"]
-    Str? name := null
-    if (disHeader != null) name = MimeType.parseParams(disHeader)["filename"]
-    if (name == null || name.size < 3)
-    {
-      echo("SKIP $disHeader")
+    if (disHeader == null) {
       in.readAllBuf  // drain stream
       return
     }
-
-    echo("## savePart: $name")
-    handler(name, in)
+    mimeParam := MimeType.parseParams(disHeader)
+    Str name := mimeParam["name"]
+    mime := MimeType(headers["Content-Type"] ?: "text/plain")
+    if (mime.mediaType == "text")
+    {
+      this.params[name] = in.readAllStr
+    }
+    else
+    {
+      Str? fileName := mimeParam["filename"]
+      if (fileName == null || fileName.size < 3) {
+        in.readAllBuf  // drain stream
+        return
+      } else {
+        this.params[name] = saveToFile(in, fileName)
+      }
+    }
   }
 
-  static Str newName(Str oldName)
+  protected virtual File saveToFile(InStream in, Str name)
   {
-    ext := oldName.toUri.ext
-    snap := DateTime.nowUnique.toStr
-    name := (ext == null) ? snap : "${snap}.$ext"
-    return name
-  }
-
-  static Void saveToFile(InStream in, File file)
-  {
+    File file := `$tempDir${name}.tmp`.toFile
     out := file.out
-    try
+    try {
       in.pipe(out)
-    finally
+    }
+    catch (Err e) {
       out.close
+      file.delete
+      throw e
+    }
+    finally {
+      out.close
+    }
+
+    return file
   }
 }

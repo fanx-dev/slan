@@ -17,10 +17,10 @@ var errMsg = {
   },
 
   id: {
-    msg: "Not a valid ID. start with char and length in [4..36]",
+    msg: "Not a valid ID. start with char and length in [3..36]",
     test: function(obj) {
       return !obj.value ||
-      /^[a-zA-Z][a-zA-Z0-9_]{3,35}$/.test(obj.value);
+      /[a-zA-Z0-9_-]{3,36}/.test(obj.value);
     }
   },
 

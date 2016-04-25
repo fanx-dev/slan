@@ -28,6 +28,7 @@ class Upload : SlanWeblet
     out.p.w("Upload File 1: ").input("type='file' name='file1'").br
     out.p.w("Upload File 2: ").input("type='file' name='file2'").br
     out.p.w("Upload File 3: ").input("type='file' name='file3'").br
+    out.p.w("Name: ").input("type='text' name='name'").br
     out.submit("value='Upload!'")
     out.formEnd
     out.bodyEnd.htmlEnd
@@ -36,15 +37,16 @@ class Upload : SlanWeblet
   @WebPost
   Void saveFile()
   {
-    Uri dir := `./`
-    UploadHelper helper := UploadHelper()|Str name, InStream in|
-    {
-      uri := dir.plusName(UploadHelper.newName(name))
-      UploadHelper.saveToFile(in, uri.toFile)
-      res.out.w("$uri\n")
+    Uri dir := `./temp/`
+    helper := UploadHelper(dir)
+    try {
+      helper.onService
+      setContentType
+      helper.params.each |v, k| {
+        res.out.w("$k:$v\n")
+      }
+    } finally {
+      helper.dispose
     }
-    setContentType
-    res.out.w("save at:\n")
-    helper.onService
   }
 }

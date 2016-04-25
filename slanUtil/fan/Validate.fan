@@ -36,10 +36,10 @@ mixin Validate
     return r.matches(text)
   }
 
-  ** length in [4...36], start with char
+  ** length in [3...36], start with char
   static Bool isIdentifier(Str text)
   {
-    r := Regex<|^[a-zA-Z][a-zA-Z0-9_]{3,35}$|>
+    r := Regex<|[a-zA-Z0-9_-]{3,36}|>
     return r.matches(text)
   }
 
