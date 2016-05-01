@@ -44,7 +44,7 @@ internal const class InsertMaker
 **
 **************************************************************************
 
-internal const class UpdateMaker
+internal const class UpdateByIdMaker
 {
   Str getSql(TableDef table,Obj obj)
   {
@@ -53,7 +53,9 @@ internal const class UpdateMaker
 
     table.nonIdColumn
     {
-      sql.add("$it.name=?,")
+      if (it.get(obj) != null) {
+        sql.add("$it.name=?,")
+      }
     }
 
     Utils.removeLastChar(sql).add(" where ")
@@ -67,9 +69,42 @@ internal const class UpdateMaker
     param := Obj?[,]
     table.nonIdColumn |c|
     {
-      param.add(c.get(obj))
+      if (c.get(obj) != null) {
+        param.add(c.get(obj))
+      }
     }
     param.add(table.id.get(obj))
+    return param
+  }
+}
+
+internal const class UpdateMaker
+{
+  Str getSql(TableDef table, Obj obj)
+  {
+    sql := StrBuf()
+    sql.add("update $table.name set ")
+
+    table.each
+    {
+      if (it.get(obj) != null) {
+        sql.add("$it.name=?,")
+      }
+    }
+
+    Utils.removeLastChar(sql)
+    return sql.toStr
+  }
+
+  Obj?[] getParam(TableDef table, Obj obj)
+  {
+    param := Obj?[,]
+    table.each |c|
+    {
+      if (c.get(obj) != null) {
+        param.add(c.get(obj))
+      }
+    }
     return param
   }
 }
@@ -85,20 +120,21 @@ internal const class WhereMaker
 {
   Str getSql(TableDef table, Obj obj)
   {
-    from := " from $table.name"
-    condition := StrBuf()
+    condition := StrBuf().add("where ")
+    Int count := 0
     table.each
     {
       if (it.get(obj) != null)
       {
         condition.add("$it.name=? and ")
+        ++count
       }
     }
-    if (condition.size == 0){
-      return from
+    if (count == 0){
+      return ""
     }
     condition.removeRange(Range.makeInclusive(condition.size-5,-1))
-    return "$from where $condition"
+    return "$condition"
   }
 
   Obj?[] getParam(TableDef table, Obj obj)
@@ -127,7 +163,7 @@ internal const class IdWhereMaker
 {
   Str getSql(TableDef table)
   {
-    return " from $table.name where $table.id.name=?"
+    return "where $table.id.name=?"
   }
 
   Obj?[] getParam(TableDef table, Obj id)

@@ -14,7 +14,7 @@ class Build : build::BuildPod
   {
     podName = "slanRecord"
     summary = "slan record"
-    srcDirs = [`fan/`, `fan/model/`, `fan/dataSource/`, `fan/sql/`, `test/`]
+    srcDirs = [`fan/`, `fan/model/`, `fan/sql/`, `test/`]
     depends = ["sys 1.0", "isql 1.0", "concurrent 1.0", "slanActor 1.0"]
   }
 }

@@ -50,9 +50,17 @@ class Context
   }
 
   ** update by id
-  virtual Void update(Record obj)
+  virtual Void updateById(Record obj)
   {
-    executor.update(obj.schema, this.conn, obj)
+    executor.updateById(obj.schema, this.conn, obj)
+  }
+
+  virtual Void updateByCondition(Record obj, Str condition) {
+    executor.updateByCondition(obj.schema, this.conn, obj, condition)
+  }
+
+  virtual Void updateByExample(Record obj, Record where) {
+    executor.updateByExample(obj.schema, this.conn, obj, where)
   }
 
   ** delete by example
@@ -88,9 +96,9 @@ class Context
 //////////////////////////////////////////////////////////////////////////
 
   ** query by condition
-  Obj[] select(TableDef table, Str condition, Int offset := 0, Int limit := 50)
+  Obj[] select(TableDef table, Str where, Int offset := 0, Int limit := 50)
   {
-    executor.selectWhere(table, this.conn, condition, offset, limit)
+    executor.selectWhere(table, this.conn, where, offset, limit)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -124,7 +132,7 @@ class Context
   {
     if (existById(obj))
     {
-      update(obj)
+      updateById(obj)
     }
     else
     {
@@ -135,8 +143,8 @@ class Context
   private Bool existById(Record obj)
   {
     id := obj.getId
-    if (findById(obj.schema, id) != null)
-    {
+    if (id == null) return false
+    if (findById(obj.schema, id) != null) {
       return true
     }
     return false

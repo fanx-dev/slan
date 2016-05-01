@@ -13,6 +13,7 @@ using slanActor
 **
 ** context with cache
 **
+@Deprecated
 class CacheContext : Context
 {
   private const Log log := Pod.of(this).log
@@ -129,9 +130,9 @@ class CacheContext : Context
   }
 
   ** update by id
-  override Void update(Record obj)
+  override Void updateById(Record obj)
   {
-    super.update(obj)
+    super.updateById(obj)
     set(objIdKey(obj), obj)
     clearQueryCache(obj.schema)
   }

@@ -16,6 +16,7 @@ internal const class SqlExecutor
 {
   const InsertMaker inserMaker := InsertMaker()
   const TableMaker tableMaker := TableMaker()
+  const UpdateByIdMaker updateByIdMaker := UpdateByIdMaker()
   const UpdateMaker updateMaker := UpdateMaker()
   const WhereMaker whereMaker := WhereMaker()
   const IdWhereMaker idWhereMaker := IdWhereMaker()
@@ -51,9 +52,24 @@ internal const class SqlExecutor
     stmt.close
   }
 
-  Void update(TableDef table, SqlConn db, Obj obj)
+  Void updateById(TableDef table, SqlConn db, Obj obj)
   {
-    sql := updateMaker.getSql(table, obj)
+    sql := updateByIdMaker.getSql(table, obj)
+    params := updateByIdMaker.getParam(table, obj)
+    if (log.isDebug)
+    {
+      log.debug(sql)
+      log.debug(params.toStr)
+    }
+    stmt := db.sql(sql)
+    params.each |p, i|{ stmt.set(i, p) }
+    stmt.execute
+    stmt.close
+  }
+
+  Void updateByCondition(TableDef table, SqlConn db, Obj obj, Str condition)
+  {
+    sql := updateMaker.getSql(table, obj) + " where " + condition
     params := updateMaker.getParam(table, obj)
     if (log.isDebug)
     {
@@ -66,6 +82,26 @@ internal const class SqlExecutor
     stmt.close
   }
 
+  Void updateByExample(TableDef table, SqlConn db, Obj obj, Obj where)
+  {
+    sql := updateMaker.getSql(table, obj) +" "+ whereMaker.getSql(table, where)
+    params := updateMaker.getParam(table, obj)
+    params2 := whereMaker.getParam(table, where)
+    if (log.isDebug)
+    {
+      log.debug(sql)
+      log.debug(params.toStr + " where " + params2.toStr)
+    }
+    stmt := db.sql(sql)
+
+    Int pos := params.size
+    params.each |p, i|{ stmt.set(i, p) }
+    params2.each |p, i|{ stmt.set(i+pos, p) }
+
+    stmt.execute
+    stmt.close
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // select
 //////////////////////////////////////////////////////////////////////////
@@ -73,7 +109,7 @@ internal const class SqlExecutor
   ** select data list
   Obj[] select(TableDef table, SqlConn db, Obj obj, Str orderby, Int offset, Int limit)
   {
-    sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
+    sql := selectMaker.getSql(table)  + " from $table.name " + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
     params := whereMaker.getParam(table,obj)
     if (log.isDebug)
@@ -100,7 +136,7 @@ internal const class SqlExecutor
   ** select data list
   Obj? selectOne(TableDef table, SqlConn db, Obj obj, Str orderby, Int offset)
   {
-    sql := selectMaker.getSql(table) + whereMaker.getSql(table, obj)
+    sql := selectMaker.getSql(table)  + " from $table.name " + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
     params := whereMaker.getParam(table,obj)
     if (log.isDebug)
@@ -152,7 +188,7 @@ internal const class SqlExecutor
 
   Void delete(TableDef table, SqlConn db, Obj obj)
   {
-    sql := "delete " + whereMaker.getSql(table, obj)
+    sql := "delete from $table.name " + whereMaker.getSql(table, obj)
     paramss := whereMaker.getParam(table, obj)
     if (log.isDebug)
     {
@@ -167,7 +203,7 @@ internal const class SqlExecutor
 
   Int count(TableDef table, SqlConn db, Obj obj)
   {
-    sql := "select count(*)" + whereMaker.getSql(table, obj);
+    sql := "select count(*) from $table.name " + whereMaker.getSql(table, obj);
     params := whereMaker.getParam(table, obj)
     if (log.isDebug)
     {
@@ -225,7 +261,7 @@ internal const class SqlExecutor
 
   private Statement byIdStmt(TableDef table, SqlConn db, Obj id, Str before)
   {
-    sql := before + idWhereMaker.getSql(table)
+    sql := before + " from $table.name " + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
     if (log.isDebug)
     {

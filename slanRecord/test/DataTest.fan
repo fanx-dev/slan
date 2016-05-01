@@ -54,23 +54,56 @@ internal class DataTest : Test
     t1.image = buf
 
     verifyNull(t1.id)
-    c.insert(t1)
+    c.save(t1)
     verifyNotNull(t1.id)
   }
 
   private Void query()
   {
-    t1 := User()
-    t1.name = "yjd"
-    t2 := c.one(t1) as User
+    example := User { it.name = "yjd" }
+    t2 := c.one(example, "order by name") as User
 
     verifyEq(t2.age, 25)
     verifyEq(t2.weight, 56.9f)
     echo(t2.image)
     verifyEq(t2.image.read, 'K')
 
-    //TODO: why the size is 1024
-    //verifyEq(t2.image.size, 1)
+    t3 := c.select(User.table, "where name='yjd'", 0, 2)
+    verifyEq(t3.size, 1)
+
+    verifyEq(c.list(example).size, 1)
+    verifyEq(c.count(example), 1)
+    verify(c.exist(example))
+  }
+
+  private Void update() {
+    obj := c.one(User { it.name = "yjd" }) as User
+
+    obj.age = 28
+    c.updateById(obj)
+    t2 := c.one(User { it.name = "yjd" }) as User
+    verifyEq(t2.age, 28)
+
+    obj.age = 29
+    c.updateByCondition(obj, "name='yjd'")
+    t3 := c.one(User { it.name = "yjd" }) as User
+    verifyEq(t3.age, 29)
+
+    obj.age = 30
+    c.updateByExample(obj, User { it.name = "yjd" })
+    t4 := c.one(User { it.name = "yjd" }) as User
+    verifyEq(t4.age, 30)
+  }
+
+  private Void transaction() {
+    example := User { it.name = "yjd" }
+    try {
+      c.trans {
+        c.deleteByExample(example)
+        throw Err()
+      }
+    } catch (Err e) {}
+    verify(c.exist(example))
   }
 
   Void test()
@@ -78,5 +111,7 @@ internal class DataTest : Test
     buildTable
     insert
     query
+    update
+    transaction
   }
 }
