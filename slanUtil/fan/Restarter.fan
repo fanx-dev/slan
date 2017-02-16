@@ -12,9 +12,9 @@ using concurrent
 **
 ** run process
 ** auto restart on crash or file changed
-** usage: fan ./Daemon.fan -watch bin/,res/ -time 1sec  ./service.exe args
+** usage: fan ./Restarter.fan -watch bin/,res/ -time 1sec  ./service.exe args
 **
-class Daemon : AbstractMain {
+class Restarter : AbstractMain {
   @Opt { help = "watch list" }
   Str? watch
 

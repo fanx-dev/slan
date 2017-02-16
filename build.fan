@@ -20,9 +20,7 @@ class Build : BuildGroup
     //notice the order
     childrenScripts =
     [
-      `idraft/build.fan`,
       `isql/build.fan`,
-      `slanActor/build.fan`,
       `slanUtil/build.fan`,
       `slanCompiler/build.fan`,
       `slanWeb/build.fan`,

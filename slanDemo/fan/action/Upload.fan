@@ -25,7 +25,7 @@ class Upload : SlanWeblet
     out.w("<a href='/'>Index</a>").hr
     out.form("method='post' action='saveFile' enctype='multipart/form-data'")
     out.p.w("Chooose files to upload:").pEnd
-    out.p.w("Upload File 1: ").input("type='file' name='file1'").br
+    out.p.w("Upload File 1: ").input("type='file' name='file1' accept='.apk'").br
     out.p.w("Upload File 2: ").input("type='file' name='file2'").br
     out.p.w("Upload File 3: ").input("type='file' name='file3'").br
     out.p.w("Name: ").input("type='text' name='name'").br

@@ -24,7 +24,6 @@ class Build : BuildPod
         "web 1.0",
         "compiler 1.0",
         "concurrent 1.0",
-        "slanActor 1.0"
     ]
     srcDirs = [`test/`, `fan/`, `fan/compiler/`, `fan/template/`]
     resDirs = [`res/`]

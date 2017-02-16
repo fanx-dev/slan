@@ -27,7 +27,6 @@ class Build : BuildPod
         "util 1.0",
         "concurrent 1.0",
         "build 1.0",
-        "slanActor 1.0",
         "slanCompiler 1.0",
         "inet 1.0",
         "wisp 1.0"

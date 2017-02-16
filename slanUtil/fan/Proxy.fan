@@ -14,13 +14,12 @@ using web
 **
 const class Proxy : WebMod
 {
-  ** Target port to proxy requests to.
-  const Int port
+  const Uri host
 
   ** Constructor.
-  new make(Int port := 8080)
+  new make(Uri host := `http://localhost:8080`)
   {
-    this.port = port
+    this.host = host
   }
 
   ** ** Invoked prior to serviceing the current request.
@@ -36,7 +35,7 @@ const class Proxy : WebMod
     // proxy request
     c := WebClient()
     c.followRedirects = false
-    c.reqUri = `http://localhost:${port}${req.uri.relToAuth}`
+    c.reqUri = `${host}${req.uri.relToAuth}`
     c.reqMethod = req.method
     req.headers.each |v,k|
     {
