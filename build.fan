@@ -17,7 +17,6 @@ class Build : BuildGroup
 
   new make()
   {
-    //notice the order
     childrenScripts =
     [
       `isql/build.fan`,

@@ -24,11 +24,31 @@ class Restarter : AbstractMain {
   @Arg { help = "commands" }
   Str[]? commands
 
+  private static const Unsafe process := Unsafe(RProcess())
+
+  override Int run() {
+    if (watch != null) {
+      watcher := FileWatchActor {
+        fileList = watch.split(',').map { it.toUri.toFile }
+        echo("watchList: $fileList")
+        onChanged = |->| { process.val->close }
+        checkTime = time
+      }
+    }
+    Env.cur.addShutdownHook |->| { process.val->close }
+    process.val->commands = commands
+    process.val->run
+    return 0
+  }
+}
+
+internal class RProcess {
   ** current process
   private Process? process
+  Str[]? commands
 
   ** kill process
-  private Void close() {
+  Void close() {
     if (process != null) {
       try {
         echo("kill process")
@@ -39,16 +59,7 @@ class Restarter : AbstractMain {
     }
   }
 
-  override Int run() {
-    if (watch != null) {
-      watcher := FileWatchActor {
-        fileList = watch.split(',').map { it.toUri.toFile }
-        echo("watchList: $fileList")
-        unsafe = Unsafe(this)
-        checkTime = time
-      }
-    }
-
+  Int run() {
     while (true) {
       echo("run $commands")
       try {
@@ -73,7 +84,6 @@ const class FileWatchActor : Actor {
   const File[]? fileList
   const |->|? onChanged
   const Duration checkTime := 5sec
-  const Unsafe? unsafe
 
   new make(|This| f) : super(ActorPool{maxThreads=1}) {
     f(this)
@@ -109,7 +119,6 @@ const class FileWatchActor : Actor {
         echo("file changed")
         locals.remove(storeKey)
         onChanged?.call()
-        unsafe?.val?->close
       }
     }
     catch (Err e) { e.trace }
