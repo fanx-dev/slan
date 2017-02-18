@@ -14,12 +14,14 @@ using web
 **
 const class Proxy : WebMod
 {
-  const Uri host
+  const Uri[] host := [,]
 
   ** Constructor.
-  new make(Uri host := `http://localhost:8080`)
+  new make()
   {
-    this.host = host
+    proxyHost := this.typeof.pod.config("proxyHost", "http://localhost:8080")
+    this.host = proxyHost.split(',').map { it.toUri }
+    echo("proxy: $host")
   }
 
   ** ** Invoked prior to serviceing the current request.
@@ -35,7 +37,7 @@ const class Proxy : WebMod
     // proxy request
     c := WebClient()
     c.followRedirects = false
-    c.reqUri = `${host}${req.uri.relToAuth}`
+    c.reqUri = `${host.random}${req.uri.relToAuth}`
     c.reqMethod = req.method
     req.headers.each |v,k|
     {

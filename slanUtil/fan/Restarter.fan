@@ -16,7 +16,7 @@ using concurrent
 **
 class Restarter : AbstractMain {
   @Opt { help = "watch list" }
-  Str? watch
+  Str? watch := Env.cur.homeDir.toStr + "lib/"
 
   @Opt { help = "checkTime" }
   Duration time := 5sec
