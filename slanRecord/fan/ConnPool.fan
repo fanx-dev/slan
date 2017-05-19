@@ -69,6 +69,7 @@ const class ConnPool
     this.connectionStr = pod.config("${configPrefix}.uri", "jdbc:h2:~/test")
     this.username = pod.config("${configPrefix}.username")
     this.password = pod.config("${configPrefix}.password")
+    echo("$connectionStr")
   }
 
 //////////////////////////////////////////////////////////////////////////

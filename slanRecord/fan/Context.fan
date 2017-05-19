@@ -31,6 +31,8 @@ class Context
   }
 
   Void close() {
+    if (conn == null) return
+
     if (connPool != null) {
        connPool.close(conn)
     } else {
