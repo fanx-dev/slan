@@ -65,12 +65,16 @@ const class Proxy : WebMod
     {
       // we don't re-gzip responses
       if (k == "Content-Encoding" && v == "gzip") return
+      if (k == "Content-Length") return
       res.headers[k] = v
     }
 
-    if (c.resHeaders["Transfer-Encoding"]   != null ||
-        c.resHeaders["Content-Length"] != null) {
+    if (c.resHeaders["Transfer-Encoding"] != null || c.resHeaders["Content-Length"] != null) {
       buf := c.resIn.readAllBuf
+
+      if (c.resHeaders["Transfer-Encoding"] == null) {
+        res.headers["Content-Length"] = buf.size.toStr
+      }
       res.out.writeBuf(buf).flush
     }
     c.close
