@@ -18,13 +18,13 @@ internal const class InsertMaker
     {
       sql.add(it.name+",")
     }
-    Utils.removeLastChar(sql).add(")values(")
+    SqlUtil.removeLastChar(sql).add(")values(")
 
     table.nonAutoGenerate
     {
       sql.add("?,")
     }
-    Utils.removeLastChar(sql).add(")")
+    SqlUtil.removeLastChar(sql).add(")")
 
     return sql.toStr
   }
@@ -58,7 +58,7 @@ internal const class UpdateByIdMaker
       }
     }
 
-    Utils.removeLastChar(sql).add(" where ")
+    SqlUtil.removeLastChar(sql).add(" where ")
     sql.add("$table.id.name=?")
 
     return sql.toStr
@@ -92,7 +92,7 @@ internal const class UpdateMaker
       }
     }
 
-    Utils.removeLastChar(sql)
+    SqlUtil.removeLastChar(sql)
     return sql.toStr
   }
 
@@ -188,7 +188,7 @@ internal const class SelectMaker
       sql.add("${table.name}.$it.name,")
     }
 
-    Utils.removeLastChar(sql)
+    SqlUtil.removeLastChar(sql)
     return sql.toStr
   }
 }

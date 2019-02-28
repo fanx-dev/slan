@@ -50,7 +50,7 @@ const class SqlDialect {
         t = "DATETIME"
       case Date#:
         t = "DATE"
-      case Time#:
+      case TimeOfDay#:
         t = "TIME"
       case Decimal#:
         t = "DECIMAL"

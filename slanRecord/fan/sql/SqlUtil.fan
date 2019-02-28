@@ -16,6 +16,38 @@ const class SqlUtil
 {
   const static Log log := SqlUtil#.pod.log
 
+  static StrBuf removeLastChar(StrBuf s)
+  {
+    s.remove(s.size - 1)
+  }
+
+  static Bool isPrimitiveType(Type type)
+  {
+    switch(type.toNonNullable)
+    {
+      case Int#:
+        return true
+      case Str#:
+        return true
+      case Float#:
+        return true
+      case Bool#:
+        return true
+      case DateTime#:
+        return true
+      case Date#:
+        return true
+      case TimeOfDay#:
+        return true
+      case Decimal#:
+        return true
+      case Buf#:
+        return true
+      default:
+        return false
+    }
+  }
+
   ** convert object to sql string
   static Str toSqlStr(Obj? o)
   {
@@ -23,7 +55,7 @@ const class SqlUtil
     if (o is Str)      return "'$o'"
     if (o is DateTime) return "'" + o->toLocale("YYYY-MM-DD hh:mm:ss") + "'"
     if (o is Date)     return "'" + o->toLocale("YYYY-MM-DD") + "'"
-    if (o is Time)     return "'" + o->toLocale("hh:mm:ss") + "'"
+    if (o is TimeOfDay)     return "'" + o->toLocale("hh:mm:ss") + "'"
     return o.toStr
   }
 
@@ -66,7 +98,7 @@ const class SqlUtil
   static Bool checkMatchDbField(FieldDef f, Col c)
   {
     if (!c.name.equalsIgnoreCase(f.name)) return false
-    if (Utils.isPrimitiveType(f.type))
+    if (isPrimitiveType(f.type))
     {
       return c.type.qname == f.type.qname
     }

@@ -18,12 +18,9 @@ internal class DataTest : Test
   Context? c
   ConnPool? factory
 
-  TableDef? table
-
   override Void setup()
   {
     log.level = LogLevel.debug
-    table = User.table
     factory = ConnPool.makeConfig(DataTest#.pod, "test")
     c = Context(factory.open)
   }
@@ -36,11 +33,11 @@ internal class DataTest : Test
 
   private Void buildTable()
   {
-    if (c.tableExists(table))
+    if (c.tableExists(User#))
     {
-      c.dropTable(table)
+      c.dropTable(User#)
     }
-    c.createTable(table)
+    c.createTable(User#)
   }
 
   private Void insert()
@@ -68,7 +65,7 @@ internal class DataTest : Test
     echo(t2.image)
     verifyEq(t2.image.read, 'K')
 
-    t3 := c.select(User.table, "where name='yjd'", 0, 2)
+    t3 := c.select(User#, "where name='yjd'", 0, 2)
     verifyEq(t3.size, 1)
 
     verifyEq(c.list(example).size, 1)

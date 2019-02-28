@@ -9,6 +9,7 @@ package fan.isql;
 
 import java.sql.*;
 import fan.sys.*;
+import fanx.main.*;
 import fan.isql.ResultSet;
 
 public class ResultSetPeer
@@ -49,7 +50,7 @@ public class ResultSetPeer
     // map the meta-data to a dynamic type
     ResultSetMetaData meta = rs.getMetaData();
     int numCols = meta.getColumnCount();
-    List cols = new List(SqlUtil.colType, numCols);
+    List cols = List.make(numCols, SqlUtil.colType);
     for (int i=0; i<numCols; ++i)
     {
       String name = meta.getColumnLabel(i+1);
@@ -58,7 +59,7 @@ public class ResultSetPeer
       if (fanType == null)
       {
         System.out.println("WARNING: Cannot map " + typeName + " to Fan type");
-        fanType = Sys.StrType;
+        fanType = SqlUtil.strType;
       }
       cols.add(Col.make(Long.valueOf(i), name, fanType, typeName));
     }

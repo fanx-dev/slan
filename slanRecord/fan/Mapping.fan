@@ -39,16 +39,16 @@ class Mapping
   {
     this.tables.each |TableDef t|
     {
-      if (context.tableExists(t))
+      if (context.tableExistsT(t))
       {
-        if (!context.checkTable(t))
+        if (!context.checkTableT(t))
         {
-          throw MappingErr("table $t.name not match the database")
+          throw Err("table $t.name not match the database")
         }
       }
       else
       {
-        context.createTable(t)
+        context.createTableT(t)
       }
     }
   }
@@ -58,9 +58,9 @@ class Mapping
   {
     this.tables.each |TableDef t|
     {
-      if(context.tableExists(t))
+      if(context.tableExistsT(t))
       {
-        context.dropTable(t)
+        context.dropTableT(t)
       }
     }
   }

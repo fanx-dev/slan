@@ -8,28 +8,6 @@
 //   2011-05-03  Jed Young  Creation
 //
 
-enum class DataType {
-    integer("integer")
-  , tinyint("tinyint")
-  , smallint("smallint")
-  , bigint("bigint")
-  , bool("boolean")
-  , character("char")
-  , varchar("varchar")
-  , text("text")
-  , blob("blob")
-  , identity("identity")
-  , date("date")
-  , time("time")
-  , timestamp("timestamp")
-  , decimal("decimal")
-  , double("double")
-  , float("float")
-
-  const Str sqlName
-  private new make(Str t) { sqlName = t }
-}
-
 **
 ** Field is column of datatable
 **
@@ -58,18 +36,26 @@ const class FieldDef
   ** hint to build index on this field
   const Bool indexed := false
 
+  const Field? field
+
   new make(|This| f) { f(this) }
 
   virtual Obj? get(Obj obj)
   {
-    Record r := obj
-    return r.get(index)
+    if (obj is Record) {
+      Record r := obj
+      return r.get(index)
+    }
+    return field.get(obj)
   }
 
   virtual Void set(Obj obj, Obj? value)
   {
-    Record r := obj
-    r.set(index, value)
+    if (obj is Record) {
+      Record r := obj
+      r.set(index, value)
+    }
+    field.set(obj, value)
   }
 
   override Str toStr()

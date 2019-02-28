@@ -86,7 +86,7 @@ class SqlServiceTest1 : Test
     // insert a couple rows
     dt := DateTime(2009, Month.dec, 15, 23, 19, 21)
     date := Date("1972-09-10")
-    time := Time("14:31:55")
+    time := TimeOfDay("14:31:55")
     data := [
       [1, "Alice",   false, "Pooh",     "abcd", 21,   1,   80,  null, 5.3f,  120f, 3.2d, dt, date, time],
       [2, "Brian",   true,  "Haley",    "1234", 35,   2,   99,   5,   5.7f,  140f, 1.5d, dt, date, time],
@@ -106,7 +106,7 @@ class SqlServiceTest1 : Test
       if (o is Str)      return "'$o'"
       if (o is DateTime) return "'" + o->toLocale("YYYY-MM-DD hh:mm:ss") + "'"
       if (o is Date)     return "'" + o->toLocale("YYYY-MM-DD") + "'"
-      if (o is Time)     return "'" + o->toLocale("hh:mm:ss") + "'"
+      if (o is TimeOfDay)     return "'" + o->toLocale("hh:mm:ss") + "'"
       if (o is Bool)     return (Bool)o ? "1" : "0"
       return o.toStr
     }

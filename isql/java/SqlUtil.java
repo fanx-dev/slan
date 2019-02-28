@@ -9,6 +9,9 @@ package fan.isql;
 
 import java.sql.*;
 import fan.sys.*;
+import fanx.main.*;
+import fan.std.*;
+import fanx.interop.*;
 
 public class SqlUtil
 {
@@ -37,23 +40,33 @@ public class SqlUtil
       DateTime dt = (DateTime)value;
       jobj = new Timestamp(dt.toJava());
     }
-    else if (value instanceof fan.sys.Date)
+    else if (value instanceof fan.std.Date)
     {
-      fan.sys.Date d = (fan.sys.Date)value;
+      fan.std.Date d = (fan.std.Date)value;
       jobj = new java.sql.Date((int)d.year()-1900, (int)d.month().ordinal(), (int)d.day());
     }
-    else if (value instanceof fan.sys.Time)
+    else if (value instanceof fan.std.TimeOfDay)
     {
-      fan.sys.Time t = (fan.sys.Time)value;
+      fan.std.TimeOfDay t = (fan.std.TimeOfDay)value;
       jobj = new java.sql.Time((int)t.hour(), (int)t.min(), (int)t.sec());
     }
     else if (value instanceof MemBuf)
     {
-      jobj = ((MemBuf)value).buf;
+      jobj = fanx.interop.Interop.toJavaByteArray((MemBuf)value);
     }
 
     return jobj;
   }
+
+  public static final Type intType = Sys.findType("sys::Int");
+  public static final Type floatType = Sys.findType("sys::Float");
+  public static final Type boolType = Sys.findType("sys::Bool");
+  public static final Type strType = Sys.findType("sys::Str");
+  public static final Type decimalType = Sys.findType("std::Decimal");
+  public static final Type bufType = Sys.findType("std::Buf");
+  public static final Type dateTimeType = Sys.findType("std::DateTime");
+  public static final Type timeOfDayType = Sys.findType("std::TimeOfDay");
+  public static final Type dateType = Sys.findType("std::Date");
 
   /**
    * Map an java.sql.Types code to a Fan type.
@@ -68,41 +81,41 @@ public class SqlUtil
       case Types.NVARCHAR:
       case Types.LONGVARCHAR:
       case Types.CLOB:
-        return Sys.StrType;
+        return intType;
 
       case Types.BIT:
       case Types.BOOLEAN:
-        return Sys.BoolType;
+        return boolType;
 
       case Types.TINYINT:
       case Types.SMALLINT:
       case Types.INTEGER:
       case Types.BIGINT:
-        return Sys.IntType;
+        return intType;
 
       case Types.REAL:
       case Types.FLOAT:
       case Types.DOUBLE:
-        return Sys.FloatType;
+        return floatType;
 
       case Types.DECIMAL:
       case Types.NUMERIC:
-        return Sys.DecimalType;
+        return decimalType;
 
       case Types.BINARY:
       case Types.VARBINARY:
       case Types.LONGVARBINARY:
       case Types.BLOB:
-        return Sys.BufType;
+        return bufType;
 
       case Types.TIMESTAMP:
-        return Sys.DateTimeType;
+        return dateTimeType;
 
       case Types.DATE:
-        return Sys.DateType;
+        return dateType;
 
       case Types.TIME:
-        return Sys.TimeType;
+        return timeOfDayType;
 
       default:
         return null;
@@ -158,7 +171,7 @@ public class SqlUtil
       case Types.BLOB:
         byte[] buf = rs.getBytes(col);
         if (rs.wasNull()) return null;
-        return new MemBuf(buf);
+        return Interop.toFanBuf(buf);
 
       default:
         return String.valueOf(rs.getObject(col));
@@ -297,7 +310,7 @@ public class SqlUtil
     {
       java.sql.Date d = rs.getDate(col);
       if (rs.wasNull()) return null;
-      return fan.sys.Date.make(d.getYear()+1900, (Month)Month.vals.get(d.getMonth()), d.getDate());
+      return fan.std.Date.make(d.getYear()+1900, (Month)Month.vals.get(d.getMonth()), d.getDate());
     }
   }
 
@@ -308,7 +321,7 @@ public class SqlUtil
     {
       java.sql.Time t = rs.getTime(col);
       if (rs.wasNull()) return null;
-      return fan.sys.Time.make(t.getHours(), t.getMinutes(), t.getSeconds());
+      return fan.std.TimeOfDay.make(t.getHours(), t.getMinutes(), t.getSeconds());
     }
   }
 
@@ -319,7 +332,7 @@ public class SqlUtil
     {
       byte[] buf = rs.getBytes(col);
       if (rs.wasNull()) return null;
-      return new MemBuf(buf);
+      return Interop.toFanBuf(buf);
     }
   }
 

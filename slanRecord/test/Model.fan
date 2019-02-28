@@ -10,12 +10,8 @@
 **
 ** record model
 **
-internal class User : ObjRecord
+internal class User
 {
-  const static TableDef table := ObjTableDef(User#)
-
-  new make() : super(table) {}
-
   @Id
   @Colu { name = "sid" }
   Int? id

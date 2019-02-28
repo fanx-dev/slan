@@ -10,6 +10,7 @@ package fan.isql;
 import java.sql.*;
 import java.util.StringTokenizer;
 import fan.sys.*;
+import fan.std.*;
 
 public class SqlConnPeer
 {

@@ -9,6 +9,8 @@ package fan.isql;
 
 import java.sql.*;
 import fan.sys.*;
+import fan.std.*;
+import fanx.main.*;
 
 public class SqlMetaPeer
 {
@@ -112,7 +114,7 @@ public class SqlMetaPeer
                         null); // types
 
       int nameIndex = tables.findColumn("TABLE_NAME");
-      List tableList = new List(Sys.StrType, 32);
+      List tableList = List.make(32, SqlUtil.strType);
       while (tables.next())
       {
         String tableName = tables.getString(nameIndex);
@@ -135,7 +137,7 @@ public class SqlMetaPeer
       java.sql.ResultSet columns = jmeta.getColumns(null, null, tableName.toUpperCase(), null);
 
       // map the meta-data to a dynamic type
-      List cols = new List(SqlUtil.colType);
+      List cols = List.make(32, SqlUtil.colType);
 
       int nameIndex = columns.findColumn("COLUMN_NAME");
       int typeIndex = columns.findColumn("DATA_TYPE");
@@ -149,7 +151,7 @@ public class SqlMetaPeer
         if (fanType == null)
         {
           System.out.println("WARNING: Cannot map " + typeName + " to Fan type");
-          fanType = Sys.StrType;
+          fanType = SqlUtil.strType;
         }
         cols.add(Col.make(Long.valueOf(colIndex++), name, fanType, typeName));
       }
