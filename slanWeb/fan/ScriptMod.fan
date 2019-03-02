@@ -19,7 +19,7 @@ const class ScriptMod : WebMod
   private const Uri errorPage := `/error.html`
 
   ** res path
-  const File dir
+  const File? dir
 
   ** main pod
   const Pod? pod
@@ -35,7 +35,6 @@ const class ScriptMod : WebMod
   ** html template to fantome class compiler
   **
   const TemplateCompiler templateCompiler
-
 
   **
   ** depends javascript pod names
@@ -92,16 +91,21 @@ const class ScriptMod : WebMod
   **
   File? findFile(Uri path, Bool checked := false)
   {
-    f := dir.plus(path)
-    if (f.exists) return f
+    
+    if (dir != null) {
+      f := dir.plus(path, false)
+      if (f.exists) return f
+    }
 
     if (pod != null) {
-      File? pf = pod.file(`/$path`, false)
+      uri := `/${path}`
+      File? pf = pod.file(uri, false)
+      //echo("$pod $uri $pf")
       if (pf != null) return pf
     }
 
     if (checked) {
-      throw ArgErr("File not found $f")
+      throw ArgErr("File not found $path in $dir/$pod")
     }
     return null
   }
@@ -120,6 +124,19 @@ const class ScriptMod : WebMod
 
     //echo("ScriptMod: $file ${req.modRel.path}")
     if (file == null) {
+      name := req.modRel.path.first
+      Uri? modBase
+      if (name == null) name = "Index"
+      else modBase = `$name`
+
+      type := pod.type(name, false)
+      if (type != null) {
+        reanderType(type, modBase)
+        res.done
+        return
+      }
+
+      res.sendErr(404)
       return
     }
 
@@ -134,6 +151,8 @@ const class ScriptMod : WebMod
         renderTemplate(file)
         res.done
       default:
+        renderStaticFile(file)
+        res.done
         return
     }
   }
@@ -162,6 +181,25 @@ const class ScriptMod : WebMod
     obj.onService
   }
 
+  private Void reanderType(Type type, Uri? modBase) {
+    Str? mime
+    if (req.modRel.ext != null) {
+      mime = MimeType.forExt(req.modRel.ext)?.toStr
+    }
+    res.headers["Content-Type"] = mime ?: "text/plain; charset=utf-8"
+
+    Weblet obj := type.make()
+    if (modBase != null) {
+      //echo("deepin: $modBase")
+      req.modBase = `/$modBase/`
+    }
+
+    echo("reanderType: $type, $modBase ${req.modRel.path}")
+
+    initCompiler
+    obj.onService
+  }
+
   private Void renderFwt(File file) {
     res.headers["Content-Type"] = "text/html; charset=utf-8"
     out := res.out
@@ -183,6 +221,56 @@ const class ScriptMod : WebMod
 
     initCompiler
     templateCompiler.render(file)
+  }
+
+  private Void renderStaticFile(File f)
+  {
+    // if we've resolved a directory
+    if (f.isDir)
+    {
+      // if trailing slash wasn't used by req, redirect to use slash
+      if (!req.uri.isDir) { res.redirect(req.uri.plusSlash); return }
+
+      // map to "index.html"
+      index := f + `index.html`
+      if (!index.exists) {
+        renderDir(f)
+        return
+      }
+      else {
+        f = index
+      }
+    }
+
+    // publish the file
+    FileWeblet(f).onService
+  }
+
+  private Void renderDir(File f) {
+    res.statusCode = 200
+    res.headers["Content-Type"] = "text/html; charset=utf-8"
+    out := res.out
+    out.head
+      .title.w("$f.name").titleEnd
+    out.headEnd
+    out.body
+      .w("<a href='/'>Index</a>")
+      .h1.w("$req.modRel").h1End
+
+    f.list.findAll { !it.name.startsWith(".") }
+    .sort |f1,f2|{ f1.name <=> f2.name }
+    .each {
+      name := it.name
+      date := DateTime.fromTimePoint(it.modified).toLocale("YYYY-MM-DD hh:mm:ss")
+      if (it.isDir) { name += "/" }
+      out.p
+        .w("<a href='$name'>$name</a>")
+        .w(" $date")
+      .pEnd
+    }
+
+    out.hr
+    out.bodyEnd.htmlEnd
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -268,20 +356,15 @@ internal class ScriptResolver {
       s := mod.findFile(`${file}.fan`)
       if (s != null) return s
 
-      File? f
-      try {
-        f = mod.findFile(file)
-      }
-      catch {
-        file = file.plusSlash
-        f = mod.findFile(file)
-      }
-
+      File? f := mod.findFile(file)
       if (f != null) {
-        if (f.isDir) continue
+        if (f.isDir) {
+          file = file.plusSlash
+          continue
+        }
         return f
       }
-      return null      
+      return null
     }
     return null
   }

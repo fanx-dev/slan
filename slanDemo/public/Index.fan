@@ -27,6 +27,7 @@ class Index : SlanWeblet
       a(`/base/Rpc/printInfo/test?a=1&b=2`).w("/base/Rpc/printInfo/test?a=1&b=2").aEnd.br.
       a(`/base/Localization.fsp`).w("/base/Localization.fsp").aEnd.br.
       a(`/base/Rest`).w("/base/Rest").aEnd.br.
+      a(`/PodTest`).w("/PodTest").aEnd.br.
 
       h2.w("Template Test").h2End.
       a(`/template/Template/abc`).w("/template/Template/abc").aEnd.br.

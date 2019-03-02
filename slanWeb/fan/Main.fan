@@ -15,8 +15,8 @@ internal class Main : AbstractMain
   @Opt { help = "pod name to run" }
   Str? podName
 
-  @Arg { help = "app src home path" }
-  File? resPath
+  @Opt { help = "app src home path" }
+  Uri? resPath
 
   @Opt { help = "http port" }
   Int port := 8080

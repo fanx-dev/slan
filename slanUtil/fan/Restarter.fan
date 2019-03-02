@@ -53,9 +53,10 @@ internal class RProcess {
       try {
         echo("kill process")
         process.kill
+        process.join
         process = null
       }
-      catch (Err e2) {}
+      catch (Err e2) { e2.trace }
     }
   }
 

@@ -9,14 +9,14 @@ const class RootMode : WebMod {
   const PipelineMod pipeline
   const PodResMod podMod := PodResMod()
 
-  new make() : this.makeFrom(null, `./res`.toFile) {
+  new make() : this.makeFrom(null, `./public`) {
   }
 
-	new makeFrom(Str? podName, File? resPath, |This|? f := null) {
-    // create log dir if it doesn't exist
-    echo("init podName:$podName resPath:$resPath")
-    logDir := resPath.parent == null ? `./logs/`.toFile : (resPath.parent + `/logs/`)
-    echo("log to $logDir")
+	new makeFrom(Str? podName, Uri? resPath, |This|? f := null) {
+    // create log dir if it doesn't exist    
+    logDir := (resPath == null || resPath.parent == null) ? `./logs/`.toFile : (`${resPath.parent}/logs/`).toFile
+
+    echo("init podName:$podName resPath:$resPath log:$logDir")
     if (!logDir.exists) logDir.create
 
     // install sys log handler
@@ -27,8 +27,7 @@ const class RootMode : WebMod {
     pipeline = PipelineMod {
       steps =
       [
-        ScriptMod(resPath, podName),
-        SFileMod { file = resPath },
+        ScriptMod(resPath?.toFile, podName),
       ]
 
       // steps to run after every request
@@ -82,7 +81,7 @@ const class PodResMod : WebMod
     req.modBase = `/pod/`
     uri := ("fan://" + req.modRel).toUri
     try {
-      echo("pod file :$req.modRel")
+      //echo("pod file :$req.modRel")
       file := uri.get
       FileWeblet(file).onService
     }
