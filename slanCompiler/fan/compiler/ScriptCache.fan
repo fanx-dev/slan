@@ -111,7 +111,7 @@ internal const class ScriptCache
 
 internal const class CacheObj
 {
-  const DateTime modified;
+  const TimePoint modified;
   const Int size;
   const Obj? value;
 

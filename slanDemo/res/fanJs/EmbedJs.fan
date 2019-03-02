@@ -8,15 +8,12 @@
 
 using web
 using slanWeb
-using slanUtil
 
-**
-** route and template
-**
-class Localization : SlanWeblet
+const class EmbedJs : Controller
 {
-  Void index()
+  Void js()
   {
-    render
+    stash("compileJs", compileJs(`fanJs/Hello.fwt`))
+    render(`fanjs/fwtPage.html`)
   }
 }

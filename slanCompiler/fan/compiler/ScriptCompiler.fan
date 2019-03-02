@@ -72,6 +72,7 @@ const class ScriptCompiler
       mode        = CompilerInputMode.str
       srcStr      = source
       srcStrLoc   = Loc.makeFile(file, 100, 100)
+      it.depends = [Depend("sys 2.0"), Depend("std 1.0")]
     }
 
     return Compiler(input).compile.transientPod

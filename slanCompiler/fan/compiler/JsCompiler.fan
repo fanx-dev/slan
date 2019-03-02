@@ -27,7 +27,7 @@ const class JsCompiler
     this.podName = podName
   }
 
-  Void renderFile(WebOutStream out, File file, [Str:Str]? env := null)
+  Void render(WebOutStream out, File file, [Str:Str]? env := null)
   {
     script := getJsScript(file)
 
@@ -53,11 +53,13 @@ const class JsCompiler
 
   private Void includeAllJs(WebOutStream out, Str[] usings, Str? curPod)
   {
+    domkit := false
     usings.each
     {
       includeJs(out, it)
+      if (it == "domkit") domkit = true
     }
-    if (curPod != null) includeJs(out, curPod)
+    if (domkit) out.includeCss(`/pod/domkit/res/css/domkit.css`)
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,6 +115,7 @@ const class JsCompiler
     input.srcStrLoc = Loc.makeFile(file)
     input.mode      = CompilerInputMode.str
     input.output    = CompilerOutputMode.js
+    input.depends   = [Depend("sys 2.0"), Depend("std 1.0")]
 
     return Compiler(input)
   }

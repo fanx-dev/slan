@@ -20,9 +20,9 @@ class Build : BuildPod
     summary = "slan template compiler"
     depends =
     [
-        "sys 1.0",
+        "sys 2.0", "std 1.0",
         "web 1.0",
-        "compiler 1.0",
+        "compiler 1.1",
         "concurrent 1.0",
     ]
     srcDirs = [`test/`, `fan/`, `fan/compiler/`, `fan/template/`]

@@ -9,17 +9,14 @@
 using slanWeb
 
 **
-** ajax example
+** xml example
 **
-class Ajax : SlanWeblet
+class Xml : SlanWeblet
 {
-  ** ajax for `jsfan/TableFwt.fan`
-  Obj data()
+  Void data()
   {
-     [
-        ["key","value"],
-        ["1","yjd"],
-        ["2","yqq"]
-     ]
+    echo("Xml.data")
+    stash("name", "abc")
+    render(`template/Xml/data`)
   }
 }

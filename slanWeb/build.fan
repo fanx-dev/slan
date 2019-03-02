@@ -20,18 +20,16 @@ class Build : BuildPod
     summary = "slan web framework"
     depends =
     [
-        "sys 1.0",
+        "sys 2.0", "std 1.0",
         "webmod 1.0",
         "web 1.0",
-        "compiler 1.0",
         "util 1.0",
         "concurrent 1.0",
-        "build 1.0",
         "slanCompiler 1.0",
         "inet 1.0",
         "wisp 1.0"
     ]
-    srcDirs = [`test/`, `fan/`, `fan/mod/`, `fan/action/`, `fan/util/`]
+    srcDirs = [`test/`, `fan/`, `fan/action/`]
     //resDirs = [`res/`]
   }
 }

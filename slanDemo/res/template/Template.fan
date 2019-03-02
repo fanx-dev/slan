@@ -6,16 +6,17 @@
 //   2010-9-22  Jed Young  Creation
 //
 
+using web
 using slanWeb
 
 **
-** xml example
+** route and template
 **
-class Xml : SlanWeblet
+const class Template : Controller
 {
-  Void data()
+  Void get()
   {
-    stash("name", "abc")
-    render
+    stash("name", stashId)
+    render(`template/template.html`)
   }
 }

@@ -16,6 +16,6 @@ class Build : build::BuildPod
     podName = "slanUtil"
     summary = "slan util"
     srcDirs = [`fan/`, `test/`]
-    depends = ["sys 1.0", "concurrent 1.0", "web 1.0", "util 1.0"]
+    depends = ["sys 2.0", "std 1.0", "concurrent 1.0", "web 1.0", "util 1.0"]
   }
 }

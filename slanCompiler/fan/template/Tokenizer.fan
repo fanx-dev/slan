@@ -70,7 +70,7 @@ internal class Tokenizer
         code = s
       case paramMode:
         if (tok.valid)
-          code = "\${m->${s}.toStr.toXml}"
+          code = "\${std::XmlUtil.toXml(m->${s}.toStr)}"
         else
           code = s
       case localeMode:
@@ -302,7 +302,7 @@ internal class Tokenizer
 **************************************************************************
 **************************************************************************
 
-const class SlanTokenErr : ParseErr
+const class SlanTokenErr : Err
 {
   new make(Str msg) : super(msg) {}
 }

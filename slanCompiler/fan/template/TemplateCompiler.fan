@@ -21,18 +21,9 @@ const class TemplateCompiler : ScriptCompiler
     codeTrans = TemplateTranslater(podName)
   }
 
-  virtual File getFile(Uri uri) {
-    uri.toFile
-  }
-
-  virtual Void renderUri(Uri uri, |->|? lay := null)
+  Void render(File file, |->|? lay := null)
   {
-    file := getFile(uri)
-    renderFile(file, lay)
-  }
-
-  private Void renderFile(File file, |->|? lay := null)
-  {
+    echo("render $file")
     type := getType(file)
     obj := type.make()
     type.method("dump").callOn(obj, [lay])

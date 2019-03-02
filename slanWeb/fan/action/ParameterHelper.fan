@@ -10,38 +10,7 @@
 ** helper for parse parameter
 **
 internal class ParameterHelper
-{
-  ** get constructorParams
-  static Obj?[] getParams(Str[] path, Param[] params, Int start)
-  {
-    Obj?[] list := [,]
-    for (i := 0; i < params.size; ++i)
-    {
-      p := params[i]
-      if (i + start < path.size)
-      {
-        value := typeConvert(path[i+start], p.type)
-        list.add(value)
-        continue
-      }
-
-      if (p.hasDefault)
-      {
-        break
-      }
-      else if (p.type.isNullable)
-      {
-        list.add(null)
-        break
-      }
-      else
-      {
-        throw ArgErr("too less parameter")
-      }
-    }
-    return list
-  }
-
+{ 
   ** convert string to object,by 'fromStr' method
   private static Obj typeConvert(Str s, Type type)
   {

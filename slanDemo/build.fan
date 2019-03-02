@@ -16,28 +16,25 @@ class Build : build::BuildPod
   {
     podName = "slanDemo"
     summary = "it's demo for slanweb"
-    srcDirs = [`fan/`, `fan/action/`, `fan/jsfan/`]
+    srcDirs = [`fan/`]
     depends =
     [
-      "sys 1.0",
+      "sys 2.0", "std 1.0",
       "webmod 1.0",
       "web 1.0",
-      "compiler 1.0",
-      "wisp 1.0",
       "concurrent 1.0",
       "slanWeb 1.0",
       "slanUtil 1.0",
+      "util 1.0",
       "dom 1.0",
-      "gfx 1.0",
-      "fwt 1.0",
-      "util 1.0"
+      "domkit 1.0",
     ]
+
     resDirs =
     [
       `locale/`,
-      `res/fwt/`
-    ].addAll(Util.allDir(scriptDir.uri, `res/view/`)).
-      addAll(Util.allDir(scriptDir.uri, `public/`))
+    ]
+    .addAll(allDir(scriptDir.uri, `res/`))
   }
 
   @Target { help = "build my app as a single JAR dist" }
@@ -52,4 +49,19 @@ class Build : build::BuildPod
     dist.mainMethod = "slanDemo::RootMod.init"
     dist.run
   }
+
+  static Uri[] allDir(Uri base, Uri dir)
+  {
+    Uri[] subs := [,]
+    (base + dir).toFile.walk |File f|
+    {
+      if(f.isDir)
+      {
+        rel := f.uri.relTo(base)
+        subs.add(rel)
+      }
+    }
+    return subs
+  }
+
 }

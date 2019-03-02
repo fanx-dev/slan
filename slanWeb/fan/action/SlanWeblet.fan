@@ -8,6 +8,7 @@
 
 using web
 using concurrent
+using slanCompiler
 
 **
 ** enhanced Weblet for rendering template.
@@ -29,7 +30,6 @@ mixin SlanWeblet : Weblet
     }
 
     args := ParameterHelper.getParamsByName(req.uri.query, method.params, req.form)
-    req.stash["_defaultView"] = `$typeof.name/$method.name`
     result := trap(method.name, args)
 
     if (result != null) {
@@ -42,27 +42,27 @@ mixin SlanWeblet : Weblet
   **
   private Method? findMethod()
   {
-    Str[]? paths := req.stash["_paths"]
+    Str[] paths := req.modRel.plusName(req.modRel.basename).path
+
+    rel := req.uri.relTo(req.modBase)
+    //echo("findMethod: $paths, modRel:${req.modRel} modBase:${req.modBase} uri:${req.uri} rel:${rel}")
+
     Method? method
     hasSubPath := false
-    if (paths != null && paths.first != null) {
+    if (paths.size > 0) {
       method = this.typeof.method(paths.first, false)
-      hasSubPath = true
-
       if (method != null) {
-        if (paths != null && paths.size > 1) {
+        if (paths.size > 1) {
           req.stash["_stashId"] = paths[1]
         }
         return method
       }
+      else {
+        req.stash["_stashId"] = paths.first
+      }
     }
 
-    //named op
-    if (paths != null) {
-      req.stash["_stashId"] = paths.first
-    }
-
-    if (!hasSubPath && req.method == "GET") {
+    if (paths.size == 0 && req.method == "GET") {
       method = this.typeof.method("index", false)
       if (method != null) {
         return method
@@ -70,7 +70,7 @@ mixin SlanWeblet : Weblet
     }
 
     method = this.typeof.method(req.method.lower, false)
-
+    if (method == null) echo("method not found $paths")
     return method
   }
 
@@ -116,44 +116,34 @@ mixin SlanWeblet : Weblet
     return allow
   }
 
-
 //////////////////////////////////////////////////////////////////////////
 // template method
 //////////////////////////////////////////////////////////////////////////
 
+  Void setContentType(Str? ext := null) {
+    if (ext == null) ext = (req.modRel.ext) ?: "html"
+    Str? mime := MimeType.forExt(ext)?.toStr
+    res.headers["Content-Type"] = mime ?: "text/plain; charset=utf-8"
+  }
+
   **
   ** render the template
   **
-  virtual Void render(Uri? view := null, |->|? lay := null)
+  virtual Void render(Uri view, |->|? lay := null)
   {
-    if (view == null)
-    {
-      renderDefaultView
-      return
-    }
-
     //writeContentType
     ext := (req.modRel.ext) ?: "html"
-    if (!res.isCommitted) setContentType(ext)
-
-    slanApp := SlanApp.cur
-    req.stash["templateCompiler"] = slanApp.templateCompiler
+    if (!res.isCommitted) {
+      setContentType(ext)
+    }
 
     if (view.ext == null) {
       view = `${view}.$ext`
     }
-    slanApp.templateCompiler.renderUri(view, lay)
-  }
 
-  ** render default view
-  private Void renderDefaultView()
-  {
-    view := req.stash["_defaultView"]
-    // this condition prevent from endless loop
-    if (view != null)
-      render((Uri)view)
-    else
-      throw Err("Not find defaultView")
+    |Uri uri->File| resReserver := req.stash["_resResolver"]
+    TemplateCompiler templateCompiler := req.stash["_templateCompiler"]
+    templateCompiler.render(resReserver(view), lay)
   }
 
   **
@@ -161,44 +151,13 @@ mixin SlanWeblet : Weblet
   **
   Str compileJs(Uri fwt, Str:Str env := ["fwt.window.root":"fwt-root"])
   {
-    slanApp := SlanApp.cur
-    file := slanApp.getResUri(`res/fwt/` + fwt).get
+    |Uri uri->File| resReserver := req.stash["_resResolver"]
+    JsCompiler jsCompiler := req.stash["_jsCompiler"]
+
     buf := Buf()
-    slanApp.jsCompiler.renderFile(WebOutStream(buf.out), file, env)
+    jsCompiler.render(WebOutStream(buf.out), resReserver(fwt), env)
     buf.flip
     return buf.readAllStr
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// tools
-//////////////////////////////////////////////////////////////////////////
-
-  **
-  ** default is 'text/html; charset=utf-8'
-  **
-  Void setContentType(Str? ext := null)
-  {
-    if (ext == null)
-    {
-      res.headers["Content-Type"] = "text/plain; charset=utf-8"
-    }
-    else
-    {
-      res.headers["Content-Type"] = MimeType.forExt(ext).toStr
-    }
-  }
-
-  **
-  ** convert method to uri
-  **
-  Uri toUri(Method method, Obj? id := null)
-  {
-    uri := "/action/$method.parent.name/$method.name"
-    if (id != null)
-    {
-      uri += "/$id"
-    }
-    return uri.toUri
   }
 
   **
@@ -227,7 +186,8 @@ mixin SlanWeblet : Weblet
   {
     if (result != null && !res.isCommitted)
     {
-      res.headers["Content-Type"] = "text/plain; charset=utf-8"
+      if (res.headers["Content-Type"] == null)
+        res.headers["Content-Type"] = "text/plain; charset=utf-8"
 
       WebOutStream out := req.stash["_out"] ?: res.out
       if(result.typeof.hasFacet(Serializable#))

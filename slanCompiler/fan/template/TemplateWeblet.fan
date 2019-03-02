@@ -52,8 +52,9 @@ mixin TemplateWeblet
   **
   static Void render(Uri view, |->|? lay := null)
   {
-    TemplateCompiler template := req.stash.getOrThrow("templateCompiler")
-    template.renderUri(view, lay)
+    |Uri uri->File| resReserver := req.stash["_resResolver"]
+    TemplateCompiler template := req.stash.getOrThrow("_templateCompiler")
+    template.render(resReserver(view), lay)
   }
 
 //////////////////////////////////////////////////////////////////////////

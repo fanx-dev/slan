@@ -16,13 +16,13 @@ using concurrent
 **
 class Restarter : AbstractMain {
   @Opt { help = "watch list" }
-  Str? watch := Env.cur.homeDir.toStr + "lib/"
+  Str? watch := Env.cur.workDir.toStr + "lib/"
 
   @Opt { help = "checkTime" }
   Duration time := 5sec
 
   @Arg { help = "commands" }
-  Str[]? commands
+  Str? commands
 
   private static const Unsafe process := Unsafe(RProcess())
 
@@ -36,7 +36,7 @@ class Restarter : AbstractMain {
       }
     }
     Env.cur.addShutdownHook |->| { process.val->close }
-    process.val->commands = commands
+    process.val->commands = commands.split(' ')
     process.val->run
     return 0
   }
@@ -96,7 +96,7 @@ const class FileWatchActor : Actor {
 
       if (fileList == null) return null
 
-      [Str:DateTime] map := locals.getOrAdd(storeKey) { Str:DateTime[:] }
+      [Str:TimePoint] map := locals.getOrAdd(storeKey) { Str:TimePoint[:] }
       Bool changed := false
 
       fileList.each |dir| {

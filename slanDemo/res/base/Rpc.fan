@@ -12,27 +12,24 @@ using slanWeb
 **
 ** route and template
 **
-const class Base : Controller
+const class Rpc : Controller
 {
-  Void fwt()
-  {
-    stash("compileJs", compileJs(`Hello.fwt`))
-    render
-  }
-
-  @WebGet
-  Void template()
-  {
-    stash("name", stashId)
-    render
-  }
-
-  Str printInfo(Int i, Str? m){
-    "$i,$m"
+  Int printInfo(Int a, Int b){
+    a+b
   }
 
   @WebPost
   Str post(Int i, Str m){
     "$i,$m"
+  }
+
+  ** ajax for `jsfan/TableFwt.fan`
+  Obj data()
+  {
+     [
+        ["key","value"],
+        ["1","yjd"],
+        ["2","yqq"]
+     ]
   }
 }
