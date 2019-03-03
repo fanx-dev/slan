@@ -22,12 +22,13 @@ internal class DataTest : Test
   {
     log.level = LogLevel.debug
     factory = ConnPool.makeConfig(DataTest#.pod, "test")
-    c = Context(factory.open)
+    c = factory.openContext
   }
 
   override Void teardown()
   {
-    factory.close(c.conn)
+    //factory.close(c.conn)
+    c.close
     log.level = defaultLevel
   }
 
