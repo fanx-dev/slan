@@ -21,24 +21,30 @@ const class JsCompiler
   private const Str[] jsDepends
   private const Str? podName
 
-  new make(Str[] jsDepends, Str? podName := null)
+  new make(Str? podName := null)
   {
-    this.jsDepends = jsDepends
     this.podName = podName
+    depends := Str[,]
+    map := Str:Int[:]
+    if (this.podName != null) addDepends(this.podName, depends, map)
+
+    this.jsDepends = depends
   }
 
   Void render(WebOutStream out, File file, [Str:Str]? env := null)
   {
     script := getJsScript(file)
+    //echo("$script.depends")
 
-    includeAllJs(out, jsDepends, podName)
+    includeAllJs(out, script.depends)
+    
     out.script.w(script.js).scriptEnd
     WebUtil.jsMain(out, script.main, env)
   }
 
   Void renderByType(WebOutStream out, Str qname, [Str:Str]? env := null)
   {
-    includeAllJs(out, jsDepends, podName)
+    includeAllJs(out, jsDepends)
     WebUtil.jsMain(out, qname, env)
   }
 
@@ -46,18 +52,13 @@ const class JsCompiler
 // include js
 //////////////////////////////////////////////////////////////////////////
 
-  private Void includeJs(WebOutStream out, Str podName)
-  {
-    out.includeJs(`/pod/$podName/${podName}.js`)
-  }
-
-  private Void includeAllJs(WebOutStream out, Str[] usings, Str? curPod)
+  private Void includeAllJs(WebOutStream out, Str[] usings)
   {
     domkit := false
-    usings.each
+    usings.each |podName|
     {
-      includeJs(out, it)
-      if (it == "domkit") domkit = true
+      out.includeJs(`/pod/$podName/${podName}.js`)
+      if (podName == "domkit") domkit = true
     }
     if (domkit) out.includeCss(`/pod/domkit/res/css/domkit.css`)
   }
@@ -90,16 +91,42 @@ const class JsCompiler
     cache.clear
   }
 
+  private Void addDepends(Str podName, Str[] list, Str:Int map) {
+    if (!map.containsKey(podName)) {
+      map[podName] = 1
+    } else {
+      return
+    }
+
+    pod := Pod.find(podName)
+    pod.depends.each |c| {
+      addDepends(c.name, list, map)
+    }
+
+    if (pod.file(`/${pod.name}.js`, false) != null) {
+      list.add(podName)
+    }
+  }
+
   ** compile script into js
   private JsScript compile(Str source, File file)
   {
     Compiler compiler := getCompile(source, file)
     Str js := compiler.compile.js
     main := compiler.types[0].qname
-    return JsScript
-    {
+
+
+    depends := jsDepends.dup
+    map := Str:Int[:]
+    depends.each { map[it] = 1 }
+    compiler.depends.each |c| {
+      addDepends(c.name, depends, map)
+    }
+
+    return JsScript {
       it.js = js;
       it.main = main
+      it.depends = depends
     }
   }
 
@@ -129,6 +156,7 @@ internal const class JsScript
 {
   const Str js;
   const Str main;
+  const Str[] depends;
 
   new make(|This| f)
   {

@@ -9,7 +9,7 @@
 using web
 using slanWeb
 
-const class EmbedJs : Controller
+const class EmbedJs : SlanWeblet
 {
   Void js()
   {

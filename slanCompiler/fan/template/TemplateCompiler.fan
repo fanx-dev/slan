@@ -23,7 +23,7 @@ const class TemplateCompiler : ScriptCompiler
 
   Void render(File file, |->|? lay := null)
   {
-    echo("render $file")
+    //echo("render $file")
     type := getType(file)
     obj := type.make()
     type.method("dump").callOn(obj, [lay])

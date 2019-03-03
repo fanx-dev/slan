@@ -36,23 +36,6 @@ const class ScriptMod : WebMod
   **
   const TemplateCompiler templateCompiler
 
-  **
-  ** depends javascript pod names
-  **
-  private Void addJsDepends(Str[] depends, Pod pod)
-  {
-    pod.depends.each
-    {
-      p := Pod.find(it.name)
-      addJsDepends(depends, p)
-    }
-
-    if (pod.file(`/${pod.name}.js`, false) != null)
-    {
-      if (!depends.contains(pod.name)) depends.add(pod.name)
-    }
-  }
-
   new make(File? appPath, Str? podName)
   {
     this.dir = appPath
@@ -65,13 +48,11 @@ const class ScriptMod : WebMod
       if (!appPath.isDir)  throw ArgErr("Invalid appHome:$appPath Directory need a slash")
     }
 
-    jsDepends := Str[,]
     if (podName != null) {
       pod = Pod.find(podName)
-      addJsDepends(jsDepends, pod)
     }
 
-    jsCompiler = JsCompiler(jsDepends, podName)
+    jsCompiler = JsCompiler(podName)
     templateCompiler = TemplateCompiler(podName)
     scriptCompiler = ScriptCompiler(podName)
   }
@@ -133,12 +114,15 @@ const class ScriptMod : WebMod
 
     //echo("ScriptMod: $file ${req.modRel.path}")
     if (file == null) {
-      name := paths.first ?: "Index"
-      type := pod.type(name, false)
-      if (type != null) {
-        reanderType(type)
-        res.done
-        return
+      //try find in pod class
+      if (pod != null) {
+        name := paths.first ?: "Index"
+        type := pod.type(name, false)
+        if (type != null) {
+          reanderType(type)
+          res.done
+          return
+        }
       }
 
       echo("file not found: $req.modRel")

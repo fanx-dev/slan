@@ -12,7 +12,7 @@ using slanWeb
 **
 ** route and template
 **
-const class Template : Controller
+const class Template : SlanWeblet
 {
   Void get()
   {
