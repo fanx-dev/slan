@@ -104,27 +104,34 @@ const class ScriptMod : WebMod
     req.modBase = `/`
     //echo("modBase:$req.modBase modRel:$req.modRel")
 
-    if (req.modRel.toStr.contains("..")) {
+    modRel := req.modRel
+    if (modRel.toStr.contains("..")) {
       res.sendErr(400); return
     }
 
-    paths := req.modRel.path
+    //find script file
+    paths := modRel.path
     resolver := ScriptResolver(this, paths)
     file := resolver.findScript
 
-    //echo("ScriptMod: $file ${req.modRel.path}")
+    //try as Dir
     if (file == null) {
-      //try find in pod class
-      if (pod != null) {
-        name := paths.first ?: "Index"
-        type := pod.type(name, false)
-        if (type != null) {
-          reanderType(type)
-          res.done
-          return
-        }
-      }
+      file = findFile(modRel)
+    }
 
+    //try find in pod class
+    if (file == null && pod != null) {
+      name := paths.first ?: "Index"
+      type := pod.type(name, false)
+      if (type != null) {
+        reanderType(type)
+        res.done
+        return
+      }
+    }
+
+    //not found
+    if (file == null) {
       echo("file not found: $req.modRel")
       res.sendErr(404)
       return
@@ -135,7 +142,12 @@ const class ScriptMod : WebMod
       req.modBase = `/$resolver.modBase`
     }
 
-    switch (file.ext) {
+    extName := file.ext ?: ""
+    // .js.fan is alians of .fwt
+    if (extName == "fan" && file.name.endsWith(".js.fan")) {
+      extName = "fwt"
+    }
+    switch (extName) {
       case "fan":
         reanderScript(file)
         res.done
