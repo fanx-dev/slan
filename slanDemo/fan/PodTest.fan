@@ -7,6 +7,6 @@ const class PodTest : Controller
 {
   Void index() {
     stash("name", "abc")
-    render(`res/podTest.html`)
+    render(`/res/podTest.html`)
   }
 }

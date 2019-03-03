@@ -91,21 +91,29 @@ const class ScriptMod : WebMod
   **
   File? findFile(Uri path, Bool checked := false)
   {
-    
+    File? base
     if (dir != null) {
-      f := dir.plus(path, false)
+      rpath := path
+      if (!path.isPathAbs) {
+        base = dir + req.modBase.relTo(`/`)
+      }
+      else {
+        base = dir
+        rpath = path.relTo(`/`)
+      }
+      f := base.plus(rpath, false)
       if (f.exists) return f
     }
 
-    if (pod != null) {
-      uri := `/${path}`
+    if (pod != null && path.isPathAbs) {
+      uri := path
       File? pf = pod.file(uri, false)
       //echo("$pod $uri $pf")
       if (pf != null) return pf
     }
 
     if (checked) {
-      throw ArgErr("File not found $path in $dir/$pod")
+      throw ArgErr("File not found $path in file:$base or pod:$pod")
     }
     return null
   }
@@ -119,30 +127,33 @@ const class ScriptMod : WebMod
       res.sendErr(400); return
     }
 
-    resolver := ScriptResolver(this, req.modRel.path)
+    paths := req.modRel.path
+    resolver := ScriptResolver(this, paths)
     file := resolver.findScript
 
     //echo("ScriptMod: $file ${req.modRel.path}")
     if (file == null) {
-      name := req.modRel.path.first
-      Uri? modBase
-      if (name == null) name = "Index"
-      else modBase = `$name`
-
+      name := paths.first ?: "Index"
       type := pod.type(name, false)
       if (type != null) {
-        reanderType(type, modBase)
+        reanderType(type)
         res.done
         return
       }
 
+      echo("file not found: $req.modRel")
       res.sendErr(404)
       return
     }
 
+    //deep into dir
+    if (resolver.modBase != null && resolver.modBase.isDir) {
+      req.modBase = `/$resolver.modBase`
+    }
+
     switch (file.ext) {
       case "fan":
-        reanderScript(file, resolver.modBase)
+        reanderScript(file)
         res.done
       case "fwt":
         renderFwt(file)
@@ -163,38 +174,29 @@ const class ScriptMod : WebMod
     req.stash["_resResolver"] = |Uri uri->File| { findFile(uri, true) }
   }
 
-  private Void reanderScript(File file, Uri? modBase) {
+  private Void setContentType() {
     Str? mime
     if (req.modRel.ext != null) {
       mime = MimeType.forExt(req.modRel.ext)?.toStr
     }
     res.headers["Content-Type"] = mime ?: "text/plain; charset=utf-8"
+  }
+
+  private Void reanderScript(File file) {
+    setContentType
 
     type := scriptCompiler.getType(file)
     Weblet obj := type.make()
-    if (modBase != null) {
-      //echo("deepin: $modBase")
-      req.modBase = `/$modBase/`
-    }
 
     initCompiler
     obj.onService
   }
 
-  private Void reanderType(Type type, Uri? modBase) {
-    Str? mime
-    if (req.modRel.ext != null) {
-      mime = MimeType.forExt(req.modRel.ext)?.toStr
-    }
-    res.headers["Content-Type"] = mime ?: "text/plain; charset=utf-8"
+  private Void reanderType(Type type) {
+    setContentType
 
     Weblet obj := type.make()
-    if (modBase != null) {
-      //echo("deepin: $modBase")
-      req.modBase = `/$modBase/`
-    }
-
-    echo("reanderType: $type, $modBase ${req.modRel.path}")
+    //echo("reanderType: $type, $modBase ${req.modRel.path}")
 
     initCompiler
     obj.onService
@@ -321,9 +323,12 @@ const class ScriptMod : WebMod
 }
 
 internal class ScriptResolver {
-  Str[] paths
-  Int pos := 0
-  Uri file
+  //paths to deal with
+  private Str[] paths
+  //cur position
+  private Int pos := 0
+  //already found dir
+  private Uri file := ``
   Uri? modBase
 
   ScriptMod mod
@@ -331,13 +336,12 @@ internal class ScriptResolver {
   new make(ScriptMod mod, Str[] paths) {
     this.mod = mod
     this.paths = paths
-    file = ``
   }
 
   private Bool cosume() {
     if (pos < paths.size) {
-      file = file.plusName(paths[pos])
       modBase = file
+      file = file.plusName(paths[pos])
       ++pos
       return true
     }

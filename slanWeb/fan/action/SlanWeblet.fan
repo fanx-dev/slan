@@ -42,13 +42,16 @@ mixin SlanWeblet : Weblet
   **
   private Method? findMethod()
   {
+    //remove ext name
     Str[] paths := req.modRel.plusName(req.modRel.basename).path
 
-    rel := req.uri.relTo(req.modBase)
+    //remove self file name
+    if (paths.size > 0)
+      paths = paths[1..-1]
+
     //echo("findMethod: $paths, modRel:${req.modRel} modBase:${req.modBase} uri:${req.uri} rel:${rel}")
 
     Method? method
-    hasSubPath := false
     if (paths.size > 0) {
       method = this.typeof.method(paths.first, false)
       if (method != null) {
@@ -70,7 +73,7 @@ mixin SlanWeblet : Weblet
     }
 
     method = this.typeof.method(req.method.lower, false)
-    if (method == null) echo("method not found $paths")
+    if (method == null) echo("method not found: $paths")
     return method
   }
 

@@ -17,6 +17,6 @@ const class Template : Controller
   Void get()
   {
     stash("name", stashId)
-    render(`template/template.html`)
+    render(`template.html`)
   }
 }

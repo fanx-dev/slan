@@ -13,7 +13,7 @@ const class EmbedJs : Controller
 {
   Void js()
   {
-    stash("compileJs", compileJs(`fanJs/Hello.fwt`))
-    render(`fanjs/fwtPage.html`)
+    stash("compileJs", compileJs(`Hello.fwt`))
+    render(`fwtPage.html`)
   }
 }

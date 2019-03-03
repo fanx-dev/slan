@@ -17,6 +17,6 @@ class Xml : SlanWeblet
   {
     echo("Xml.data")
     stash("name", "abc")
-    render(`template/Xml/data`)
+    render(`Xml/data`)
   }
 }
