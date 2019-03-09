@@ -143,10 +143,15 @@ const class ScriptMod : WebMod
     }
 
     extName := file.ext ?: ""
-    // .js.fan is alians of .fwt
-    if (extName == "fan" && file.name.endsWith(".js.fan")) {
-      extName = "fwt"
+    
+    if (extName == "fan") {
+      //.fwt no IDE support, temp fix
+      fp := file.uri.parent?.name
+      if (fp == "js" || file.name.endsWith("_js.fan")) {
+        extName = "fwt"
+      }
     }
+
     switch (extName) {
       case "fan":
         reanderScript(file)

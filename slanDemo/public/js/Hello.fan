@@ -1,0 +1,55 @@
+//
+// Copyright (c) 2010, chunquedong
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   2010-9-22  Jed Young  Creation
+//
+
+using graphics
+using dom
+using domkit
+
+@Js
+class Main : Box
+{
+  new make()
+  {
+    popup := Popup
+    {
+      it.style->width = "400px"
+      it.style->padding = "12px"
+      Box
+      {
+        it.text= "Lorem ipsum dolor sit amet, consectetur adipiscing
+                  elit. Etiam accumsan, felis vestibulum elementum
+                  efficitur, ligula sem porta magna, sit amet semper
+                  lacus lorem vitae lacus."
+      },
+    }
+
+
+    this {
+      GridBox
+      {
+        it.cellStyle("*",    "*", "padding: 4px")
+        it.cellStyle("*", "even", "background: #f8f8f8")
+        it.cellStyle("*",     4,  "background: #e8e8e8; border-top: 1px solid #ccc")
+
+        it.addRow([Label {
+          it.text = "Enter User Information"
+          it.style->fontWeight = "bold"
+        }], [2])
+        it.addRow([Label { it.text="First Name:"  }, TextField {}])
+        it.addRow([Label { it.text="Middle Name:" }, TextField {}])
+        it.addRow([Label { it.text="Last Name:"   }, TextField {}])
+        it.addRow([null, Button { it.text="Submit"; onAction { popup.open(100f, 100f) } }])
+      },
+    }
+  }
+
+  Void main()
+  {
+    Win.cur.doc.body.add(Main())
+  }
+}
