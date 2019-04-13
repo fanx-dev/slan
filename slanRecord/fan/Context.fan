@@ -124,6 +124,27 @@ class Context
     executor.selectWhere(table, this.conn, where, offset, limit)
   }
 
+  ** query by raw sql
+  Obj[] query(Str sql, Obj[]? params, Type? type := null, Int offset := 0, Int limit := 50) {
+    table := type == null ? null : toTable(type)
+    return executor.query(table, this.conn, sql, params, offset, limit)
+  }
+  Obj[] queryT(Str sql, Obj[]? params, TableDef? table := null, Int offset := 0, Int limit := 50) {
+    executor.query(table, this.conn, sql, params, offset, limit)
+  }
+
+  ** execute raw sql
+  Int execute(Str sql, Obj[]? params) {
+    stmt := conn.sql(sql)
+    try {
+      params?.each |p, i|{ stmt.set(i, p) }
+      return stmt.execute
+    }
+    finally {
+      stmt.close
+    }
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // By ID
 //////////////////////////////////////////////////////////////////////////

@@ -55,7 +55,7 @@ const class FieldDef
       Record r := obj
       r.set(index, value)
     }
-    field.set(obj, value)
+    field?.set(obj, value)
   }
 
   override Str toStr()

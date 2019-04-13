@@ -104,11 +104,18 @@ internal class DataTest : Test
     verify(c.exist(example))
   }
 
+  private Void queryJson() {
+    res := c.query("select * from User where name=?", ["yjd"])
+    verifyEq(res.size, 1)
+    echo(JsonUtil.toJson(res))
+  }
+
   Void test()
   {
     buildTable
     insert
     query
+    queryJson
     update
     transaction
   }

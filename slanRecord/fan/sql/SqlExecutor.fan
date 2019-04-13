@@ -171,10 +171,37 @@ internal const class SqlExecutor
       log.debug(sql)
     }
     Obj[] list := [,]
-    i := 0
+    //i := 0
     stmt := db.sql(sql)
     stmt.limit = offset + limit
     set := stmt.query
+    set.moveTo(offset)
+    while(set.next)
+    {
+      list.add(SqlUtil.getInstance(table, set))
+    }
+    set.close
+    stmt.close
+
+    return list
+  }
+
+  Obj[] query(TableDef? table, SqlConn db, Str sql, Obj[]? params, Int offset, Int limit)
+  {
+    if (log.isDebug)
+    {
+      log.debug(sql)
+    }
+    Obj[] list := [,]
+    stmt := db.sql(sql)
+    stmt.limit = offset + limit
+    params?.each |p, i|{ stmt.set(i, p) }
+    set := stmt.query
+
+    if (table == null) {
+      table = SqlUtil.colsToSchema("_temp_table_", set.cols)
+    }
+
     set.moveTo(offset)
     while(set.next)
     {
