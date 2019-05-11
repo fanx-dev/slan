@@ -146,7 +146,7 @@ const class SqlUtil
     builder := TableDefBuilder(name, ArrayRecord#)
     cols.each |col, i|
     {
-      builder.addColumn(col.name, col.type)
+      builder.addColumn(col.name.lower, col.type)
     }
     return builder.build
   }
