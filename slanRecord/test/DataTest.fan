@@ -5,7 +5,7 @@
 // History:
 //   2011-12-02  Jed Young  Creation
 //
-
+using util
 
 **
 ** test slanData
@@ -104,10 +104,25 @@ internal class DataTest : Test
     verify(c.exist(example))
   }
 
+  private Void queryTrap() {
+    res := c.query("select * from User where name=?", ["yjd"])
+    verifyEq(res.size, 1)
+    verifyEq(res[0]->name, "yjd")
+  }
+
+  private Void queryMapper() {
+    res := c.query("select * from User where name=?", ["yjd"], User#)
+    verifyEq(res.size, 1)
+    user := res[0] as User
+    verifyEq(user.name, "yjd")
+  }
+
   private Void queryJson() {
     res := c.query("select * from User where name=?", ["yjd"])
     verifyEq(res.size, 1)
-    echo(JsonUtil.toJson(res))
+    str := JsonUtil.toJson(res)
+    jval := JVal.readJson(str)
+    verifyEq(jval.getAt(0)["name"].asStr, "yjd")
   }
 
   Void test()
@@ -116,6 +131,8 @@ internal class DataTest : Test
     insert
     query
     queryJson
+    queryTrap
+    queryMapper
     update
     transaction
   }
