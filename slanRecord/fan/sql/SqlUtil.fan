@@ -62,7 +62,7 @@ const class SqlUtil
   **
   ** make string from object for cache key
   **
-  static Str makeKey(TableDef s, Obj obj)
+  static Str makeCacheKey(TableDef s, Obj obj)
   {
     condition := StrBuf()
     s.each |c|
@@ -85,9 +85,26 @@ const class SqlUtil
     s.each |c, Int i|
     {
       value := r.get(i)
+      if (c.field != null) {
+        if (value is Int && c.field.type.fits(Enum#)) {
+          Obj[] vals := c.field.type.field("vals").get
+          value = vals[(Int)value]
+        }
+      }
       c.set(obj, value)
     }
     return obj
+  }
+
+  static Obj?[]? convertParams(Obj?[]? params) {
+    if (params == null) return null
+    params.each |p, i| {
+      if (p != null && p is Enum) {
+          p = (p as Enum).ordinal
+          params[i] = p
+      }
+    }
+    return params
   }
 
 //////////////////////////////////////////////////////////////////////////

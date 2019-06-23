@@ -32,6 +32,7 @@ internal const class SqlExecutor
   {
     sql := inserMaker.getSql(table)
     params := inserMaker.getParam(table, obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -56,6 +57,7 @@ internal const class SqlExecutor
   {
     sql := updateByIdMaker.getSql(table, obj)
     params := updateByIdMaker.getParam(table, obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -71,6 +73,7 @@ internal const class SqlExecutor
   {
     sql := updateMaker.getSql(table, obj) + " where " + condition
     params := updateMaker.getParam(table, obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -87,6 +90,8 @@ internal const class SqlExecutor
     sql := updateMaker.getSql(table, obj) +" "+ whereMaker.getSql(table, where)
     params := updateMaker.getParam(table, obj)
     params2 := whereMaker.getParam(table, where)
+    SqlUtil.convertParams(params)
+    SqlUtil.convertParams(params2)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -112,6 +117,7 @@ internal const class SqlExecutor
     sql := selectMaker.getSql(table)  + " from $table.name " + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
     params := whereMaker.getParam(table,obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -139,6 +145,7 @@ internal const class SqlExecutor
     sql := selectMaker.getSql(table)  + " from $table.name " + whereMaker.getSql(table, obj)
     if (orderby != "") sql += " " + orderby
     params := whereMaker.getParam(table,obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -195,6 +202,7 @@ internal const class SqlExecutor
     Obj[] list := [,]
     stmt := db.sql(sql)
     stmt.limit = offset + limit
+    SqlUtil.convertParams(params)
     params?.each |p, i|{ stmt.set(i, p) }
     set := stmt.query
 
@@ -217,6 +225,7 @@ internal const class SqlExecutor
   {
     sql := "delete from $table.name " + whereMaker.getSql(table, obj)
     paramss := whereMaker.getParam(table, obj)
+    SqlUtil.convertParams(paramss)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -232,6 +241,7 @@ internal const class SqlExecutor
   {
     sql := "select count(*) from $table.name " + whereMaker.getSql(table, obj);
     params := whereMaker.getParam(table, obj)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
@@ -290,6 +300,7 @@ internal const class SqlExecutor
   {
     sql := before + " from $table.name " + idWhereMaker.getSql(table)
     params := idWhereMaker.getParam(table, id)
+    SqlUtil.convertParams(params)
     if (log.isDebug)
     {
       log.debug(sql)
