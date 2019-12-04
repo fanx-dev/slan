@@ -91,7 +91,7 @@ const class JsCompiler
     cache.clear
   }
 
-  private Void addDepends(Str podName, Str[] list, Str:Int map) {
+  private Void addDepends(Str podName, Str[] list, [Str:Int] map) {
     if (!map.containsKey(podName)) {
       map[podName] = 1
     } else {

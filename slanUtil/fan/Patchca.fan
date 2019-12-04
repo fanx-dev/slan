@@ -77,13 +77,13 @@ const class Patchca
   ** get random code
   internal Str randomCode()
   {
-    Int[] list := "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghjkmnprstuvwxyz2345678".chars
-    Int[] code := [,]
+    Array<Int32> list := "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghjkmnprstuvwxyz2345678".chars
+    code := StrBuf()
     n.times
     {
-      code.add(list.random)
+      code.addChar(list[(0..<list.size).random])
     }
-    return Str.fromChars(code)
+    return code.toStr
   }
 
 //////////////////////////////////////////////////////////////////////////

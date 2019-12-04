@@ -94,10 +94,10 @@ class SqlServiceTest1 : Test
       [4, "Donny",   true,  null,       "wxyz", 40,  null, null, 8,   null, null,  5.0d, dt, date, time],
       [5, "John",    true,  "Berkeley", "5678", 35,  null, null, 8,   null, null,  5.7d, dt, date, time],
     ]
-    data.each |Obj[] row| { insertFarmer(row[1..-1]) }
+    data.each |Obj?[] row| { insertFarmer(row[1..-1]) }
   }
 
-  private Void insertFarmer(Obj[] row)
+  private Void insertFarmer(Obj?[] row)
   {
     s := "insert into farmers (name, married, pet, ss, age, pigs, cows, ducks, height, weight, bigdec, dt, d, t) values ("
     s += row.join(", ") |Obj? o->Str|
@@ -128,7 +128,8 @@ class SqlServiceTest1 : Test
       set.cols.each |c|
       {
         val := set.get(c.index)
-        echo("$c.name: $val, ${val?.typeof}")
+        t := val==null?"":val.typeof
+        echo("$c.name: $val, ${t}")
       }
       echo("=======================")
     }
@@ -144,7 +145,8 @@ class SqlServiceTest1 : Test
       set.cols.each |c|
       {
         val := set.get(c.index)
-        echo("$c.name: $val, ${val?.typeof}")
+        t := val==null?"":val.typeof
+        echo("$c.name: $val, ${t}")
       }
     }
     set.close

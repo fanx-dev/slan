@@ -42,7 +42,7 @@ class UploadHelper : Weblet
     }
   }
 
-  protected virtual Void extractPart(Str:Str headers, InStream in)
+  protected virtual Void extractPart([Str:Str] headers, InStream in)
   {
     disHeader := headers["Content-Disposition"]
     if (disHeader == null) {

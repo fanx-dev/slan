@@ -25,7 +25,7 @@ internal class ParameterHelper
   }
 
   ** methodParams
-  static Obj?[] getParamsByName(Str:Str query, Param[] params, [Str:Str]? other)
+  static Obj?[] getParamsByName([Str:Str] query, Param[] params, [Str:Str]? other)
   {
     Obj?[] list := [,]
     for (i := 0; i < params.size; ++i)

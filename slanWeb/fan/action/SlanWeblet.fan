@@ -152,7 +152,7 @@ mixin SlanWeblet : Weblet
   **
   ** compile js file.
   **
-  Str compileJs(Uri fwt, Str:Str env := ["fwt.window.root":"fwt-root"])
+  Str compileJs(Uri fwt, [Str:Str] env := ["fwt.window.root":"fwt-root"])
   {
     |Uri uri->File| resReserver := req.stash["_resResolver"]
     JsCompiler jsCompiler := req.stash["_jsCompiler"]

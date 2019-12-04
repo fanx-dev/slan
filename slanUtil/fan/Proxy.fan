@@ -24,7 +24,7 @@ const class Proxy : WebMod
     echo("proxy: $host")
   }
 
-  ** ** Invoked prior to serviceing the current request.
+  ** Invoked prior to serviceing the current request.
   virtual Void beforeService() {}
 
   override Void onService()

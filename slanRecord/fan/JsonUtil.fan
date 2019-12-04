@@ -69,7 +69,7 @@ class JsonUtil {
     out.writeChar('}')
   }
 
-  private Void writeJsonMap(Str:Obj? map)
+  private Void writeJsonMap([Str:Obj?] map)
   {
     out.writeChar('{')
     notFirst := false

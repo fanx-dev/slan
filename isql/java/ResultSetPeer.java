@@ -50,7 +50,7 @@ public class ResultSetPeer
     // map the meta-data to a dynamic type
     ResultSetMetaData meta = rs.getMetaData();
     int numCols = meta.getColumnCount();
-    List cols = List.make(numCols, SqlUtil.colType);
+    List cols = List.make(numCols);
     for (int i=0; i<numCols; ++i)
     {
       String name = meta.getColumnLabel(i+1);

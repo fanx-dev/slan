@@ -114,7 +114,7 @@ public class SqlMetaPeer
                         null); // types
 
       int nameIndex = tables.findColumn("TABLE_NAME");
-      List tableList = List.make(32, SqlUtil.strType);
+      List tableList = List.make(32);
       while (tables.next())
       {
         String tableName = tables.getString(nameIndex);
@@ -137,7 +137,7 @@ public class SqlMetaPeer
       java.sql.ResultSet columns = jmeta.getColumns(null, null, tableName.toUpperCase(), null);
 
       // map the meta-data to a dynamic type
-      List cols = List.make(32, SqlUtil.colType);
+      List cols = List.make(32);
 
       int nameIndex = columns.findColumn("COLUMN_NAME");
       int typeIndex = columns.findColumn("DATA_TYPE");

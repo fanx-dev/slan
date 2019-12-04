@@ -97,7 +97,7 @@ const class FileWatchActor : Actor {
 
       if (fileList == null) return null
 
-      [Str:TimePoint] map := locals.getOrAdd(storeKey) { Str:TimePoint[:] }
+      [Str:TimePoint] map := locals.getOrAdd(storeKey) { [Str:TimePoint][:] }
       Bool changed := false
 
       fileList.each |dir| {
