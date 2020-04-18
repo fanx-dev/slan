@@ -210,6 +210,8 @@ const class ScriptMod : WebMod
     out.html
     out.head
       out.title.w("$file.name").titleEnd
+
+      out.w("""<meta name="viewport" content="width=device-width, initial-scale=1.0">\n""")
       
       jsCompiler.render(out, file)
 
