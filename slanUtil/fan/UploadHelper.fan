@@ -36,7 +36,7 @@ class UploadHelper : Weblet
     params.each |v, k| {
       if (v is File) {
         try {
-          v->delete
+          (v as File).delete
         } catch {}
       }
     }
@@ -70,7 +70,7 @@ class UploadHelper : Weblet
 
   protected virtual File saveToFile(InStream in, Str name)
   {
-    File file := `$tempDir${name}.tmp`.toFile
+    File file := `$tempDir${name}_${TimePoint.nowUnique}.tmp`.toFile
     out := file.out
     try {
       in.pipe(out)

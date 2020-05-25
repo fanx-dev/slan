@@ -43,6 +43,7 @@ class Upload : SlanWeblet
       helper.onService
       setContentType
       helper.params.each |v, k| {
+        echo("[$k:$v]")
         res.out.w("$k:$v\n")
       }
     } finally {

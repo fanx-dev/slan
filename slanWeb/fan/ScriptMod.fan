@@ -144,10 +144,10 @@ const class ScriptMod : WebMod
 
     extName := file.ext ?: ""
     
-    if (extName == "fan") {
+    if (extName == "fan" && dir != null) {
       //.fwt no IDE support, temp fix
-      fp := file.uri.parent?.name
-      if (fp == "js" || file.name.endsWith("_js.fan")) {
+      fp := file.uri.relTo(dir.uri).path
+      if (fp.first == "view") {
         extName = "fwt"
       }
     }
@@ -194,13 +194,31 @@ const class ScriptMod : WebMod
   }
 
   private Void reanderType(Type type) {
-    setContentType
+    if (type.hasFacet(sys::Js#)) {
+      res.headers["Content-Type"] = "text/html; charset=utf-8"
+      out := res.out
+      out.docType
+      out.html
+      out.head
+        out.title.w("$type.name").titleEnd
+        out.w("""<meta name="viewport" content="width=device-width, initial-scale=1.0">\n""")
+        
+        jsCompiler.renderByType(out, type.qname)
 
-    Weblet obj := type.make()
-    //echo("reanderType: $type, $modBase ${req.modRel.path}")
+      out.headEnd
+      out.body
+      out.bodyEnd
+      out.htmlEnd
+    }
+    else {
+      setContentType
 
-    initCompiler
-    obj.onService
+      Weblet obj := type.make()
+      //echo("reanderType: $type, $modBase ${req.modRel.path}")
+
+      initCompiler
+      obj.onService
+    }
   }
 
   private Void renderFwt(File file) {
