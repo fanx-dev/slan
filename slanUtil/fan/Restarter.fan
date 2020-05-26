@@ -52,6 +52,8 @@ internal class RProcess {
     if (process != null) {
       try {
         echo("kill process")
+        process.outToIn.printLine("exit").close
+        Actor.sleep(1sec)
         process.kill
         process.join
         process = null
