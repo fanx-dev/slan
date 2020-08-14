@@ -86,8 +86,8 @@ const class ScriptMod : WebMod
       if (f.exists) return f
     }
 
-    if (pod != null && path.isPathAbs) {
-      uri := path
+    if (pod != null) {
+      uri := `/`+path
       File? pf = pod.file(uri, false)
       //echo("$pod $uri $pf")
       if (pf != null) return pf
