@@ -71,7 +71,7 @@ internal class RProcess {
       }
       catch (Err e) e.trace
 
-      Actor.sleep(1sec)
+      Actor.sleep(2sec)
     }
 
     close
