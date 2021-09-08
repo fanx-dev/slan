@@ -59,6 +59,13 @@ const class ScriptMod : WebMod
 
   override Void onService() {
     try {
+      req.session
+      if (req.session["error"] != null) {
+        Err err = req.session["error"]
+        req.session.remove("error")
+        onErro(err)
+        return
+      }
       doService
     }
     catch (Err err) {
@@ -144,22 +151,28 @@ const class ScriptMod : WebMod
 
     extName := file.ext ?: ""
     
-    if (extName == "fan" && dir != null) {
+    if ((extName == "fanx" || extName == "fan") && dir != null) {
       //.fwt no IDE support, temp fix
       fp := file.uri.relTo(dir.uri).path
       if (fp.first == "view") {
-        extName = "fwt"
+        if (extName == "fan")
+          extName = "fwt"
+        else
+          extName = "fwtx"
       }
     }
 
     switch (extName) {
       case "fan":
+      case "fanx":
         reanderScript(file)
         res.done
       case "fwt":
+      case "fwtx":
         renderFwt(file)
         res.done
       case "fsp":
+      case "fspx":
         renderTemplate(file)
         res.done
       default:
@@ -330,14 +343,19 @@ const class ScriptMod : WebMod
     if (res.isCommitted && !res.isDone)
     {
       //err.trace
-      res.out.print("<p>ERROR: $req.uri</p>")
-      res.out.w(err.traceToStr.replace("\n","<br/>"))
+      if (req.session["error"] == null) req.session["error"] = err
+      else {
+        res.out.print("<p>ERROR: $req.uri</p>")
+        res.out.w(err.traceToStr.replace("\n","<br/>"))
+      }
     }
     else if (err is SlanCompilerErr)
     {
       res.statusCode = 500
       res.headers.clear
       res.headers["Content-Type"] = "text/html; charset=utf-8"
+      res.headers["A"] = "B"
+      res.headers.each |v,k| { echo("$k,$v") }
       res.out.print(err->dump)
     }
   }
@@ -378,7 +396,10 @@ internal class ScriptResolver {
     while (cosume) {
       //echo("ScriptResolver: $file")
       //find script
-      s := mod.findFile(`${file}.fan`)
+      s := mod.findFile(`${file}.fanx`)
+      if (s != null) return s
+
+      s = mod.findFile(`${file}.fan`)
       if (s != null) return s
 
       File? f := mod.findFile(file)

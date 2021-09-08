@@ -11,7 +11,7 @@ using dom
 using domkit
 
 @Js
-class Main : Box
+class Hello : Box
 {
   new make()
   {
@@ -50,6 +50,6 @@ class Main : Box
 
   Void main()
   {
-    Win.cur.doc.body.add(Main())
+    Win.cur.doc.body.add(Hello())
   }
 }

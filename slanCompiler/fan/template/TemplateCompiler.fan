@@ -29,8 +29,19 @@ const class TemplateCompiler : ScriptCompiler
     type.method("dump").callOn(obj, [lay])
   }
 
-  protected override Str codeTranslate(File file)
+  protected override [Str:Obj] options(File file) {
+    [Str:Obj] op := ["translate":|Str code->Str|{ codeTranslate(code, file) }]
+    if (file.ext == "fsp") op["compiler"] = "fan"
+    return op
+  }
+
+  protected override Str codeTranslate(Str code, File file)
   {
-    return codeTrans.translate(file)
+    if (file.ext == "fsp") {
+      return codeTrans.translate(code)
+    }
+    else {
+      return codeTrans.translateFanx(code)
+    }
   }
 }

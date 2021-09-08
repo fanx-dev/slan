@@ -26,9 +26,9 @@ internal const class TemplateTranslater
     this.podName = podName
   }
 
-  Str translate(File file)
+  Str translate(Str code)
   {
-    all := convertTemplate(file)
+    all := convertTemplate(code)
 
     s := "using web
           using slanCompiler
@@ -38,6 +38,31 @@ internal const class TemplateTranslater
             Void dump(|->|? lay)
             {
               WebOutStream out := req.stash[\"_out\"] ?: res.out
+              $all
+            }
+          }"
+    
+    if (podName != null)
+    {
+      s = "using $podName\n" + s
+    }
+
+    log.debug(s)
+    return s
+  }
+
+  Str translateFanx(Str code)
+  {
+    all := convertTemplate(code)
+
+    s := "using web
+          using slanCompiler
+
+          const class HtmlTemplet : ${TemplateWeblet#.name}
+          {
+            fun dump(lay: |->|?)
+            {
+              out : WebOutStream  = req.stash[\"_out\"] ?: res.out
               $all
             }
           }"
@@ -52,10 +77,10 @@ internal const class TemplateTranslater
   }
 
   ** Tokenize
-  private Str convertTemplate(File file)
+  private Str convertTemplate(Str code)
   {
     all := Buf()
-    file.in.eachLine
+    code.in.eachLine
     {
       all.writeChars(parse(it,"#"))
     }

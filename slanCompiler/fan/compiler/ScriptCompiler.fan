@@ -15,7 +15,6 @@ using compiler
 const class ScriptCompiler
 {
   private const Str? podName
-  private const ScriptCache cache := ScriptCache()
 
   new make(Str? podName := null)
   {
@@ -25,56 +24,22 @@ const class ScriptCompiler
   ** from cache or compile
   Type getType(File file)
   {
-    cache.getOrAdd(file){ compile(file) }
-  }
-
-  //compile
-  protected Type compile(File file)
-  {
-    source := codeTranslate(file)
-    Pod? pod
-    try
-    {
-      pod = compileScript(source, file)
+    try {
+      return Env.cur.compileScript(file, options(file))
     }
-    catch (CompilerErr e)
-    {
-      throw SlanCompilerErr(e, source, file.toStr)
+    catch (CompilerErr e) {
+      throw SlanCompilerErr(e, codeTranslate(file.readAllStr, file), file.toStr)
     }
-    type := pod.types[0]
-    return type
   }
 
-  Void clearCache()
-  {
-    cache.clear
+  protected virtual [Str:Obj] options(File file) {
+    ["translate":|Str code->Str|{ codeTranslate(code, file) }]
   }
 
-  protected virtual Str codeTranslate(File file)
+  protected virtual Str codeTranslate(Str source, File file)
   {
-    source := file.readAllStr
     if (podName == null) return source
     return "using $podName
             $source"
-  }
-
-  //compileFantomScript
-  private Pod compileScript(Str source, File file)
-  {
-    input := CompilerInput
-    {
-      it.podName  = "file_$file.basename$DateTime.nowUnique"
-      summary     = "slanScript"
-      isScript    = true
-      version     = Version.defVal
-      it.log.level   = LogLevel.warn
-      output      = CompilerOutputMode.transientPod
-      mode        = CompilerInputMode.str
-      srcStr      = source
-      srcStrLoc   = Loc.makeFile(file, 100, 100)
-      it.depends = [Depend("sys 2.0"), Depend("std 1.0")]
-    }
-
-    return Compiler(input).compile.transientPod
   }
 }
