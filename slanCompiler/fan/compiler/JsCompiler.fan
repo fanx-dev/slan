@@ -22,24 +22,42 @@ const class JsCompiler
   new make(Str? podName := null)
   {
     this.podName = podName
-    if (podName != null) {
-      depends := Pod.orderByDepends(Pod.flattenDepends([Pod.find(podName)]))
-      this.jsDepends = depends.findAll |pod| {
-        pod.file(`/${pod.name}.js`, false) != null
-      }.map { it.name }
+    depends := Str[,]
+    map := Str:Int[:]
+    if (this.podName != null) addDepends(this.podName, depends, map)
+    this.jsDepends = depends
+  }
+
+  private Void addDepends(Str podName, Str[] list, [Str:Int] map) {
+    if (!map.containsKey(podName)) {
+      map[podName] = 1
+    } else {
+      return
     }
-    else
-      this.jsDepends = [,]
+
+    pod := Pod.find(podName)
+    pod.depends.each |c| {
+      addDepends(c.name, list, map)
+    }
+
+    if (pod.file(`/${pod.name}.js`, false) != null) {
+      list.add(podName)
+    }
   }
 
   Void render(WebOutStream out, File file, [Str:Str]? env := null)
   {
     Str? js
-    pod_name := podName ?: file.basename
+    Str? pod_name
+    Str[]? pod_depends
+    Str? pod_main
     try {
-      [Str:Obj] options = ["podName" : pod_name]
-      if (file.ext == "fwt") options["compiler"] = "fan"
+      [Str:Obj] options = [:]
+      //if (file.ext == "fwt") options["compiler"] = "fan"
       js = Env.cur.compileScriptToJs(file, options)
+      pod_name = options["pod_name"]
+      pod_depends = options["pod_depends"]
+      pod_main = options["pod_main"]
     }
     catch (CompilerErr e)
     {
@@ -47,12 +65,19 @@ const class JsCompiler
     }
     //echo("$script.depends")
 
-    includeAllJs(out, jsDepends)
+    depends := jsDepends.dup
+    map := Str:Int[:]
+    depends.each { map[it] = 1 }
+    pod_depends.each |c| {
+      addDepends(c, depends, map)
+    }
+
+    includeAllJs(out, depends)
     
     out.script.w(js).scriptEnd
 
     if (env == null) env = [:]
-    if (!env.containsKey("main")) env["main"] = "${pod_name}::$file.basename"
+    if (!env.containsKey("main")) env["main"] = pod_main
     out.initJs(env)
   }
 
