@@ -8,6 +8,7 @@
 
 using web
 using compiler
+using concurrent
 
 **
 ** compile and run http template file
@@ -31,13 +32,13 @@ const class TemplateCompiler : ScriptCompiler
 
   protected override [Str:Obj] options(File file) {
     [Str:Obj] op := ["translate":|Str code->Str|{ codeTranslate(code, file) }]
-    if (file.ext == "fsp") op["compiler"] = "fan"
+    if (file.ext == "fsp" || file.ext == Actor.locals["fspExt"]) op["compiler"] = "fan"
     return op
   }
 
   protected override Str codeTranslate(Str code, File file)
   {
-    if (file.ext == "fsp") {
+    if (file.ext == "fsp" || file.ext == Actor.locals["fspExt"]) {
       return codeTrans.translate(code)
     }
     else {

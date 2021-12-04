@@ -149,7 +149,7 @@ public class SqlConnPeer
   {
     try
     {
-      String val = Pod.find("sql").config("java.drivers");
+      String val = Pod.find("isql").config("java.drivers");
       if (val == null) return;
       String[] classNames = val.split(",");
       for (int i=0; i<classNames.length; ++i)
