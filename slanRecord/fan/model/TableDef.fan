@@ -120,6 +120,7 @@ const class TableDef
   }
 }
 
+@Js
 class TableDefBuilder {
   Str name
   Int idIndex := -1
